@@ -1,18 +1,7 @@
 import fetch from 'isomorphic-fetch'
 import _ from 'lodash'
-import proxy from 'http-proxy-middleware'
 
-export const dvidAddress = 'http://127.0.0.1:1111'
-
-function getProxyOption (uuid) {
-  return proxy({
-    target: dvidAddress,
-    changeOrigin: true,
-    pathRewrite: {
-      '^/api': '/api/node/' + uuid + '/'
-    }
-  })
-}
+export const dvidAddress = 'http://115.28.245.5:1111'
 
 async function deleteSwcInstanceWithWrongType (uuid) {
   console.log('drop it and create new one')
@@ -65,7 +54,7 @@ async function setupKeyValueInstance (uuid) {
   await createSwcInstance(uuid)
 }
 
-export async function getRepoUuid () {
+async function getRepoUuid () {
   let uuid
   const response = await fetch(dvidAddress + '/api/repos/info', {
     method: 'GET'
@@ -87,11 +76,11 @@ export async function getRepoUuid () {
   return uuid
 }
 
-export default async function setupDvid () {
+export async function setupDvid () {
   try {
     const uuid = await getRepoUuid()
     await setupKeyValueInstance(uuid)
-    return getProxyOption(uuid)
+    return uuid
   } catch (err) {
     console.log('failed to connect dvid', err)
     process.exit(-1)
