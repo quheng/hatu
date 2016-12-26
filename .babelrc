@@ -1,0 +1,33 @@
+{
+  "presets": ["react", "latest"],
+  "plugins": [
+    [
+      "import", {
+        "libraryName": "antd",
+        "style": "css"
+      }
+    ],
+    [
+      "babel-root-import", {
+        "rootPathSuffix": "client"
+      }
+    ],
+    [
+      "transform-runtime", {
+        "polyfill": false,
+        "regenerator": true
+      }
+    ],
+    [ "transform-export-extensions" ],
+    [ "transform-decorators-legacy" ],
+    [ "transform-object-rest-spread" ]
+  ],
+  "env": {
+    "dev": {
+      "presets": ["react-hmre"]
+    },
+    "test": {
+      "plugins": ["istanbul"]
+    }
+  }
+}

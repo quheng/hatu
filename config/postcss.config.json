@@ -1,0 +1,19 @@
+{
+	"use": [
+		"postcss-import",
+		"postcss-extend",
+		"postcss-sassy-mixins",
+		"postcss-nested",
+		"postcss-nesting",
+		"postcss-advanced-variables",
+		"postcss-color-function",
+		"postcss-discard-comments",
+		"autoprefixer"
+	],
+	"parser": "sugarss",
+	"input": "./app/stylesheets/index.css",
+	"output": "./public/bundle.css",
+	"autoprefixer": {
+		"browsers": "> 5%"
+	}
+}

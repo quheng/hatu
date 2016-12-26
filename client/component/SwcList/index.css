@@ -1,0 +1,10 @@
+:local .swcList {
+    width: 150px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+:local .swcItem {
+    width: 150px;
+    height: 100vh;
+}
