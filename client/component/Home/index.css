@@ -8,11 +8,11 @@
 }
 
 :local .swcList {
-  width: 222px;
+  width: 150px;
   height: 100%;
 }
 
 :local .threeView {
-  width: 80%;
+  width: calc(100vw - 150px);
   height: 100%;
 }
