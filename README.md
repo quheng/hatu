@@ -7,6 +7,15 @@ npm install
 npm run build
 ```
 
+# environment variable
+change to your postgres config
+```
+export postgres_endpoint=127.0.0.1  
+export postgres_host=5432  
+export postgres_user=user
+export postgres_user=password
+```
+
 # Run
 ```
 docker run -p 1111:8000 -it flyem/dvid
