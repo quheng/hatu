@@ -2,11 +2,17 @@ import express from 'express'
 import path from 'path'
 import webpackConfigure from './webpackConfigure'
 import proxy from 'http-proxy-middleware'
+
+import passport from 'passport'
 import { dvidAddress, setupDvid } from './dvid'
-import { checkDatabase, createUser, getPassword } from './database'
+import { checkDatabase } from './database'
+import { userRouter } from './users'
 
 const app = express()
+
 webpackConfigure(app)
+app.use(passport.initialize())
+app.use(passport.session())
 
 function getProxyOption (uuid) {
   return proxy({
@@ -30,8 +36,7 @@ function getProxyOption (uuid) {
 async function setupRoute () {
   const uuid = await setupDvid()
   checkDatabase()
-  createUser()
-  getPassword()
+  app.use('/users', userRouter)
   app.use('/api', getProxyOption(uuid))
   app.use('/uuid', (req, res) => res.send(uuid))
   app.use('/assets/static', express.static(path.join(__dirname, '..', 'public')))
