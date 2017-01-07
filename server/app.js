@@ -11,6 +11,11 @@ import { userRouter } from './users'
 const app = express()
 
 webpackConfigure(app)
+
+app.use(require('cookie-parser')())
+app.use(require('body-parser').urlencoded({ extended: true }))
+app.use(require('express-session')({ secret: 'asdfasdfasdfqlfjqwklejfnjqqjnvjqli', resave: false, saveUninitialized: false }))
+
 app.use(passport.initialize())
 app.use(passport.session())
 

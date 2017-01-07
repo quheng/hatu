@@ -7,10 +7,10 @@ import { Strategy as LocalStrategy } from 'passport-local'
 passport.use(new LocalStrategy((username, password, done) => {
   getPassword(username)
     .then(res => {
-      if (res === password){
-        return 'success'
+      if (res === password) {
+        return done(null, 'success')
       } else {
-        throw new Error('fail')
+        return done(null, false)
       }
     })
 }))
@@ -25,10 +25,12 @@ passport.deserializeUser((user, done) => {
 
 export const userRouter = express.Router()
 
-userRouter.route('/login')
-  .post(passport.authenticate('local'), (req, res) => {
-    res.json({ messages: ['success'] })
-  })
+userRouter.post('/login',
+    passport.authenticate('local'),
+    (req, res) => {
+      res.json({ messages: ['success'] })
+    }
+  )
 
 userRouter.post('/logout', (req, res) => {
   req.logout()
