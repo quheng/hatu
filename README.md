@@ -28,10 +28,10 @@ Once the `Slice` mode is applied, we could use slide bar to control which slice 
 #Neuron Mode
 The `Hatu` provide two different visualization modes for neuron structure.
 
-* Skeleton
+* Skeleton  
 Under `Skeleton` mode, the edge between two neuron node would be a line.
 
-* Sphere
+* Sphere  
 And `Sphere` mode would visualize it as a cylinder.
 
 ![visual_whole](image/neuron_sphere.png)

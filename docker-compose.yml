@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+  hatu:
+    build: .
+    volumes:
+      - ./client:/hatu/client
+      - ./server:/hatu/server
+      - /hatu/node_modules
+    volumes_from:
+      - slice
+    depends_on:
+      - dvid
+    ports:
+      - 2222:2222
+
+  slice:
+    image: "slice15"
+    volumes:
+      - /image
+
+  dvid:
+    image: "flyem/dvid"
+    ports:
+      - 8000:8000

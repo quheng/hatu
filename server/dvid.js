@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch'
 import _ from 'lodash'
 
-export const dvidAddress = 'http://115.28.245.5:1111'
+export const dvidAddress = 'http://dvid:8000'
 
 async function deleteSwcInstanceWithWrongType (uuid) {
   console.log('drop it and create new one')

@@ -3,6 +3,7 @@ import path from 'path'
 import webpackConfigure from './webpackConfigure'
 import proxy from 'http-proxy-middleware'
 import { dvidAddress, setupDvid } from './dvid'
+import { imageHandler } from './image'
 
 const app = express()
 webpackConfigure(app)
@@ -19,6 +20,7 @@ function getProxyOption (uuid) {
 
 async function setupRoute () {
   const uuid = await setupDvid()
+  app.get('/image', imageHandler)
   app.use('/api', getProxyOption(uuid))
   app.use('/uuid', (req, res) => res.send(uuid))
   app.use('/assets/static', express.static(path.join(__dirname, '..', 'public')))

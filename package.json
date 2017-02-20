@@ -44,7 +44,7 @@
     "css-loader": "0.26.1",
     "dat.gui": "0.6.1",
     "express": "4.14.0",
-    "extract-text-webpack-plugin": "^2.0.0-beta",
+    "extract-text-webpack-plugin": "^2.0.0-beta.2",
     "html-loader": "^0.4.4",
     "http-proxy-middleware": "^0.17.3",
     "lodash": "^4.17.2",
@@ -83,7 +83,9 @@
     "transfer-webpack-plugin": "0.1.4",
     "webpack": "v2.1.0-beta.25",
     "webpack-dev-middleware": "^1.8.4",
-    "webpack-hot-middleware": "^2.13.2"
+    "webpack-hot-middleware": "^2.13.2",
+    "sharp": "0.17.1",
+    "node-cache": "^4.1.1"
   },
   "standard": {
     "parser": "babel-eslint",
