@@ -1,17 +1,16 @@
 # Overview
 Welcome to the Hatu wiki! Hatu is a neuron image reconstruction and visualization project. So far, we have supported swc visualization and edit.
 
-# Build
-```
-npm install
-npm run build
-```
-
 # Run
 ```
-docker run -p 1111:8000 -it flyem/dvid
-npm start
+docker-compose up
 ```
+The `docker compose` will build a image at first. The `Dockerfile` define the workflow of dependency installation and build process.
+
+Two directory: `./client` and `./server` are mounted in the container. Thus, the development could be carried on while the container is running.
+
+You could press  `Crtl+C` to stop the application. And then start with `docer-compose up` again. The volume will maintain the current data volume 
+unless you bring everything down with `docker-compose down`. you can get more detail from [Docker Compose](https://docs.docker.com/compose/gettingstarted/).
 
 #Visualization Mode
 
