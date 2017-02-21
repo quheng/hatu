@@ -15,7 +15,7 @@ services:
       - 2222:2222
 
   slice:
-    image: "slice15"
+    image: "hjwissac/slice15"
     volumes:
       - /image
 
@@ -23,3 +23,6 @@ services:
     image: "flyem/dvid"
     ports:
       - 8000:8000
+
+networks:
+  default:
