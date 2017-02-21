@@ -59,9 +59,9 @@ const common = {
         test: /\.css$/,
         include: CLIENT,
         loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style',
+          fallbackLoader: 'style-loader',
           loader: [
-            'css?localIdentName=[name]-[local]-[hash:base64:5]',
+            'css-loader',
             'postcss'
           ]
         })
@@ -69,7 +69,7 @@ const common = {
       {
         test: /\.css$/,
         include: path.join(ROOT, 'node_modules'),
-        loader: 'style!css'
+        loader: 'style-loader!css-loader'
       },
       {
         test: /\.png$/,
