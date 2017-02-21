@@ -12,8 +12,6 @@ export function imageHandler (req, res) {
   let top = Math.round(Number(req.query.top))
   let bottom = Math.round(Number(req.query.bottom))
 
-  console.log(`(${left},${right},${top},${bottom})`)
-
   let name = `/image/slice15_L11_p${elevation}.jpg`
   let value = imageCache.get(name)
   if (value === undefined) {
@@ -33,12 +31,8 @@ export function imageHandler (req, res) {
   let mArea = width * height
   if (mArea > MAX_AREA) {
     let ratio = Math.sqrt(mArea / MAX_AREA)
-    console.log(`${width},${height}`)
-    console.log(ratio)
     value.resize(Math.round(width / ratio), Math.round(height / ratio))
   }
-
-  // value.resize(512, 512)
 
   value.toBuffer().then(data => {
     res.writeHead(200, { 'Content-Type': 'image/jpeg' })
