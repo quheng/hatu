@@ -12,17 +12,6 @@ import DragControls from './control/DragControls'
 export default class HatuViewer {
 
   constructor (container, swc, slices, showCones) {
-    /* swc neuron json object:
-     *   { id : {
-     *       type: <type number of node (string)>,
-     *       x: <x position of node (float)>,
-     *       y: <y position of node (float)>,
-     *       z: <z position of node (float)>,
-     *       parent: <id number of node's parent (-1 if no parent)>,
-     *       radius: <radius of node (float)>,
-     *       }
-     *   }
-     */
     this.container = container
     this.swc = swc
 
@@ -70,11 +59,13 @@ export default class HatuViewer {
 
     this.operationProxy = new OperationProxy(this)
 
-    this.keyControls.addKeyListener('Ctrl+90', () => {
+    this.keyControls.addKeyListener('Ctrl+90', m => {
+      m.event.preventDefault()
       this.operationProxy.undo()
     })
 
-    this.keyControls.addKeyListener('Ctrl+89', () => {
+    this.keyControls.addKeyListener('Ctrl+89', m => {
+      m.event.preventDefault()
       this.operationProxy.redo()
     })
 

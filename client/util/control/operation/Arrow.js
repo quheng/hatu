@@ -2,6 +2,11 @@ import NodeOperation from './NodeOperation'
 
 export default class Arrow extends NodeOperation {
 
+  constructor (gui) {
+    super(gui)
+    this.mode = 'drag'
+  }
+
   /**
    *
    * @param {HatuNode} node
@@ -9,7 +14,6 @@ export default class Arrow extends NodeOperation {
   dragStart (node) {
     this.gui.node = node
     this.oldPosition = node.position.clone()
-    this.target = node
     this.gui.dom.style.cursor = 'move'
   }
 
@@ -37,13 +41,58 @@ export default class Arrow extends NodeOperation {
   }
 
   conduct () {
-    this.target.position.copy(this.newPosition)
+    if (this.gui.selectedNode) {
+      this.target = this.gui.selectedNode
+    } else {
+      return
+    }
+    switch (this.mode) {
+      case 'drag':
+        this.target.position.copy(this.newPosition)
+        break
+      case 'radius':
+        console.log('conduct radius')
+        this.oldRadius = this.target.radius
+        this.target.radius = this.radius
+        break
+      case 'x':
+        this.oldX = this.target.position.x
+        this.target.position.x = this.x
+        break
+      case 'y':
+        this.oldY = this.target.position.y
+        this.target.position.y = this.y
+        break
+      case 'z':
+        this.oldZ = this.target.position.z
+        this.target.position.z = this.z
+        break
+    }
     this.target.adjust()
     this.gui.setupOperation()
   }
 
   cancel () {
-    this.target.position.copy(this.oldPosition)
+    if (!this.target) {
+      return
+    }
+    switch (this.mode) {
+      case 'drag':
+        this.target.position.copy(this.oldPosition)
+        break
+      case 'radius':
+        this.target.radius = this.oldRadius
+        break
+      case 'x':
+        this.target.position.x = this.oldX
+        break
+      case 'y':
+        this.target.position.y = this.oldY
+        break
+      case 'z':
+        this.target.position.z = this.oldZ
+        break
+    }
     this.target.adjust()
   }
 

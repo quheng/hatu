@@ -15,7 +15,7 @@ export default class OperationProxy {
       this.rear--
       this.operations[this.rear].cancel()
     }
-    console.log(this.operations)
+    this.viewer.gui.update()
   }
 
   redo () {
@@ -23,7 +23,7 @@ export default class OperationProxy {
       this.operations[this.rear].conduct()
       this.rear++
     }
-    console.log(this.operations)
+    this.viewer.gui.update()
   }
 
   /**

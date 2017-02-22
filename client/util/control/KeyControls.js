@@ -7,8 +7,7 @@ export default class KeyControls extends THREE.EventDispatcher {
     super()
     let scope = this
     document.addEventListener('keydown', e => {
-      // e.preventDefault()
-      scope.dispatchEvent({ type: `${e.ctrlKey ? 'Ctrl' : ''}+${e.keyCode}` })
+      scope.dispatchEvent({ type: `${e.ctrlKey ? 'Ctrl' : ''}+${e.keyCode}`, event: e })
     }, false)
   }
 
