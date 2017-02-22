@@ -12,6 +12,7 @@ export default class Arrow extends NodeOperation {
     }
     this.gui.node = node
     this.selectedNode = node
+    this.oldPosition = node.position.clone()
 
     this.selectedNode.currentHex = node.material.emissive.getHex()
     this.selectedNode.material.emissive.setHex(0xff0000)
@@ -38,6 +39,19 @@ export default class Arrow extends NodeOperation {
   dragEnd (node) {
     this.gui.node = node
     this.gui.dom.style.cursor = 'auto'
+    this.newPosition = node.position.clone()
+    this.gui.viewer.operationProxy.conduct(this)
+  }
+
+  conduct () {
+    this.selectedNode.position.copy(this.newPosition)
+    this.selectedNode.adjust()
+    this.gui.setupOperation()
+  }
+
+  cancel () {
+    this.selectedNode.position.copy(this.oldPosition)
+    this.selectedNode.adjust()
   }
 
   deactivate () {

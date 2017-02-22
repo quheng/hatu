@@ -63,4 +63,12 @@ export default class NodeOperation {
   deactivate () {
     this.gui.resetNode()
   }
+
+  conduct () {
+
+  }
+
+  cancel () {
+  }
+
 }

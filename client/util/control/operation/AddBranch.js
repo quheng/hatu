@@ -22,8 +22,18 @@ export default class AddBranch extends NodeOperation {
    */
   clickNothing (position) {
     if (this.selectedNode) {
-      this.gui.viewer.neuronRenderer.addBranch(this.selectedNode, position)
+      this.position = position
+      this.gui.viewer.operationProxy.conduct(this)
     }
+  }
+
+  conduct () {
+    this.node = this.gui.viewer.neuronRenderer.addBranch(this.selectedNode, this.position)
+    this.gui.setupOperation()
+  }
+
+  cancel () {
+    this.gui.viewer.neuronRenderer.undoAddBranch(this.node)
   }
 
   deactivate () {
