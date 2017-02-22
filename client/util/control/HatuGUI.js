@@ -57,8 +57,12 @@ export default class HatuGUI {
 
     this.gui.add(this, 'operation', ['AddNode', 'AddBranch', 'DeleteNode', 'Arrow'])
       .onChange(() => {
+        if (this.nodeOperation) {
+          this.nodeOperation.uninstall()
+        }
         this.setupOperation()
         this.nodeOperation.activate()
+        this.resetNode()
       })
 
     this.folders = [overviewFolder, nodeFolder]
@@ -84,7 +88,13 @@ export default class HatuGUI {
   }
 
   set node (value) {
+    if (this.selectedNode) {
+      this.selectedNode.material.emissive.setHex(this.selectedNode.currentHex)
+    }
     this.selectedNode = value
+    this.selectedNode.currentHex = value.material.emissive.getHex()
+    this.selectedNode.material.emissive.setHex(0xff0000)
+
     this.radius = value.radius
     this.x = value.position.x
     this.y = value.position.y
@@ -93,6 +103,10 @@ export default class HatuGUI {
   }
 
   resetNode () {
+    if (this.selectedNode) {
+      this.selectedNode.material.emissive.setHex(this.selectedNode.currentHex)
+    }
+
     this.selectedNode = null
     this.radius = 0
     this.x = 0
