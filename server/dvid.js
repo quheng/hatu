@@ -80,7 +80,7 @@ async function setImageTileMetadata (uuid, dataname) {
     }
     )
   })
-
+slicedb
   if (create.status !== 200) {
     const info = await create.text()
     console.log('failed to set image tile metadata', info)
