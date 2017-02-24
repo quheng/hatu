@@ -93,9 +93,9 @@ async function setupKeyValueInstance (uuid) {
 }
 
 async function setupImageTileInstance (uuid) {
-  if (await setupInstance(uuid, 'imagetile', 'slice')) {
+  if (await setupInstance(uuid, 'imagetile', 'slicedb')) {
     console.log('set image tile metadata')
-    await setImageTileMetadata(uuid, 'slice')
+    await setImageTileMetadata(uuid, 'slicedb')
   }
 }
 

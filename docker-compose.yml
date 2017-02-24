@@ -20,15 +20,22 @@ services:
     ports:
       - 2222:2222
 
+  dvid:
+    image: "flyem/dvid"
+    ports:
+      - 8000:8000
+    volumes_from:
+      - slicedb
+    depends_on:
+      - slicedb
+
   slice:
     image: "hjwissac/slice15"
     volumes:
       - /image
 
-  dvid:
-    image: "flyem/dvid"
-    ports:
-      - 8000:8000
+  slicedb:
+    image: "hjwissac/slicedb"
 
 networks:
   default:
