@@ -2,26 +2,16 @@
 const THREE = require('three')
 
 import TrackballControls from './control/TrackballControls'
+import OperationProxy from './control/OperationProxy'
+import KeyControls from './control/KeyControls'
 import RendererFactory from './renderer/RendererFactory'
 import HatuOrthographicCamera from './control/HatuOrthographicCamera'
 import HatuGUI from './control/HatuGUI'
 import DragControls from './control/DragControls'
-import Volume from './volume/Volume'
 
 export default class HatuViewer {
 
   constructor (container, swc, slices, showCones) {
-    /* swc neuron json object:
-     *   { id : {
-     *       type: <type number of node (string)>,
-     *       x: <x position of node (float)>,
-     *       y: <y position of node (float)>,
-     *       z: <z position of node (float)>,
-     *       parent: <id number of node's parent (-1 if no parent)>,
-     *       radius: <radius of node (float)>,
-     *       }
-     *   }
-     */
     this.container = container
     this.swc = swc
 
@@ -65,15 +55,26 @@ export default class HatuViewer {
     this.controls.addEventListener('change', this.render.bind(this))
     this.controls.addEventListener('change', this.slices.notify)
 
+    this.keyControls = new KeyControls()
+
+    this.operationProxy = new OperationProxy(this)
+
+    this.keyControls.addKeyListener('Ctrl+90', m => {
+      m.event.preventDefault()
+      this.operationProxy.undo()
+    })
+
+    this.keyControls.addKeyListener('Ctrl+89', m => {
+      m.event.preventDefault()
+      this.operationProxy.redo()
+    })
+
     this.gui = new HatuGUI(slices.maxElevation, this)
 
     this.rendererFactory = new RendererFactory(this)
     this.neuronRenderer = this.rendererFactory.create(this.gui.neuronMode)
 
     this.scene.add(this.neuronRenderer)
-    let volume = Volume.testVolume()
-    this.scene.add(volume.getMesh())
-    this.scene.remove()
 
     // Lights
     // doesn't actually work with any of the current shaders

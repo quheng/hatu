@@ -10,8 +10,18 @@ export default class DeleteNode extends NodeOperation {
     if (node.isRoot) {
       window.alert('The root node couldn\'t be deleted!')
     } else {
-      this.gui.viewer.neuronRenderer.deleteNode(node)
+      this.node = node
+      this.gui.viewer.operationProxy.conduct(this)
     }
+  }
+
+  conduct () {
+    this.gui.viewer.neuronRenderer.deleteNode(this.node)
+    this.gui.setupOperation()
+  }
+
+  cancel () {
+    this.gui.viewer.neuronRenderer.undoDeleteNode(this.node)
   }
 
 }
