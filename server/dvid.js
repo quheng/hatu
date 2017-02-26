@@ -2,6 +2,7 @@ import fetch from 'isomorphic-fetch'
 import _ from 'lodash'
 
 export const dvidAddress = 'http://dvid:8000'
+export let uuid = ''
 
 async function deleteInstanceWithWrongType (uuid, dataname) {
   console.log('drop it and create new one')
@@ -80,7 +81,7 @@ async function setImageTileMetadata (uuid, dataname) {
     }
     )
   })
-slicedb
+
   if (create.status !== 200) {
     const info = await create.text()
     console.log('failed to set image tile metadata', info)
@@ -93,9 +94,9 @@ async function setupKeyValueInstance (uuid) {
 }
 
 async function setupImageTileInstance (uuid) {
-  if (await setupInstance(uuid, 'imagetile', 'slicedb')) {
+  if (await setupInstance(uuid, 'imagetile', 'slice15')) {
     console.log('set image tile metadata')
-    await setImageTileMetadata(uuid, 'slicedb')
+    await setImageTileMetadata(uuid, 'slice15')
   }
 }
 
@@ -123,7 +124,7 @@ async function getRepoUuid () {
 
 export async function setupDvid () {
   try {
-    const uuid = await getRepoUuid()
+    uuid = await getRepoUuid()
     await setupKeyValueInstance(uuid)
     await setupImageTileInstance(uuid)
     return uuid

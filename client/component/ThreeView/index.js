@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './index.css'
 import HatuViewer from '../../util/HatuViewer'
 import Swc from '../../util/Swc'
-import Slices from '../../util/Slices'
+import Slices from '../../util/slice/Slices'
 
 import { connect } from 'react-redux'
 
