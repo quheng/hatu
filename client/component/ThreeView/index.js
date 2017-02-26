@@ -20,7 +20,6 @@ class ThreeView extends React.Component {
       hatuViewer.setOrthographicCamera()
       hatuViewer.animate()
     } catch (err) {
-      // alert("渲染失败")
     }
   }
 }

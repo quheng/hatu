@@ -4,9 +4,6 @@ import fetch from 'isomorphic-fetch'
 
 const MAX_AREA = 512 * 512
 
-const min = (a, b) => a > b ? b : a
-const max = (a, b) => a > b ? a : b
-
 export default class ImageInstance {
   constructor (name, tileSize) {
     this.name = name
@@ -51,10 +48,10 @@ export default class ImageInstance {
   }
 
   getBounding (i, j, left, right, top, bottom) {
-    let mLeft = max(i * this.tileSize, left)
-    let mTop = max(j * this.tileSize, top)
-    let mRight = min((i + 1) * this.tileSize, right)
-    let mBottom = min((j + 1) * this.tileSize, bottom)
+    let mLeft = Math.max(i * this.tileSize, left)
+    let mTop = Math.max(j * this.tileSize, top)
+    let mRight = Math.min((i + 1) * this.tileSize, right)
+    let mBottom = Math.min((j + 1) * this.tileSize, bottom)
 
     return {
       left: mLeft - i * this.tileSize,
