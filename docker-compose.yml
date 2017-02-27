@@ -13,8 +13,6 @@ services:
 #  Since the editor may delete the original file and create a new one, the mount might be broken.
 #  You may need to restart the service to synchronize the package.json and .babelrc
 
-    volumes_from:
-      - slice
     depends_on:
       - dvid
     ports:
@@ -28,11 +26,6 @@ services:
       - slicedb
     depends_on:
       - slicedb
-
-  slice:
-    image: "hjwissac/slice15"
-    volumes:
-      - /image
 
   slicedb:
     image: "hjwissac/slicedb"
