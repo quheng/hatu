@@ -10,17 +10,17 @@ export default class PolicyManager {
     this.top = this.slice.height
     this.bottom = 0
     this.updateTime = Date.now()
-  }
-
-  notify () {
-    this.updateTime = Date.now()
 
     let scope = this
     let sqr = n => n * n
 
-    setTimeout(() => {
+    setInterval(() => {
+      console.log('check')
       if (Date.now() - scope.updateTime > 1000) {
+        console.log(Date.now() - scope.updateTime)
+        console.log('enter')
         if ((sqr(scope.slice.left - scope.left) + sqr(scope.slice.right - scope.right) + sqr(scope.slice.top - scope.top) + sqr(scope.slice.bottom - scope.bottom) > 1) || scope.slice.updateElevation) {
+          console.log('update')
           scope.left = scope.slice.left
           scope.right = scope.slice.right
           scope.top = scope.slice.top
@@ -29,6 +29,11 @@ export default class PolicyManager {
           scope.slice.updateElevation = false
         }
       }
-    }, 1500)
+    }, 500)
+  }
+
+  notify () {
+    console.log('change')
+    this.updateTime = Date.now()
   }
 }

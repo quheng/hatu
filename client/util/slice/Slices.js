@@ -2,6 +2,10 @@ import * as THREE from 'three'
 import PolicyManager from './PolicyManager'
 
 const textureLoader = new THREE.TextureLoader()
+const emptyMaterial = new THREE.MeshBasicMaterial({
+  color: 0x0
+})
+
 
 export default class Slices {
 
@@ -31,17 +35,23 @@ export default class Slices {
       scope.bottom = Math.max(window.bottom, 0)
 
       scope.policyManager.notify()
+      scope.updatePosition()
     }
   }
 
   update () {
-    this.mesh.geometry = new THREE.PlaneGeometry(this.right - this.left, this.top - this.bottom)
+
     this.mesh.material = this.getMaterial()
+  }
+
+  updatePosition () {
+    this.mesh.geometry = new THREE.PlaneGeometry(this.right - this.left, this.top - this.bottom)
     this.mesh.position.set((this.right + this.left) / 2 - this.viewer.center[0], (this.top + this.bottom) / 2 - this.viewer.center[1], this.elevation - this.maxElevation / 2)
+    this.mesh.material = emptyMaterial
   }
 
   getMaterial () {
-    let url = `/image?elevation=${this.elevation}&left=${this.width - this.right}&right=${this.width - this.left}&top=${this.height - this.top}&bottom=${this.height - this.bottom}`
+    let url = `/image?elevation=${this.elevation}&left=${this.left}&right=${this.right}&top=${this.bottom}&bottom=${this.top}`
     console.log(url)
     let texture = textureLoader.load(url)
     return new THREE.MeshBasicMaterial({
