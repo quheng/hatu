@@ -92,10 +92,12 @@ export default class HatuGUI {
   }
 
   update () {
-    this.radius = this.selectedNode.radius
-    this.x = this.selectedNode.position.x
-    this.y = this.selectedNode.position.y
-    this.z = this.selectedNode.position.z
+    if (this.selectedNode) {
+      this.radius = this.selectedNode.radius
+      this.x = this.selectedNode.position.x
+      this.y = this.selectedNode.position.y
+      this.z = this.selectedNode.position.z
+    }
 
     this.folders.forEach(folder => {
       folder.__controllers.forEach(e => e.updateDisplay())
