@@ -99,6 +99,7 @@
     }
   },
   "dependencies": {
-    "react-decoration": "^1.4.1"
+    "react-decoration": "^1.4.1",
+    "pg": "^6.1.2"
   }
 }
