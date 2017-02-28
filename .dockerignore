@@ -55,3 +55,6 @@ jspm_packages
 .idea
 dist
 res/data/
+
+#Postgres
+pg/
