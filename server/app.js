@@ -4,6 +4,7 @@ import webpackConfigure from './webpackConfigure'
 import proxy from 'http-proxy-middleware'
 import { dvidAddress, setupDvid } from './dvid'
 import { imageHandler } from './image'
+import { insert, select } from './dbTest'
 
 const app = express()
 webpackConfigure(app)
@@ -20,6 +21,9 @@ function getProxyOption (uuid) {
 
 async function setupRoute () {
   const uuid = await setupDvid()
+  console.log('pg test: select from hangzhou')
+  insert('hangzhou', '1', '13', '7.2')
+  console.log(await select('hangzhou'))
   app.get('/image', imageHandler)
   app.use('/api', getProxyOption(uuid))
   app.use('/uuid', (req, res) => res.send(uuid))

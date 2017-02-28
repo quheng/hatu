@@ -17,6 +17,7 @@ services:
       - slice
     depends_on:
       - dvid
+      - pg
     ports:
       - 2222:2222
 
@@ -29,6 +30,11 @@ services:
     image: "flyem/dvid"
     ports:
       - 8000:8000
+
+  pg:
+    build: pg/
+    ports:
+      - 3333:5432
 
 networks:
   default:
