@@ -52,8 +52,10 @@ export default class HatuViewer {
     // Controls
     this.controls = new TrackballControls(this.camera, this.renderer.domElement)
     this.controls.noRotate = true
+    this.controls.staticMoving = true
     this.controls.addEventListener('change', this.render.bind(this))
     this.controls.addEventListener('change', this.slices.notify)
+    this.controls.addEventListener('zoom', this.slices.notify)
 
     this.keyControls = new KeyControls()
 

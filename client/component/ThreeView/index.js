@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './index.css'
 import HatuViewer from '../../util/HatuViewer'
 import Swc from '../../util/Swc'
-import Slices from '../../util/Slices'
+import Slices from '../../util/slice/Slices'
 
 import { connect } from 'react-redux'
 
@@ -20,7 +20,6 @@ class ThreeView extends React.Component {
       hatuViewer.setOrthographicCamera()
       hatuViewer.animate()
     } catch (err) {
-      // alert("渲染失败")
     }
   }
 }
