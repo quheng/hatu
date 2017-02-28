@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "prestart": "npm-run-all lint",
     "start": "BABEL_ENV=dev babel-node server",
     "build": "npm-run-all build:client build:server",
     "build:server": "babel server --out-dir lib",
