@@ -1,5 +1,5 @@
 {
-  "presets": ["react", "latest"],
+  "presets": ["react", "env"],
   "plugins": [
     [
       "import", {
