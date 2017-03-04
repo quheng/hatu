@@ -8,11 +8,6 @@
       }
     ],
     [
-      "babel-root-import", {
-        "rootPathSuffix": "client"
-      }
-    ],
-    [
       "transform-runtime", {
         "polyfill": false,
         "regenerator": true
