@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "BABEL_ENV=dev babel-node server",
+    "start": ". ./scripts/default_environment.sh && BABEL_ENV=dev babel-node server",
     "build": "npm-run-all build:client build:server",
     "build:server": "babel server --out-dir lib",
     "build:client": "webpack --config config/webpack.config.js",
