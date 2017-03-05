@@ -11,6 +11,10 @@ node_js:
 
 before_install:
   - ./scripts/run_dependencies.sh
-  
+
+install:
+  - npm install
+
 script:
   - npm run test
+  - docker build -t quheng/hatu .
