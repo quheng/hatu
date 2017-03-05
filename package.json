@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "BABEL_ENV=dev babel-node server",
+    "start": ". ./scripts/default_environment.sh && BABEL_ENV=dev babel-node server",
     "build": "npm-run-all build:client build:server",
     "build:server": "babel server --out-dir lib",
-    "build:client": "webpack --config config/webpack.config.prod.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:client": "webpack --config config/webpack.config.js",
+    "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
+    "test": "echo \"todo\"",
     "lint": "standard --verbose | snazzy",
     "fix": "standard --fix | snazzy"
   },
@@ -21,7 +22,7 @@
     "url": "https://github.com/quheng/hatu/issues"
   },
   "homepage": "https://github.com/quheng/hatu#readme",
-  "devDependencies": {
+  "dependencies": {
     "antd": "^2.5.3",
     "babel-cli": "6.18.0",
     "babel-core": "6.18.2",
@@ -34,12 +35,13 @@
     "babel-plugin-transform-object-rest-spread": "^6.20.2",
     "babel-plugin-transform-runtime": "6.15.0",
     "babel-polyfill": "^6.20.0",
-    "babel-preset-latest": "^6.16.0",
+    "babel-preset-env": "^1.2.0",
     "babel-preset-react": "6.16.0",
     "babel-preset-react-hmre": "^1.1.1",
     "babel-register": "6.18.0",
     "babel-root-import": "^4.1.5",
     "babel-runtime": "6.18.0",
+    "coveralls": "^2.11.16",
     "css-loader": "0.26.1",
     "dat.gui": "0.6.1",
     "express": "4.14.0",
@@ -48,8 +50,11 @@
     "http-proxy-middleware": "^0.17.3",
     "lodash": "^4.17.2",
     "moment": "^2.17.1",
+    "node-cache": "^4.1.1",
     "node-sass": "^3.10.0",
     "npm-run-all": "3.1.2",
+    "nyc": "^10.1.2",
+    "pg": "^6.1.2",
     "postcss": "5.2.6",
     "postcss-advanced-variables": "1.2.2",
     "postcss-color-function": "2.0.1",
@@ -75,16 +80,17 @@
     "redux-saga": "^0.13.0",
     "reselect": "^2.5.4",
     "sass-loader": "^4.0.2",
+    "sharp": "0.17.1",
     "snazzy": "^5.0.0",
     "standard": "^8.6.0",
     "style-loader": "^0.13.1",
     "three": "^0.82.1",
     "transfer-webpack-plugin": "0.1.4",
     "webpack": "v2.1.0-beta.25",
+    "webpack-dashboard": "^0.3.0",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.2",
-    "sharp": "0.17.1",
-    "node-cache": "^4.1.1"
+    "webpack-merge": "^3.0.0"
   },
   "standard": {
     "parser": "babel-eslint",
@@ -97,9 +103,5 @@
     "ghooks": {
       "pre-commit": "npm run lint"
     }
-  },
-  "dependencies": {
-    "react-decoration": "^1.4.1",
-    "pg": "^6.1.2"
   }
 }

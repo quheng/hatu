@@ -1,15 +1,10 @@
 {
-  "presets": ["react", "latest"],
+  "presets": ["react", "env"],
   "plugins": [
     [
       "import", {
         "libraryName": "antd",
         "style": "css"
-      }
-    ],
-    [
-      "babel-root-import", {
-        "rootPathSuffix": "client"
       }
     ],
     [

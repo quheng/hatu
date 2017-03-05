@@ -1,0 +1,16 @@
+sudo: required
+
+services:
+  - docker
+
+language: node_js
+
+node_js:
+  - "node"
+  - "6"
+
+before_install:
+  - ./scripts/run_dependencies.sh
+  
+script:
+  - npm run test

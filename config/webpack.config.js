@@ -1,16 +1,15 @@
 const path = require('path')
+
+const _ = require('lodash')
 const webpack = require('webpack')
+const merge = require('webpack-merge')
+const DashboardPlugin = require('webpack-dashboard/plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const TransferPlugin = require('transfer-webpack-plugin')
-const _ = require('lodash')
+
 const ROOT = path.join(__dirname, '..')
 const CLIENT = path.join(ROOT, 'client')
-
-function concatArrayCustomizer (objValue, srcValue) {
-  if (_.isArray(objValue) && _.isArray(srcValue)) {
-    return objValue.concat(srcValue)
-  }
-}
+const TARGET = process.env.npm_lifecycle_event
 
 const common = {
   context: CLIENT,
@@ -59,7 +58,7 @@ const common = {
         test: /\.css$/,
         include: CLIENT,
         loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style-loader',
+          fallback: 'style-loader',
           loader: [
             'css-loader',
             'postcss'
@@ -104,8 +103,78 @@ const common = {
   ]
 }
 
-module.exports = {
-  CLIENT,
-  common,
-  concatArrayCustomizer
+const dev = {
+  devtool: 'source-map',
+  entry: {
+    main: [
+      'webpack-hot-middleware/client',
+      CLIENT
+    ]
+  },
+  plugins: [
+    new DashboardPlugin(),
+    new webpack.LoaderOptionsPlugin({
+      minimize: false,
+      debug: true
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: Infinity
+    }),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('dev')
+      }
+    })
+  ]
+}
+
+const prod = {
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: Infinity
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
+    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compress: {
+    //     warnings: false
+    //   },
+    //   output: {
+    //     comments: false
+    //   },
+    //   sourceMap: false
+    // }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production')
+      }
+    })
+  ]
+}
+
+const customizeOptions = {
+  customizeArray (a, b, key) { return [...a, ...b] },
+  customizeObject (a, b, key) { return _.mergeWith(a, b) }
+}
+
+if (
+  TARGET === 'start' ||
+  TARGET === 'start:dev' ||
+  TARGET === 'dashboard' ||
+  TARGET === 'test:server' ||
+  !TARGET // using dev setup for default case
+) {
+  module.exports = merge(customizeOptions)(common, dev)
+} else if (
+  TARGET === 'analyze' ||
+  TARGET === 'build:client'
+) {
+  module.exports = merge(customizeOptions)(common, prod)
+} else {
+  throw new Error(`target ${TARGET} is not specified, please checkout webpack.config.js`)
 }

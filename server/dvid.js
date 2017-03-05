@@ -1,7 +1,17 @@
 import fetch from 'isomorphic-fetch'
 import _ from 'lodash'
 
-export const dvidAddress = 'http://dvid:8000'
+if (_.isEmpty(process.env.DVID_HOST)) {
+  console.log('can not find dvid host in environment variable')
+  process.exit(-1)
+}
+
+if (_.isEmpty(process.env.DVID_PORT)) {
+  console.log('can not find dvid port in environment variable')
+  process.exit(-1)
+}
+
+export const dvidAddress = `${process.env.DVID_HOST}:${process.env.DVID_PORT}`
 export let uuid = ''
 
 async function deleteInstanceWithWrongType (uuid, dataname) {
