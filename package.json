@@ -10,7 +10,6 @@
     "test": "npm-run-all test:server test:client",
     "test:server": ". ./scripts/default_environment.sh && mocha test/server",
     "test:client": "mocha test/client",
-    // "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "lint": "standard --verbose | snazzy",
     "fix": "standard --fix | snazzy"
   },
