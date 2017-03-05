@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/quheng/hatu.svg?branch=master)](https://travis-ci.org/quheng/hatu)
 # Overview
 Welcome to the Hatu wiki! Hatu is a neuron image reconstruction and visualization project. So far, we have supported swc visualization and edit.
 
@@ -12,7 +13,6 @@ Tips: if you live in China, `npm install -g cyarn --registry=https://registry.np
 
 # Test
 `npm run test`
-
 
 #Visualization Mode
 
