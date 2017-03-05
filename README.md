@@ -6,7 +6,9 @@ Welcome to the Hatu wiki! Hatu is a neuron image reconstruction and visualizatio
 If you do not has these dependencies, you can run `./scripts/run_dependencies.sh` to start up them in docker.
 
 # Run
-`npm start`
+1. `yarn`
+2. `npm start`
+Tips: if you live in China, `npm install -g cyarn --registry=https://registry.npm.taobao.org` and use `cyarn` will be fast
 
 # Test
 `npm run test`
