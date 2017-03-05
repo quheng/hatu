@@ -1,16 +1,16 @@
 # Overview
 Welcome to the Hatu wiki! Hatu is a neuron image reconstruction and visualization project. So far, we have supported swc visualization and edit.
 
+# dependencies
+`Hatu` depends on `divd` and `postgres`. If you has these dependencies, you just need to set config in `./scripts/default_environment` to make sure that `divd` can connect to these dependencies.
+If you do not has these dependencies, you can run `./scripts/run_dependencies.sh` to start up them in docker.
+
 # Run
-```
-docker-compose up
-```
-The `docker compose` will build a image at first. The `Dockerfile` define the workflow of dependency installation and build process.
+`npm start`
 
-Two directory: `./client` and `./server` are mounted in the container. Thus, the development could be carried on while the container is running.
+# Test
+`npm run test`
 
-You could press  `Crtl+C` to stop the application. And then start with `docer-compose up` again. The volume will maintain the current data volume 
-unless you bring everything down with `docker-compose down`. you can get more detail from [Docker Compose](https://docs.docker.com/compose/gettingstarted/).
 
 #Visualization Mode
 
