@@ -8,7 +8,7 @@
     "build": "npm-run-all build:client build:server",
     "build:server": "babel server --out-dir lib",
     "build:client": "webpack --config config/webpack.config.js",
-    "test": "npm-run-all test:server test:client",
+    "test": "npm-run-all lint test:server test:client",
     "test:server": ". ./scripts/default_environment.sh && mocha test/server",
     "test:client": "mocha test/client",
     "lint": "standard --verbose | snazzy",
@@ -110,23 +110,5 @@
     "webpack-dashboard": "^0.3.0",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.2"
-  },
-  "standard": {
-    "parser": "babel-eslint",
-    "ignore": [
-      "res",
-      "public"
-    ]
-  },
-  "config": {
-    "ghooks": {
-      "pre-commit": "npm run lint"
-    }
-  },
-  "dependencies": {
-    "passport": "^0.3.2",
-    "passport-local": "^1.0.0",
-    "pg": "^6.1.2",
-    "react-decoration": "^1.4.1"
   }
 }

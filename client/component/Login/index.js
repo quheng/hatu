@@ -1,11 +1,8 @@
 import React from 'react'
 import styles from './index.css'
 
-import {
-  Link,
-  browserHistory
-} from 'react-router'
-import { Form, Icon, Input, Button, Checkbox } from 'antd'
+import { Link } from 'react-router'
+import { Form, Icon, Input, Button } from 'antd'
 const FormItem = Form.Item
 
 const LoginForm = Form.create()(React.createClass({
