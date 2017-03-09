@@ -61,6 +61,18 @@ export default class NodeOperation {
   }
 
   deactivate () {
-    this.gui.resetNode()
+
   }
+
+  uninstall () {
+
+  }
+
+  conduct () {
+
+  }
+
+  cancel () {
+  }
+
 }

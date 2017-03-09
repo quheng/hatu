@@ -14,7 +14,6 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
-.coveralls.yml
 
 # nyc test coverage
 .nyc_output
@@ -56,3 +55,11 @@ jspm_packages
 .idea
 dist
 res/data/
+
+image/
+
+#Postgres
+pg/
+
+
+

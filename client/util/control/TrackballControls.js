@@ -27,7 +27,7 @@ export default class TrackballControls extends THREE.EventDispatcher {
     this.screen = { left: 0, top: 0, width: 0, height: 0 }
 
     this.rotateSpeed = 1.0
-    this.zoomSpeed = 1.2
+    this.zoomSpeed = 2
     this.panSpeed = 0.3
 
     this.noRotate = false
@@ -79,6 +79,7 @@ export default class TrackballControls extends THREE.EventDispatcher {
     // events
 
     let changeEvent = { type: 'change' }
+    let zoomEvent = { type: 'zoom' }
     let startEvent = { type: 'start' }
     let endEvent = { type: 'end' }
 
@@ -194,6 +195,7 @@ export default class TrackballControls extends THREE.EventDispatcher {
           _this.object.orthographicZoom(factor)
           if (_this.staticMoving) {
             _zoomStart.copy(_zoomEnd)
+            _this.dispatchEvent(zoomEvent)
           } else {
             _zoomStart.y += (_zoomEnd.y - _zoomStart.y) * this.dynamicDampingFactor
           }
@@ -246,6 +248,7 @@ export default class TrackballControls extends THREE.EventDispatcher {
         } else {
           _this.zoomCamera()
         }
+        // _this.dispatchEvent(zoomEvent)
       }
 
       if (!_this.noPan) {

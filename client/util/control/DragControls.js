@@ -2,6 +2,7 @@
 
 import HatuNode from '../renderer/HatuNode'
 import * as THREE from 'three'
+
 export default class DragControls extends THREE.EventDispatcher {
   /**
    *

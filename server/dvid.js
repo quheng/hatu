@@ -1,11 +1,22 @@
 import fetch from 'isomorphic-fetch'
 import _ from 'lodash'
 
-export const dvidAddress = 'http://115.28.245.5:1111'
+if (_.isEmpty(process.env.DVID_HOST)) {
+  console.log('can not find dvid host in environment variable')
+  process.exit(-1)
+}
 
-async function deleteSwcInstanceWithWrongType (uuid) {
+if (_.isEmpty(process.env.DVID_PORT)) {
+  console.log('can not find dvid port in environment variable')
+  process.exit(-1)
+}
+
+export const dvidAddress = `${process.env.DVID_HOST}:${process.env.DVID_PORT}`
+export let uuid = ''
+
+async function deleteInstanceWithWrongType (uuid, dataname) {
   console.log('drop it and create new one')
-  const deleteInfo = await fetch(dvidAddress + '/api/repo/' + uuid + '/swc?imsure=true', {
+  const deleteInfo = await fetch(`${dvidAddress}/api/repo/${uuid}/${dataname}?imsure=true`, {
     method: 'DELETE'
   })
   if (deleteInfo.status !== 200) {
@@ -15,15 +26,15 @@ async function deleteSwcInstanceWithWrongType (uuid) {
   }
 }
 
-async function createSwcInstance (uuid) {
-  const create = await fetch(dvidAddress + '/api/repo/' + uuid + '/instance', {
+async function createInstance (uuid, typename, dataname) {
+  const create = await fetch(`${dvidAddress}/api/repo/${uuid}/instance`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      typename: 'keyvalue',
-      dataname: 'swc'
+      typename: typename,
+      dataname: dataname
     })
   })
   if (create.status !== 200) {
@@ -33,30 +44,75 @@ async function createSwcInstance (uuid) {
   }
 }
 
-async function setupKeyValueInstance (uuid) {
-  const response = await fetch(dvidAddress + '/api/repo/' + uuid + '/info', {
+/**
+ *
+ * @param uuid
+ * @param typename
+ * @param dataname
+ * @return {Promise.<boolean>} true for creating a new instance, false for not.
+ */
+async function setupInstance (uuid, typename, dataname) {
+  const response = await fetch(`${dvidAddress}/api/repo/${uuid}/info`, {
     method: 'GET'
   })
   const responseObj = JSON.parse(await response.text())
   const dataInstances = responseObj['DataInstances']
-  const swc = dataInstances['swc']
-  if (swc) {
-    const typeName = swc['Base']['TypeName']
-    if (typeName === 'keyvalue') {
-      console.log('already exist keyValue instance named swc')
-      return
+  const instance = dataInstances[dataname]
+  if (instance) {
+    const typeName = instance['Base']['TypeName']
+    if (typeName === typename) {
+      console.log(`already exist ${typeName} instance named ${dataname}`)
+      return false
     } else {
-      console.log('already exist swc instance but type is: ' + typeName)
-      await deleteSwcInstanceWithWrongType(uuid)
+      console.log(`already exist ${dataname} instance but type is: ${typeName}`)
+      await deleteInstanceWithWrongType(uuid, dataname)
     }
   }
-  console.log('create keyValue instance named swc')
-  await createSwcInstance(uuid)
+  console.log(`create ${typename} instance named ${dataname}`)
+  await createInstance(uuid, typename, dataname)
+  return true
+}
+
+async function setImageTileMetadata (uuid, dataname) {
+  const create = await fetch(`${dvidAddress}/api/node/${uuid}/${dataname}/metadata`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      'MinTileCoord': [0, 0, 0],
+      'MaxTileCoord': [5, 5, 4],
+      'Levels': {
+        '0': { 'Resolution': [10.0, 10.0, 10.0], 'TileSize': [1024, 1024, 1024] },
+        '1': { 'Resolution': [20.0, 20.0, 20.0], 'TileSize': [1024, 1024, 1024] },
+        '2': { 'Resolution': [40.0, 40.0, 40.0], 'TileSize': [1024, 1024, 1024] },
+        '3': { 'Resolution': [80.0, 80.0, 80.0], 'TileSize': [1024, 1024, 1024] }
+      }
+    }
+    )
+  })
+
+  if (create.status !== 200) {
+    const info = await create.text()
+    console.log('failed to set image tile metadata', info)
+    process.exit(-1)
+  }
+}
+
+async function setupKeyValueInstance (uuid) {
+  await setupInstance(uuid, 'keyvalue', 'swc')
+}
+
+async function setupImageTileInstance (uuid) {
+  if (await setupInstance(uuid, 'imagetile', 'slice15')) {
+    console.log('set image tile metadata')
+    await setImageTileMetadata(uuid, 'slice15')
+  }
 }
 
 async function getRepoUuid () {
   let uuid
-  const response = await fetch(dvidAddress + '/api/repos/info', {
+  const response = await fetch(`${dvidAddress}/api/repos/info`, {
     method: 'GET'
   })
   const responseObj = JSON.parse(await response.text())
@@ -66,7 +122,7 @@ async function getRepoUuid () {
     console.log('dvid has repo, use first one, uuid is ', uuid)
   } else {
     console.log('dvid has no repo, creating a new one')
-    const response = await fetch(dvidAddress + '/api/repos', {
+    const response = await fetch(`${dvidAddress}/api/repos`, {
       method: 'POST'
     })
     const responseObj = JSON.parse(await response.text())
@@ -78,8 +134,9 @@ async function getRepoUuid () {
 
 export async function setupDvid () {
   try {
-    const uuid = await getRepoUuid()
+    uuid = await getRepoUuid()
     await setupKeyValueInstance(uuid)
+    await setupImageTileInstance(uuid)
     return uuid
   } catch (err) {
     console.log('failed to connect dvid', err)

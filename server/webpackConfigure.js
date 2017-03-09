@@ -1,6 +1,6 @@
 export default function (app) {
   const webpack = require('webpack')
-  const config = require('../config/webpack.config.dev')
+  const config = require('../config/webpack.config')
   const webpackDevMiddleware = require('webpack-dev-middleware')
   const webpackHotMiddleware = require('webpack-hot-middleware')
   const options = {
