@@ -76,7 +76,32 @@ export default class NeuronRenderer extends THREE.Object3D {
       this.pushEdge(newEdge)
       this.removeEdge(edge)
     })
-    node.childrenNode.clear()
+  }
+
+  /**
+   * undo deletion of a node.
+   * @param {HatuNode} node
+   */
+  undoDeleteNode (node) {
+    let parent = node.parentNode
+
+    let childList = []
+    node.childrenNode.forEach((edge, child) => {
+      childList.push(child)
+    })
+
+    childList.forEach(child => {
+      let newEdge = parent.removeChild(child)
+      node.removeChild(child)
+      let oldEdge = child.setParent(node, this.generateCone)
+      this.removeEdge(newEdge)
+      this.pushEdge(oldEdge)
+    })
+
+    let parentEdge = node.setParent(parent, this.generateCone)
+
+    this.pushNode(node)
+    this.pushEdge(parentEdge)
   }
 
   /**
@@ -93,18 +118,29 @@ export default class NeuronRenderer extends THREE.Object3D {
     this.pushEdge(child.setParent(node, this.generateCone))
     this.pushNode(node)
     this.removeEdge(edge)
+    return node
+  }
+
+  undoAddNode (node) {
+    this.deleteNode(node)
   }
 
   /**
    *
    * @param {HatuNode} parent
    * @param {Vector3} position
+   *
    */
   addBranch (parent, position) {
     let node = this.defaultNode(this.nodes.length, parent, position)
     let edge = node.setParent(parent, this.generateCone)
     this.pushNode(node)
     this.pushEdge(edge)
+    return node
+  }
+
+  undoAddBranch (node) {
+    this.deleteNode(node)
   }
 
   /**

@@ -1,6 +1,10 @@
 import * as Dat from 'dat.gui'
 import OperationFactory from './operation/OperationFactory'
 
+function near (a, b) {
+  return Math.abs(a - b) < 0.00001
+}
+
 export default class HatuGUI {
 
   constructor (maxElevation, viewer) {
@@ -30,35 +34,46 @@ export default class HatuGUI {
 
     let nodeFolder = this.gui.addFolder('Node')
     nodeFolder.add(this, 'radius').min(0).step(0.0001).onChange(radius => {
-      if (this.selectedNode) {
-        this.selectedNode.radius = radius
-        this.selectedNode.adjust()
+      if (this.selectedNode && !near(this.selectedNode.radius, radius)) {
+        this.nodeOperation.mode = 'radius'
+        this.nodeOperation.radius = radius
+        this.viewer.operationProxy.conduct(this.nodeOperation)
       }
     })
+
     nodeFolder.add(this, 'x').min(0).step(0.0001).onChange(x => {
-      if (this.selectedNode) {
-        this.selectedNode.position.x = x
-        this.selectedNode.adjust()
+      if (this.selectedNode && !near(this.selectedNode.x, x)) {
+        this.nodeOperation.mode = 'x'
+        this.nodeOperation.x = x
+        this.viewer.operationProxy.conduct(this.nodeOperation)
       }
     })
+
     nodeFolder.add(this, 'y').min(0).step(0.0001).onChange(y => {
-      if (this.selectedNode) {
-        this.selectedNode.position.y = y
-        this.selectedNode.adjust()
+      if (this.selectedNode && !near(this.selectedNode.y, y)) {
+        this.nodeOperation.mode = 'y'
+        this.nodeOperation.y = y
+        this.viewer.operationProxy.conduct(this.nodeOperation)
       }
     })
+
     nodeFolder.add(this, 'z').min(0).step(0.0001).onChange(z => {
-      if (this.selectedNode) {
-        this.selectedNode.position.z = z
-        this.selectedNode.adjust()
+      if (this.selectedNode && !near(this.selectedNode.z, z)) {
+        this.nodeOperation.mode = 'z'
+        this.nodeOperation.z = z
+        this.viewer.operationProxy.conduct(this.nodeOperation)
       }
     })
     nodeFolder.open()
 
     this.gui.add(this, 'operation', ['AddNode', 'AddBranch', 'DeleteNode', 'Arrow'])
       .onChange(() => {
+        if (this.nodeOperation) {
+          this.nodeOperation.uninstall()
+        }
         this.setupOperation()
         this.nodeOperation.activate()
+        this.resetNode()
       })
 
     this.folders = [overviewFolder, nodeFolder]
@@ -77,6 +92,13 @@ export default class HatuGUI {
   }
 
   update () {
+    if (this.selectedNode) {
+      this.radius = this.selectedNode.radius
+      this.x = this.selectedNode.position.x
+      this.y = this.selectedNode.position.y
+      this.z = this.selectedNode.position.z
+    }
+
     this.folders.forEach(folder => {
       folder.__controllers.forEach(e => e.updateDisplay())
     })
@@ -84,15 +106,21 @@ export default class HatuGUI {
   }
 
   set node (value) {
+    if (this.selectedNode) {
+      this.selectedNode.material.emissive.setHex(this.selectedNode.currentHex)
+    }
     this.selectedNode = value
-    this.radius = value.radius
-    this.x = value.position.x
-    this.y = value.position.y
-    this.z = value.position.z
+    this.selectedNode.currentHex = value.material.emissive.getHex()
+    this.selectedNode.material.emissive.setHex(0xff0000)
+
     this.update()
   }
 
   resetNode () {
+    if (this.selectedNode) {
+      this.selectedNode.material.emissive.setHex(this.selectedNode.currentHex)
+    }
+
     this.selectedNode = null
     this.radius = 0
     this.x = 0

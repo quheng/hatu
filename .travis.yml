@@ -1,0 +1,23 @@
+sudo: required
+
+notifications:
+  email: false
+  
+services:
+  - docker
+
+language: node_js
+
+node_js:
+  - "node"
+  - "6"
+
+before_install:
+  - ./scripts/run_dependencies.sh
+
+install:
+  - npm install
+
+script:
+  - npm run test
+  - docker build -t quheng/hatu .
