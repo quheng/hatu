@@ -27,8 +27,9 @@ const SignUpForm = Form.create()(React.createClass({
                   confirm: ''
                 })
               })
-            }      
-          })}
+            }
+          })
+      }
     })
   },
   render () {

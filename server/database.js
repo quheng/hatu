@@ -26,12 +26,14 @@ if (_.isEmpty(process.env.PG_DATABASE)) {
   process.exit(-1)
 }
 
-export default new Sequelize(PG_DATABASE, PG_USER, PG_PASSWORD, {
-  host: PG_HOST,
+const database = new Sequelize(process.env.PG_DATABASE, process.env.PG_USER, process.env.PG_PASSWORD, {
+  host: process.env.PG_HOST,
   dialect: 'postgres',
   pool: {
     max: 5,
     min: 0,
     idle: 10000
-  },
-});
+  }
+})
+
+export default database

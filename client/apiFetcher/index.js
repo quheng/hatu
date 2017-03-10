@@ -1,6 +1,6 @@
 
 export default class ApiFetcher {
-  constructor(config) {
+  constructor (config) {
     this.config = config
   }
 

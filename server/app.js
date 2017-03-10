@@ -11,6 +11,16 @@ import { imageHandler } from './image'
 
 global.database = database
 
+database
+  .authenticate()
+  .then(function (err) {
+    console.log('Connection has been established successfully.')
+  })
+  .catch(function (err) {
+    console.log('Unable to connect to the database:', err)
+    process.exit(-1)
+  })
+
 const app = express()
 webpackConfigure(app)
 
