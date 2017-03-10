@@ -8,8 +8,8 @@ const FormItem = Form.Item
 
 const LoginForm = Form.create()(React.createClass({
   getInitialState: () => ({
-      loading: false
-    }),
+    loading: false
+  }),
   handleSubmit (e) {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
