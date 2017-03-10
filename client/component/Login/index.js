@@ -17,10 +17,12 @@ const LoginForm = Form.create()(React.createClass({
         this.setState({ loading: true })
         api.logIn(values)
           .then(res => {
+            this.setState({ loading: false })
             if (res.status === 200) {
-              this.setState({ loading: false })
               message.success('登录成功')
-              browserHistory.push('/')
+              setTimeout(() => {
+                browserHistory.push('/')
+              }, 300)
             } else {
               message.error('incorrect username or password')
               this.props.form.setFieldsValue({
