@@ -43,7 +43,6 @@ async function setupPassport (userDao, done) {
   passport.serializeUser((user, done) => {
     done(null, user)
   })
-
   passport.deserializeUser((user, done) => {
     done(null, user)
   })
