@@ -3,11 +3,12 @@ import path from 'path'
 import proxy from 'http-proxy-middleware'
 import bodyParser from 'body-parser'
 import passport from 'passport'
+import session from 'express-session'
 import webpackConfigure from './webpackConfigure'
 import database from './database'
+import userRouterGenerator from './users'
 
 import { dvidAddress, setupDvid } from './dvid'
-import userRouterGenerator from './users'
 import { imageHandler } from './image'
 
 database
@@ -25,10 +26,10 @@ webpackConfigure(app)
 
 app.use(require('cookie-parser')())
 app.use(require('body-parser').urlencoded({ extended: true }))
-app.use(require('express-session')({ secret: 'asdfasdfasdfqlfjqwklejfnjqqjnvjqli', resave: false, saveUninitialized: false }))
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+app.use(session({ secret: 'sdfasdfa' }));
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -62,6 +63,9 @@ const secretRoute = [
   '/assets'
 ]
 app.use(secretRoute, (req, res, next) => {
+  console.log("!!!!!!")
+  console.log(req.user)
+  console.log("!!!!!!")
   if (req.isAuthenticated()) {
     next()
   } else {

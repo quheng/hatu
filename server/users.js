@@ -19,16 +19,17 @@ async function setupPassport (userDao, done) {
   }
   passport.use(new LocalStrategy((username, password, done) => {
     userDao.findByPrimary(username)
-      .then(user => {
-        if (_.isEmpty(user)) {
+      .then(userInfo => {
+        if (_.isEmpty(userInfo)) {
           loginFail(done)
         }
-        const salt = user.get('salt')
-        const correctPassword = user.get('password')
+        const salt = userInfo.get('salt')
+        const correctPassword = userInfo.get('password')
         if (correctPassword === encrypt(password, salt)) {
-          done(null, {
-            username: user.get('username')
-          })
+          const user = {
+            username: userInfo.get('username')
+          }
+          done(null, user)
         } else {
           loginFail(done)
         }

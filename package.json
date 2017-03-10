@@ -28,6 +28,7 @@
     "antd": "^2.5.3",
     "dat.gui": "0.6.1",
     "express": "4.14.0",
+    "express-session": "file:node_modules/express-session",
     "http-proxy-middleware": "^0.17.3",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.2",

@@ -29,6 +29,7 @@ coverage
 build/
 lib/
 public/
+metastore_db/
 
 # Dependency directories
 node_modules/
