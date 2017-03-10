@@ -6,6 +6,15 @@ Welcome to the Hatu wiki! Hatu is a neuron image reconstruction and visualizatio
 `Hatu` depends on `divd` and `postgres`. If you has these dependencies, you just need to set config in `./scripts/default_environment` to make sure that `divd` can connect to these dependencies.
 If you do not has these dependencies, you can run `./scripts/run_dependencies.sh` to start up them in docker.
 
+# environment variable
+change to your postgres config
+```
+export postgres_endpoint=127.0.0.1  
+export postgres_host=5432  
+export postgres_user=user
+export postgres_user=password
+```
+
 # Run
 1. `yarn`
 2. `npm start`
