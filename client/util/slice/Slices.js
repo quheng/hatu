@@ -6,7 +6,6 @@ const emptyMaterial = new THREE.MeshBasicMaterial({
   color: 0x0
 })
 
-
 export default class Slices {
 
   constructor (width, height, elevation) {
@@ -40,7 +39,6 @@ export default class Slices {
   }
 
   update () {
-
     this.mesh.material = this.getMaterial()
   }
 
