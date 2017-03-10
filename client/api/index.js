@@ -8,8 +8,8 @@ class ApiFetcher {
     this.config = config
   }
 
-  async logIn ({ username, password }) {
-    return await fetch(`${this.config.server}/users/login`, {
+  logIn ({ username, password }) {
+    return fetch(`${this.config.server}/users/login`, {
       method: 'POST',
       headers: {
         'Content-Type': URLENCODED_FORM_DATA
@@ -17,12 +17,12 @@ class ApiFetcher {
       body: qs.stringify({
         username,
         password
-      }),
+      })
     })
   }
 
-  async signUp ({ username, password }) {
-    return await fetch(`${this.config.server}/users/signup`, {
+  signUp ({ username, password }) {
+    return fetch(`${this.config.server}/users/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': URLENCODED_FORM_DATA
@@ -30,12 +30,12 @@ class ApiFetcher {
       body: qs.stringify({
         username,
         password
-      }),
+      })
     })
   }
 
-  async logOut () {
-    return await fetch(`${this.config.server}/users/logout`, {
+  logOut () {
+    return fetch(`${this.config.server}/users/logout`, {
       method: 'POST',
       credentials: 'include'
     })

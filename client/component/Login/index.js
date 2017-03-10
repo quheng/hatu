@@ -1,16 +1,33 @@
 import React from 'react'
 import styles from './index.css'
+import api from '../../api'
 
-import { Link } from 'react-router'
-import { Form, Icon, Input, Button } from 'antd'
+import { Link, browserHistory } from 'react-router'
+import { Form, Icon, Input, Button, message } from 'antd'
 const FormItem = Form.Item
 
 const LoginForm = Form.create()(React.createClass({
+  getInitialState: () => ({
+      loading: false
+    }),
   handleSubmit (e) {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values)
+        this.setState({ loading: true })
+        api.logIn(values)
+          .then(res => {
+            if (res.status === 200) {
+              this.setState({ loading: false })
+              message.success('登录成功')
+              browserHistory.push('/')
+            } else {
+              message.error('incorrect username or password')
+              this.props.form.setFieldsValue({
+                password: ''
+              })
+            }
+          })
       }
     })
   },
@@ -19,7 +36,7 @@ const LoginForm = Form.create()(React.createClass({
     return (
       <Form onSubmit={this.handleSubmit} className={styles.loginForm}>
         <FormItem>
-          {getFieldDecorator('userName', {
+          {getFieldDecorator('username', {
             rules: [{ required: true, message: 'Please input your username!' }]
           })(
             <Input addonBefore={<Icon type='user' />} placeholder='Username' />
@@ -33,7 +50,11 @@ const LoginForm = Form.create()(React.createClass({
           )}
         </FormItem>
         <FormItem>
-          <Button type='primary' htmlType='submit' className={styles.loginFormButton}>
+          <Button
+            type='primary'
+            htmlType='submit'
+            loading={this.state.loading}
+            className={styles.loginFormButton}>
             Log in
           </Button>
           Or <Link to='/signup'>sign up now! </Link>

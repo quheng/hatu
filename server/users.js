@@ -1,42 +1,73 @@
 import passport from 'passport'
 import express from 'express'
 import Sequelize from 'sequelize'
+import crypto from 'crypto'
+import uuid from 'uuid'
+import _ from 'lodash'
 
 import { Strategy as LocalStrategy } from 'passport-local'
 
-passport.use(new LocalStrategy((username, password, done) => {
-  if (password === '!!!!') {
-    return done(null, 'success')
-  } else {
-    return done(null, false)
+const encrypt = (password, salt) => {
+  return crypto.createHmac('sha256', salt)
+    .update(password)
+    .digest('hex')
+}
+
+async function setupPassport (userDao, done) {
+  const loginFail = (done) => {
+    done(null, false, { error: 'Incorrect username or password.' })
   }
-})
-)
+  passport.use(new LocalStrategy((username, password, done) => {
+    userDao.findByPrimary(username)
+      .then(user => {
+        if (_.isEmpty(user)) {
+          loginFail(done)
+        }
+        const salt = user.get('salt')
+        const correctPassword = user.get('password')
+        if (correctPassword === encrypt(password, salt)) {
+          done(null, {
+            username: user.get('username')
+          })
+        } else {
+          loginFail(done)
+        }
+      })
+      .catch((e) => {
+        console.error(e)
+        loginFail(done)
+      })
+  }))
 
-passport.serializeUser((user, done) => {
-  done(null, user)
-})
+  passport.serializeUser((user, done) => {
+    done(null, user)
+  })
 
-passport.deserializeUser((user, done) => {
-  done(null, user)
-})
-
+  passport.deserializeUser((user, done) => {
+    done(null, user)
+  })
+}
 
 export default async function (database) {
   const userRouter = express.Router()
-  const User = database.define('user_info', {
+  const userDao = database.define('user_info', {
     username: {
       type: Sequelize.STRING,
       primaryKey: true
     },
     password: {
       type: Sequelize.STRING
+    },
+    salt: {
+      type: Sequelize.STRING
     }
   })
-  await User.sync()
+
+  await userDao.sync()
+  await setupPassport(userDao)
+
   userRouter.post('/login',
-    passport.authenticate('local'),
-    (req, res) => {
+    passport.authenticate('local'), (req, res) => {
       res.json({ messages: ['success'] })
     }
   )
@@ -49,14 +80,16 @@ export default async function (database) {
 
   userRouter.post('/signup', (req, res) => {
     const { username, password } = req.body
-    User.create({
-        username,
-        password
-      }).then(() => {
+    const salt = uuid.v4()
+    userDao.create({
+      username,
+      salt,
+      password: encrypt(password, salt)
+    }).then(() => {
       res.status(200)
         .json({ message: ['success'] })
     }).catch(() => {
-      res.status(401)
+      res.status(400)
         .json({ error: ['user already exist'] })
     })
   })

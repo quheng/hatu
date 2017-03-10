@@ -51,7 +51,8 @@
     "sequelize": "^3.30.2",
     "sharp": "0.17.1",
     "snazzy": "^5.0.0",
-    "three": "^0.82.1"
+    "three": "^0.82.1",
+    "uuid": "^3.0.1"
   },
   "standard": {
     "parser": "babel-eslint",

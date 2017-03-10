@@ -2,6 +2,7 @@ import express from 'express'
 import path from 'path'
 import proxy from 'http-proxy-middleware'
 import bodyParser from 'body-parser'
+import passport from 'passport'
 import webpackConfigure from './webpackConfigure'
 import database from './database'
 
@@ -28,6 +29,8 @@ app.use(require('express-session')({ secret: 'asdfasdfasdfqlfjqwklejfnjqqjnvjqli
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+app.use(passport.initialize())
+app.use(passport.session())
 
 function getProxyOption (uuid) {
   return proxy({

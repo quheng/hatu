@@ -7,6 +7,9 @@ import { Form, Icon, Input, Button, message } from 'antd'
 const FormItem = Form.Item
 
 const SignUpForm = Form.create()(React.createClass({
+  getInitialState: () => ({
+    loading: false
+  }),
   handleSubmit (e) {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
@@ -15,22 +18,22 @@ const SignUpForm = Form.create()(React.createClass({
           message.error('The two passwords don\'t match')
           return
         }
-        console.log(values)
+        this.setState({ loading: true })
         api.signUp(values)
           .then(res => {
-            console.log(res)
             this.setState({ loading: false })
             if (res.status === 200) {
               message.success('注册成功，请登录')
               setTimeout(() => {
-                browserHistory.push('/users/login')
-              }, 1000)
+                browserHistory.push('/login')
+              }, 500)
             } else {
-              res.json().then(({ messages }) => {
-                message.error(messages)
+              res.json().then(({ error }) => {
+                message.error(error)
                 this.props.form.setFieldsValue({
+                  username: '',
                   password: '',
-                  confirm: ''
+                  confirmPassword: ''
                 })
               })
             }
@@ -65,7 +68,12 @@ const SignUpForm = Form.create()(React.createClass({
         </FormItem>
         <Link to='/login'>already have account? </Link>
         <FormItem>
-          <Button type='primary' htmlType='submit' className={styles.signUpFormButton}>
+          <Button
+            type='primary'
+            htmlType='submit'
+            loading={this.state.loading}
+            className={styles.signUpFormButton
+            }>
             sign up
           </Button>
         </FormItem>
