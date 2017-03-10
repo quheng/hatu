@@ -108,7 +108,7 @@ const checkUserInfoTable = (client) => {
       console.log('error checking user info: ', err)
       process.exit(-1)
     }
-    if (result.rows[0].to_regclass === USER_INFO) {
+    if (result.rows[0].to_regclass.toUpperCase() === USER_INFO) {
       console.log('get user info table successfully')
     } else {
       console.log(`do not exist table called ${USER_INFO} in current database, create it`)
@@ -142,7 +142,7 @@ const createFileInfoTable = (client) => {
       console.log('error checking file info: ', err)
       process.exit(-1)
     }
-    if (result.rows[0].to_regclass === FILE_INFO) {
+    if (result.rows[0].to_regclass.toUpperCase() === FILE_INFO) {
       console.log('get file info table successfully')
     } else {
       console.log(`do not exist table called ${FILE_INFO} in current database, create it`)

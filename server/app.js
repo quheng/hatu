@@ -1,9 +1,9 @@
 import express from 'express'
 import path from 'path'
-import webpackConfigure from './webpackConfigure'
 import proxy from 'http-proxy-middleware'
+import bodyParser from 'body-parser'
+import webpackConfigure from './webpackConfigure'
 
-import passport from 'passport'
 import { dvidAddress, setupDvid } from './dvid'
 import { checkDatabase } from './database'
 import { userRouter } from './users'
@@ -17,8 +17,8 @@ app.use(require('cookie-parser')())
 app.use(require('body-parser').urlencoded({ extended: true }))
 app.use(require('express-session')({ secret: 'asdfasdfasdfqlfjqwklejfnjqqjnvjqli', resave: false, saveUninitialized: false }))
 
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 
 function getProxyOption (uuid) {
   return proxy({
@@ -29,23 +29,6 @@ function getProxyOption (uuid) {
     }
   })
 }
-//
-// app.post('/login',
-//   passport.authenticate('local'),
-//   function(req, res) {
-//     // If this function gets called, authentication was successful.
-//     // `req.user` contains the authenticated user.
-//     res.redirect('/users/' + req.user.username);
-//   });
-
-//
-// app.post('/login',
-//   passport.authenticate('local'),
-//   function(req, res) {
-//     // If this function gets called, authentication was successful.
-//     // `req.user` contains the authenticated user.
-//     res.redirect('/users/' + req.user.username);
-//   });
 
 async function setupRoute () {
   const uuid = await setupDvid()
@@ -59,5 +42,19 @@ async function setupRoute () {
 }
 
 setupRoute()
+
+const secretRoute = [
+  '/api',
+  '/image',
+  '/uuid',
+  '/assets'
+]
+app.use(secretRoute, (req, res, next) => {
+  if (req.isAuthenticated()) {
+    next()
+  } else {
+    res.status(401).json({ messages: ['please login'] })
+  }
+})
 
 export default app
