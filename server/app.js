@@ -3,14 +3,15 @@ import path from 'path'
 import proxy from 'http-proxy-middleware'
 import bodyParser from 'body-parser'
 import webpackConfigure from './webpackConfigure'
+import database from './database'
 
 import { dvidAddress, setupDvid } from './dvid'
-import { checkDatabase } from './database'
 import { userRouter } from './users'
 import { imageHandler } from './image'
 
-const app = express()
+global.database = database
 
+const app = express()
 webpackConfigure(app)
 
 app.use(require('cookie-parser')())
@@ -32,7 +33,6 @@ function getProxyOption (uuid) {
 
 async function setupRoute () {
   const uuid = await setupDvid()
-  checkDatabase()
   app.use('/users', userRouter)
   app.get('/image', imageHandler)
   app.use('/api', getProxyOption(uuid))
