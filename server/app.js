@@ -29,7 +29,11 @@ app.use(require('body-parser').urlencoded({ extended: true }))
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-app.use(session({ secret: 'sdfasdfa' }));
+app.use(session({
+  secret: 'bGlseXBhZGJvYXJkdHVyYmluZQ==',
+  resave: false,
+  saveUninitialized: true
+}));
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -63,9 +67,6 @@ const secretRoute = [
   '/assets'
 ]
 app.use(secretRoute, (req, res, next) => {
-  console.log("!!!!!!")
-  console.log(req.user)
-  console.log("!!!!!!")
   if (req.isAuthenticated()) {
     next()
   } else {

@@ -14,6 +14,7 @@ class ApiFetcher {
       headers: {
         'Content-Type': URLENCODED_FORM_DATA
       },
+      credentials: 'include',
       body: qs.stringify({
         username,
         password
@@ -27,6 +28,7 @@ class ApiFetcher {
       headers: {
         'Content-Type': URLENCODED_FORM_DATA
       },
+      credentials: 'include',
       body: qs.stringify({
         username,
         password
