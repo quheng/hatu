@@ -22,7 +22,7 @@ passport.deserializeUser((user, done) => {
 })
 
 
-export default (database) => {
+export default async function (database) {
   const userRouter = express.Router()
   const User = database.define('user_info', {
     username: {
@@ -33,6 +33,7 @@ export default (database) => {
       type: Sequelize.STRING
     }
   })
+  await User.sync()
   userRouter.post('/login',
     passport.authenticate('local'),
     (req, res) => {
@@ -48,14 +49,15 @@ export default (database) => {
 
   userRouter.post('/signup', (req, res) => {
     const { username, password } = req.body
-    User.sync().then(function () {
-      // Table created
-      return User.create({
+    User.create({
         username,
         password
-      })
-    }).then(res => {
-      console.log(res)
+      }).then(() => {
+      res.status(200)
+        .json({ message: ['success'] })
+    }).catch(() => {
+      res.status(401)
+        .json({ error: ['user already exist'] })
     })
   })
   return userRouter

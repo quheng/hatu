@@ -41,7 +41,8 @@ function getProxyOption (uuid) {
 
 async function setupRoute () {
   const uuid = await setupDvid()
-  app.use('/users', userRouterGenerator(database))
+  const userRoute = await userRouterGenerator(database)
+  app.use('/users', userRoute)
   app.get('/image', imageHandler)
   app.use('/api', getProxyOption(uuid))
   app.use('/uuid', (req, res) => res.send(uuid))
