@@ -8,7 +8,6 @@ import { dvidAddress, setupDvid } from './dvid'
 import { checkDatabase } from './database'
 import { userRouter } from './users'
 import { imageHandler } from './image'
-import { insert, select } from './dbTest'
 
 const app = express()
 
@@ -50,15 +49,9 @@ function getProxyOption (uuid) {
 
 async function setupRoute () {
   const uuid = await setupDvid()
-<<<<<<< HEAD
   checkDatabase()
   app.use('/users', userRouter)
-=======
-  console.log('pg test: select from hangzhou')
-  insert('hangzhou', '1', '13', '7.2')
-  console.log(await select('hangzhou'))
   app.get('/image', imageHandler)
->>>>>>> 9f7cb0a2540b3434f7abb058648f07e1b1905a52
   app.use('/api', getProxyOption(uuid))
   app.use('/uuid', (req, res) => res.send(uuid))
   app.use('/assets/static', express.static(path.join(__dirname, '..', 'public')))
