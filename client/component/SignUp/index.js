@@ -19,6 +19,7 @@ const SignUpForm = Form.create()(React.createClass({
           return
         }
         this.setState({ loading: true })
+
         api.signUp(values)
           .then(res => {
             message.success('注册成功，请登录')
