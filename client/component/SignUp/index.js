@@ -1,8 +1,8 @@
 import React from 'react'
 import styles from './index.css'
 
-import { Link } from 'react-router'
-import { Form, Icon, Input, Button } from 'antd'
+import { Link, browserHistory } from 'react-router'
+import { Form, Icon, Input, Button, message } from 'antd'
 const FormItem = Form.Item
 
 const SignUpForm = Form.create()(React.createClass({
@@ -10,18 +10,18 @@ const SignUpForm = Form.create()(React.createClass({
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        apiFetcher
+        global.apiFetcher
           .signUp(values)
           .then(res => {
             this.setState({ loading: false })
             if (res.status === 200) {
-              showMessages(['注册成功，请登录'], 'success')
+              message.success('注册成功，请登录')
               setTimeout(() => {
                 browserHistory.push('/users/login')
               }, 1000)
             } else {
               res.json().then(({ messages }) => {
-                showMessages(messages, 'error')
+                message.error(messages)
                 this.props.form.setFieldsValue({
                   password: '',
                   confirm: ''

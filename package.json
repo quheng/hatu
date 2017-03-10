@@ -29,6 +29,7 @@
     "dat.gui": "0.6.1",
     "express": "4.14.0",
     "http-proxy-middleware": "^0.17.3",
+    "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.2",
     "moment": "^2.17.1",
     "node-cache": "^4.1.1",

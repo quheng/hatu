@@ -1,10 +1,11 @@
 import passport from 'passport'
 import express from 'express'
+import Sequelize from 'sequelize'
 
 import { Strategy as LocalStrategy } from 'passport-local'
 
 passport.use(new LocalStrategy((username, password, done) => {
-  if (password === "!!!!") {
+  if (password === '!!!!') {
     return done(null, 'success')
   } else {
     return done(null, false)
@@ -18,6 +19,15 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((user, done) => {
   done(null, user)
+})
+
+const User = global.sequelize.define('user_info', {
+  username: {
+    type: Sequelize.STRING
+  },
+  password: {
+    type: Sequelize.STRING
+  }
 })
 
 export const userRouter = express.Router()
@@ -35,3 +45,15 @@ userRouter.post('/logout', (req, res) => {
     .json({ messages: ['success'] })
 })
 
+userRouter.post('/signup', (req, res) => {
+  const { username, password } = req.body
+  User.sync().then(function () {
+    // Table created
+    return User.create({
+      username,
+      password
+    })
+  }).then(res => {
+    console.log(res)
+  })
+})
