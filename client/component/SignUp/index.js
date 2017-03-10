@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './index.css'
+import api from '../../api'
 
 import { Link, browserHistory } from 'react-router'
 import { Form, Icon, Input, Button, message } from 'antd'
@@ -10,9 +11,14 @@ const SignUpForm = Form.create()(React.createClass({
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        global.apiFetcher
-          .signUp(values)
+        if (values.password !== values.confirmPassword) {
+          message.error('The two passwords don\'t match')
+          return
+        }
+        console.log(values)
+        api.signUp(values)
           .then(res => {
+            console.log(res)
             this.setState({ loading: false })
             if (res.status === 200) {
               message.success('注册成功，请登录')
@@ -37,7 +43,7 @@ const SignUpForm = Form.create()(React.createClass({
     return (
       <Form onSubmit={this.handleSubmit} className={styles.signUpForm}>
         <FormItem>
-          {getFieldDecorator('userName', {
+          {getFieldDecorator('username', {
             rules: [{ required: true, message: 'Please input your username!' }]
           })(
             <Input addonBefore={<Icon type='user' />} placeholder='Username' />

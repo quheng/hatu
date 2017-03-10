@@ -6,10 +6,8 @@ import webpackConfigure from './webpackConfigure'
 import database from './database'
 
 import { dvidAddress, setupDvid } from './dvid'
-import { userRouter } from './users'
+import userRouterGenerator from './users'
 import { imageHandler } from './image'
-
-global.database = database
 
 database
   .authenticate()
@@ -43,7 +41,7 @@ function getProxyOption (uuid) {
 
 async function setupRoute () {
   const uuid = await setupDvid()
-  app.use('/users', userRouter)
+  app.use('/users', userRouterGenerator(database))
   app.get('/image', imageHandler)
   app.use('/api', getProxyOption(uuid))
   app.use('/uuid', (req, res) => res.send(uuid))

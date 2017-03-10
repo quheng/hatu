@@ -4,7 +4,6 @@ import createSagaMiddleware from 'redux-saga'
 import rootRoutes from './rootRoutes'
 import rootReducer from './rootReducer'
 import rootSaga from './rootSaga'
-import apiFetcher from './apiFetcher'
 
 import {
   createStore,
@@ -15,8 +14,6 @@ import {
   browserHistory
 } from 'react-router'
 import { Provider } from 'react-redux'
-
-global.apiFetcher = apiFetcher
 
 const saga = createSagaMiddleware()
 

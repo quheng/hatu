@@ -21,39 +21,42 @@ passport.deserializeUser((user, done) => {
   done(null, user)
 })
 
-const User = global.sequelize.define('user_info', {
-  username: {
-    type: Sequelize.STRING
-  },
-  password: {
-    type: Sequelize.STRING
-  }
-})
 
-export const userRouter = express.Router()
-
-userRouter.post('/login',
+export default (database) => {
+  const userRouter = express.Router()
+  const User = database.define('user_info', {
+    username: {
+      type: Sequelize.STRING,
+      primaryKey: true
+    },
+    password: {
+      type: Sequelize.STRING
+    }
+  })
+  userRouter.post('/login',
     passport.authenticate('local'),
     (req, res) => {
       res.json({ messages: ['success'] })
     }
   )
 
-userRouter.post('/logout', (req, res) => {
-  req.logout()
-  res.status(200)
-    .json({ messages: ['success'] })
-})
-
-userRouter.post('/signup', (req, res) => {
-  const { username, password } = req.body
-  User.sync().then(function () {
-    // Table created
-    return User.create({
-      username,
-      password
-    })
-  }).then(res => {
-    console.log(res)
+  userRouter.post('/logout', (req, res) => {
+    req.logout()
+    res.status(200)
+      .json({ messages: ['success'] })
   })
-})
+
+  userRouter.post('/signup', (req, res) => {
+    const { username, password } = req.body
+    User.sync().then(function () {
+      // Table created
+      return User.create({
+        username,
+        password
+      })
+    }).then(res => {
+      console.log(res)
+    })
+  })
+  return userRouter
+}

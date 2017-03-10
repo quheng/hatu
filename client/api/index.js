@@ -1,9 +1,9 @@
 import fetch from 'isomorphic-fetch'
 import qs from 'querystring'
 
-export const URLENCODED_FORMDATA = 'application/x-www-form-urlencoded'
+const URLENCODED_FORM_DATA = 'application/x-www-form-urlencoded'
 
-export default class ApiFetcher {
+class ApiFetcher {
   constructor (config) {
     this.config = config
   }
@@ -12,30 +12,25 @@ export default class ApiFetcher {
     return await fetch(`${this.config.server}/users/login`, {
       method: 'POST',
       headers: {
-        'Content-Type': URLENCODED_FORMDATA
+        'Content-Type': URLENCODED_FORM_DATA
       },
       body: qs.stringify({
         username,
         password
       }),
-      credentials: 'include'
     })
   }
 
-  async signUp ({ username, password, confirm, email, phone }) {
+  async signUp ({ username, password }) {
     return await fetch(`${this.config.server}/users/signup`, {
       method: 'POST',
       headers: {
-        'Content-Type': URLENCODED_FORMDATA
+        'Content-Type': URLENCODED_FORM_DATA
       },
       body: qs.stringify({
         username,
-        password,
-        confirm,
-        email,
-        phone
+        password
       }),
-      credentials: 'include'
     })
   }
 
@@ -46,3 +41,6 @@ export default class ApiFetcher {
     })
   }
 }
+
+// todo  get server address
+export default new ApiFetcher({server: 'http://localhost:2222'})
