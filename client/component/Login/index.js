@@ -15,7 +15,6 @@ const LoginForm = Form.create()(React.createClass({
     })
   },
   render () {
-    console.log(this.props)
     const { getFieldDecorator } = this.props.form
     return (
       <Form onSubmit={this.handleSubmit} className={styles.loginForm}>
@@ -37,7 +36,7 @@ const LoginForm = Form.create()(React.createClass({
           <Button type='primary' htmlType='submit' className={styles.loginFormButton}>
             Log in
           </Button>
-          Or <Link to='/register'>register now! </Link>
+          Or <Link to='/signup'>sign up now! </Link>
         </FormItem>
       </Form>
     )
