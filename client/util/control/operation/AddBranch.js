@@ -22,12 +22,12 @@ export default class AddBranch extends NodeOperation {
   }
 
   conduct () {
-    this.target = this.gui.viewer.neuronRenderer.addBranch(this.gui.selectedNode, this.position)
+    this.target = this.gui.viewer.swc.addBranch(this.gui.selectedNode, this.position)
     this.gui.setupOperation()
   }
 
   cancel () {
-    this.gui.viewer.neuronRenderer.undoAddBranch(this.target)
+    this.gui.viewer.swc.undoAddBranch(this.target)
   }
 
   deactivate () {

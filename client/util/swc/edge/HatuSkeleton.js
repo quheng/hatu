@@ -1,9 +1,16 @@
 import * as THREE from 'three'
-import { threeColors } from './material/Material'
+import { threeColors } from '../../renderer/material/Material'
 
 export default class HatuSkeleton extends THREE.Line {
 
-  constructor (node, nodeParent) {
+
+  /**
+   *
+   * @param {HatuNode} node
+   * @param {HatuNode} nodeParent
+   * @param {HatuEdge} edge
+   */
+  constructor (node, nodeParent, edge) {
     let material = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors })
     let geometry = new THREE.Geometry()
     super(geometry, material)
@@ -12,6 +19,7 @@ export default class HatuSkeleton extends THREE.Line {
 
     this.node = node
     this.nodeParent = nodeParent
+    this.edge = edge
     this.adjust()
   }
 

@@ -8,20 +8,20 @@ export default class AddNode extends NodeOperation {
 
   /**
    *
-   * @param {HatuEdge} edge
+   * @param {HatuCylinder} edge
    */
   dragStart (edge) {
-    this.edge = edge
+    this.edge = edge.edge
     this.gui.viewer.operationProxy.conduct(this)
   }
 
   conduct () {
-    this.node = this.gui.viewer.neuronRenderer.addNode(this.edge)
+    this.node = this.gui.viewer.swc.addNode(this.edge)
     this.gui.setupOperation()
   }
 
   cancel () {
-    this.gui.viewer.neuronRenderer.undoAddNode(this.node)
+    this.gui.viewer.swc.undoAddNode(this.node)
   }
 
 }

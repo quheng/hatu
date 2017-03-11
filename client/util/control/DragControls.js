@@ -1,6 +1,6 @@
 'use strict'
 
-import HatuNode from '../renderer/HatuNode'
+import HatuNode from '../swc/HatuNode'
 import * as THREE from 'three'
 
 export default class DragControls extends THREE.EventDispatcher {
@@ -15,7 +15,7 @@ export default class DragControls extends THREE.EventDispatcher {
     this.mode = 'node'
     let _plane = new THREE.Plane()
     // TODO: We need a sample node to initiate viewport plane and the center node 1 is chosen. However, the No.1 node might not exist. Be careful.
-    _plane.setFromNormalAndCoplanarPoint(_viewer.camera.getWorldDirection(_plane.normal), _viewer.neuronRenderer.nodes[_viewer.centerNode].position)
+    _plane.setFromNormalAndCoplanarPoint(_viewer.camera.getWorldDirection(_plane.normal), _viewer.centerNode.position)
 
     let _raycaster = new THREE.Raycaster()
 
@@ -115,9 +115,9 @@ export default class DragControls extends THREE.EventDispatcher {
     function intersectObjects () {
       switch (scope.mode) {
         case 'node' :
-          return _raycaster.intersectObjects(_viewer.neuronRenderer.getNodes())
+          return _raycaster.intersectObjects(_viewer.swc.getNodes())
         case 'edge':
-          return _raycaster.intersectObjects(_viewer.neuronRenderer.getEdges())
+          return _raycaster.intersectObjects(_viewer.swc.getEdges())
       }
     }
 

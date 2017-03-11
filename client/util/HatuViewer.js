@@ -1,43 +1,39 @@
 'use strict'
 const THREE = require('three')
 
-import TrackballControls from './control/TrackballControls'
-import OperationProxy from './control/OperationProxy'
-import KeyControls from './control/KeyControls'
-import RendererFactory from './renderer/RendererFactory'
-import HatuOrthographicCamera from './control/HatuOrthographicCamera'
-import HatuGUI from './control/HatuGUI'
-import DragControls from './control/DragControls'
+import TrackballControls from "./control/TrackballControls"
+import OperationProxy from "./control/OperationProxy"
+import KeyControls from "./control/KeyControls"
+import HatuOrthographicCamera from "./control/HatuOrthographicCamera"
+import HatuGUI from "./control/HatuGUI"
+import DragControls from "./control/DragControls"
 
 export default class HatuViewer {
 
-  constructor (container, swc, slices, showCones) {
+  /**
+   *
+   * @param container
+   * @param {Swc} swc
+   * @param {Slices} slices
+   */
+  constructor (container, swc, slices) {
     this.container = container
     this.swc = swc
 
-    // html element that will recieve webgl canvas
     this.HEIGHT = container.offsetHeight
-    // width of canvas
     this.WIDTH = container.offsetWidth
     this.LEFT = container.offsetLeft
     this.TOP = container.offsetTop
-    // which node to center neuron on (starts at 1), -1 to center at center of bounding box
-    this.centerNode = swc.centerNode
-
-    // show cones between cylindars for particle and sphere mode
-    this.showCones = showCones
 
     // initialize bounding box
-    this.boundingBox = this.swc.calculateBoundingBox()
-    this.center = this.calculateCenterNode()
+    this.boundingBox = this.swc.boundingBox
+    this.centerNode = this.swc.centerNode
+    this.center = this.swc.center
     this.slices = slices
     this.slices.viewer = this
 
     // setup render
     this.renderer = this.setUpRenderer()
-    let gl = this.renderer.context
-    // Activate depth extension, if available
-    gl.getExtension('EXT_frag_depth')
 
     // create a scene
     this.scene = new THREE.Scene()
@@ -73,10 +69,7 @@ export default class HatuViewer {
 
     this.gui = new HatuGUI(slices.maxElevation, this)
 
-    this.rendererFactory = new RendererFactory(this)
-    this.neuronRenderer = this.rendererFactory.create(this.gui.neuronMode)
-
-    this.scene.add(this.neuronRenderer)
+    this.scene.add(this.swc)
 
     // Lights
     // doesn't actually work with any of the current shaders
@@ -86,25 +79,25 @@ export default class HatuViewer {
 
     let scope = this
     this.dragControls = new DragControls(this, this.renderer.domElement)
-    this.dragControls.addEventListener('dragstart', function (event) {
+    this.dragControls.addEventListener('dragstart', event => {
       scope.controls.enabled = false
       scope.gui.nodeOperation.dragStart(event.object)
     })
-    this.dragControls.addEventListener('drag', function (event) {
+    this.dragControls.addEventListener('drag', event => {
       scope.controls.enabled = true
       scope.gui.nodeOperation.drag(event.object, event.position)
     })
-    this.dragControls.addEventListener('dragend', function (event) {
+    this.dragControls.addEventListener('dragend', event => {
       scope.controls.enabled = true
       scope.gui.nodeOperation.dragEnd(event.object)
     })
-    this.dragControls.addEventListener('hoveron', function (event) {
+    this.dragControls.addEventListener('hoveron', event => {
       scope.gui.nodeOperation.hoverOn(event.object)
     })
-    this.dragControls.addEventListener('hoveroff', function (event) {
+    this.dragControls.addEventListener('hoveroff', event => {
       scope.gui.nodeOperation.hoverOff(event.object)
     })
-    this.dragControls.addEventListener('clicknothing', function (event) {
+    this.dragControls.addEventListener('clicknothing', event => {
       scope.gui.nodeOperation.clickNothing(event.position)
     })
 
@@ -135,16 +128,12 @@ export default class HatuViewer {
     })
 
     this.gui.onNeuronModeChange(mode => {
-      this.swc = this.exportSwc()
-      this.scene.remove(this.neuronRenderer)
-      this.neuronRenderer = this.rendererFactory.create(mode)
-      this.dragControls.objects = this.neuronRenderer.children
-      this.scene.add(this.neuronRenderer)
+      this.swc.edgeMode(mode)
     })
   }
 
   exportSwc () {
-    return this.neuronRenderer.exportAsSwc()
+
   }
 
   setPerspectiveCamera () {
@@ -160,14 +149,8 @@ export default class HatuViewer {
     this.controls.object = this.camera
   }
 
-  calculateCenterNode () {
-    // neuron centers around 1st node by default
-    let center
-    center = [(this.boundingBox.xmax + this.boundingBox.xmin) / 2, (this.boundingBox.ymax + this.boundingBox.ymin) / 2, (this.boundingBox.zmax + this.boundingBox.zmin) / 2]
-    return center
-  }
 
-  // calculates camera position based on boudning box
+  // calculates camera position based on bounding box
   calculateCameraPosition () {
     return this.boundingBox.zmax * 2 + 1000
   }
@@ -196,7 +179,6 @@ export default class HatuViewer {
     this.controls.update()
     let p = this.camera.position
     this.light.position.set(p.x, p.y, p.z)
-    // do the render
     this.render()
   }
 

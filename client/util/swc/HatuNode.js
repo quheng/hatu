@@ -1,5 +1,6 @@
-import { threeMaterials } from './material/Material'
+import { threeMaterials } from '../renderer/material/Material'
 import * as THREE from 'three'
+import HatuEdge from "./edge/HatuEdge"
 
 export default class HatuNode extends THREE.Mesh {
 
@@ -11,9 +12,7 @@ export default class HatuNode extends THREE.Mesh {
     this.index = node.index
     this.type = node.type
     this.father = node.parent
-    this.position.x = node.x
-    this.position.y = node.y
-    this.position.z = node.z
+    this.position.set(node.x, node.y, node.z)
   }
 
   get isRoot () {
@@ -25,15 +24,22 @@ export default class HatuNode extends THREE.Mesh {
   }
 
   /**
+   *
+   * @param {HatuNode} node
+   */
+  distanceTo (node) {
+    return this.position.distanceTo(node.position)
+  }
+
+  /**
    *Set parent and generate a edge accordingly. This generated edge would be returned
    * @param {HatuNode} parent
-   * @param {function(node:HatuNode, parent:HatuNode):HatuEdge} edgeGenerator
    * @returns {HatuEdge}
    */
-  setParent (parent, edgeGenerator) {
+  setParent (parent) {
     this.parentNode = parent
     this.father = parent.index
-    this.parentEdge = edgeGenerator(this, this.parentNode)
+    this.parentEdge = new HatuEdge(this, this.parentNode)
     parent.addChild(this, this.parentEdge)
     return this.parentEdge
   }

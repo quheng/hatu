@@ -15,12 +15,8 @@ export default class PolicyManager {
     let sqr = n => n * n
 
     setInterval(() => {
-      console.log('check')
       if (Date.now() - scope.updateTime > 1000) {
-        console.log(Date.now() - scope.updateTime)
-        console.log('enter')
         if ((sqr(scope.slice.left - scope.left) + sqr(scope.slice.right - scope.right) + sqr(scope.slice.top - scope.top) + sqr(scope.slice.bottom - scope.bottom) > 1) || scope.slice.updateElevation) {
-          console.log('update')
           scope.left = scope.slice.left
           scope.right = scope.slice.right
           scope.top = scope.slice.top

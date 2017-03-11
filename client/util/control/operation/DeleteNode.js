@@ -16,12 +16,12 @@ export default class DeleteNode extends NodeOperation {
   }
 
   conduct () {
-    this.gui.viewer.neuronRenderer.deleteNode(this.node)
+    this.gui.viewer.swc.deleteNode(this.node)
     this.gui.setupOperation()
   }
 
   cancel () {
-    this.gui.viewer.neuronRenderer.undoDeleteNode(this.node)
+    this.gui.viewer.swc.undoDeleteNode(this.node)
   }
 
 }

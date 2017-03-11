@@ -1,14 +1,15 @@
-import { threeMaterials } from './material/Material'
+import { threeMaterials } from '../../renderer/material/Material'
 import * as THREE from 'three'
 
-export default class HatuEdge extends THREE.Mesh {
+export default class HatuCylinder extends THREE.Mesh {
 
   /**
    *
    * @param {HatuNode} node
    * @param {HatuNode} nodeParent
+   * @param {HatuEdge} edge
    */
-  constructor (node, nodeParent) {
+  constructor (node, nodeParent, edge) {
     let coneMaterial = threeMaterials[nodeParent.type]
     let nodeVec = new THREE.Vector3(node.position.x, node.position.y, node.position.z)
     let nodeParentVec = new THREE.Vector3(nodeParent.position.x, nodeParent.position.y, nodeParent.position.z)
@@ -21,6 +22,7 @@ export default class HatuEdge extends THREE.Mesh {
 
     this.node = node
     this.nodeParent = nodeParent
+    this.edge = edge
     this.adjust(node, nodeParent)
   }
 

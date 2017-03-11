@@ -24,7 +24,6 @@ export default class Arrow extends NodeOperation {
    */
   drag (node, position) {
     node.position.copy(position)
-
     node.adjust()
     this.gui.node = node
   }

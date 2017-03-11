@@ -29,7 +29,7 @@ export default class HatuGUI {
 
     this.elevationController = overviewFolder.add(this, 'elevation', 0, maxElevation).step(1)
     this.visualModeController = overviewFolder.add(this, 'visualMode', ['slices', 'whole'])
-    this.neuronModeController = overviewFolder.add(this, 'neuronMode', ['skeleton', 'sphere'])
+    this.neuronModeController = overviewFolder.add(this, 'neuronMode', ['skeleton', 'cylinder'])
     overviewFolder.open()
 
     let nodeFolder = this.gui.addFolder('Node')

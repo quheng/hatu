@@ -1,10 +1,11 @@
 import React from 'react'
 import styles from './index.css'
 import HatuViewer from '../../util/HatuViewer'
-import Swc from '../../util/Swc'
+
 import Slices from '../../util/slice/Slices'
 
 import { connect } from 'react-redux'
+import Swc from "../../util/swc/Swc"
 
 class ThreeView extends React.Component {
 
@@ -16,10 +17,11 @@ class ThreeView extends React.Component {
     try {
       let swc = new Swc(swcFile)
       let slices = new Slices(1024, 1024, 97)
-      let hatuViewer = new HatuViewer(this.refs.container, swc, slices, true)
+      let hatuViewer = new HatuViewer(this.refs.container, swc, slices)
       hatuViewer.setOrthographicCamera()
       hatuViewer.animate()
     } catch (err) {
+      console.log(err)
     }
   }
 }

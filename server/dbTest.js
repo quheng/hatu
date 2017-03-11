@@ -26,7 +26,6 @@ if (_.isEmpty(process.env.PG_DATABASE)) {
   process.exit(-1)
 }
 
-
 const config = {
   user: process.env.PG_USER,
   database: process.env.PG_DATABASE,
