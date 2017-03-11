@@ -40,7 +40,6 @@ app.use(passport.session())
 function getProxyOption (uuid) {
   return proxy({
     target: dvidAddress,
-    changeOrigin: true,
     pathRewrite: {
       '^/api': '/api/node/' + uuid + '/'
     }
@@ -60,13 +59,13 @@ async function setupRoute () {
 
 setupRoute()
 
-const secretRoute = [
+const secretRoutes = [
   '/api',
   '/image',
   '/uuid',
   '/assets'
 ]
-app.use(secretRoute, (req, res, next) => {
+app.use(secretRoutes, (req, res, next) => {
   if (req.isAuthenticated()) {
     next()
   } else {
@@ -74,4 +73,14 @@ app.use(secretRoute, (req, res, next) => {
   }
 })
 
+const redirectRoutes = [
+  '/'
+]
+app.get(redirectRoutes, (req, res, next) => {
+  if (req.isAuthenticated()) {
+    next()
+  } else {
+    res.status(401).redirect('/login')
+  }
+})
 export default app

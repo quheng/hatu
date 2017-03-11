@@ -7,7 +7,8 @@ import { takeEvery } from 'redux-saga'
 
 function * querySwcList () {
   const response = yield fetch(apiAddress + '/swc/keys', {
-    method: 'GET'
+    method: 'GET',
+    credentials: 'include'
   })
   return yield response.text()
 }
@@ -15,6 +16,7 @@ function * querySwcList () {
 function * loadSwcListSaga (action) {
   try {
     const queryRes = yield call(querySwcList)
+    console.log(queryRes)
     yield put(actions.loadSwcListSuccess({ swcList: JSON.parse(queryRes) }))
   } catch (error) {
     yield put(actions.loadSwcListFail(error))
@@ -23,7 +25,8 @@ function * loadSwcListSaga (action) {
 
 function * querySwcFile (key) {
   const response = yield fetch(apiAddress + '/swc/key/' + key, {
-    method: 'GET'
+    method: 'GET',
+    credentials: 'include'
   })
   return yield response.text()
 }
@@ -41,7 +44,8 @@ function * loadSwcFileSaga (action) {
 function * writeSwcFile (key, content) {
   const response = yield fetch(apiAddress + '/swc/key/' + key, {
     method: 'POST',
-    body: content
+    body: content,
+    credentials: 'include'
   })
   return response.status
 }
