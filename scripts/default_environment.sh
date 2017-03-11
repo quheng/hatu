@@ -1,4 +1,4 @@
-# postgrs database config
+# postgres database config
 export PG_HOST='localhost'
 export PG_PORT='1024'
 export PG_USER='hatu'
