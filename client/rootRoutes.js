@@ -1,6 +1,6 @@
 import Home from './component/Home'
 import Login from './component/Login'
-import Register from './component/Register'
+import SignUp from './component/SignUp'
 
 export default [
   {
@@ -10,7 +10,7 @@ export default [
     path: '/login',
     component: Login
   }, {
-    path: '/register',
-    component: Register
+    path: '/signup',
+    component: SignUp
   }
 ]
