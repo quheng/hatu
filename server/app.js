@@ -1,56 +1,55 @@
 import express from 'express'
 import path from 'path'
-import webpackConfigure from './webpackConfigure'
 import proxy from 'http-proxy-middleware'
-
+import bodyParser from 'body-parser'
 import passport from 'passport'
+import session from 'express-session'
+import webpackConfigure from './webpackConfigure'
+import database from './database'
+import userRouterGenerator from './users'
+
 import { dvidAddress, setupDvid } from './dvid'
-import { checkDatabase } from './database'
-import { userRouter } from './users'
 import { imageHandler } from './image'
 
-const app = express()
+database
+  .authenticate()
+  .then(function () {
+    console.log('Connection has been established successfully.')
+  })
+  .catch(function (err) {
+    console.log('Unable to connect to the database:', err)
+    process.exit(-1)
+  })
 
+const app = express()
 webpackConfigure(app)
 
 app.use(require('cookie-parser')())
 app.use(require('body-parser').urlencoded({ extended: true }))
-app.use(require('express-session')({ secret: 'asdfasdfasdfqlfjqwklejfnjqqjnvjqli', resave: false, saveUninitialized: false }))
 
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+app.use(session({
+  secret: 'bGlseXBhZGJvYXJkdHVyYmluZQ==',
+  resave: false,
+  saveUninitialized: true
+}))
 app.use(passport.initialize())
 app.use(passport.session())
 
 function getProxyOption (uuid) {
   return proxy({
     target: dvidAddress,
-    changeOrigin: true,
     pathRewrite: {
       '^/api': '/api/node/' + uuid + '/'
     }
   })
 }
-//
-// app.post('/login',
-//   passport.authenticate('local'),
-//   function(req, res) {
-//     // If this function gets called, authentication was successful.
-//     // `req.user` contains the authenticated user.
-//     res.redirect('/users/' + req.user.username);
-//   });
-
-//
-// app.post('/login',
-//   passport.authenticate('local'),
-//   function(req, res) {
-//     // If this function gets called, authentication was successful.
-//     // `req.user` contains the authenticated user.
-//     res.redirect('/users/' + req.user.username);
-//   });
 
 async function setupRoute () {
   const uuid = await setupDvid()
-  checkDatabase()
-  app.use('/users', userRouter)
+  const userRoute = await userRouterGenerator(database)
+  app.use('/users', userRoute)
   app.get('/image', imageHandler)
   app.use('/api', getProxyOption(uuid))
   app.use('/uuid', (req, res) => res.send(uuid))
@@ -60,4 +59,28 @@ async function setupRoute () {
 
 setupRoute()
 
+const secretRoutes = [
+  '/api',
+  '/image',
+  '/uuid',
+  '/assets'
+]
+app.use(secretRoutes, (req, res, next) => {
+  if (req.isAuthenticated()) {
+    next()
+  } else {
+    res.status(401).json({ messages: ['please login'] })
+  }
+})
+
+const redirectRoutes = [
+  '/'
+]
+app.get(redirectRoutes, (req, res, next) => {
+  if (req.isAuthenticated()) {
+    next()
+  } else {
+    res.status(401).redirect('/login')
+  }
+})
 export default app

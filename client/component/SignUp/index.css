@@ -1,4 +1,4 @@
-:local .register {
+:local .signUp {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -7,11 +7,11 @@
     height: 100vh;
 }
 
-:local .registerForm {
+:local .signUpForm {
     width: 300px;
 }
 
-:local .registerFormButton {
+:local .signUpFormButton {
     width: 100%;
 }
 
@@ -22,6 +22,6 @@
     font-size: 30px;
     font-weight: 300;
     line-height: 32px;
-    margin: 0 0 72px;
+    margin: 0 0 56px;
     text-align: center;
 }
