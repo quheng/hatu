@@ -1,10 +1,15 @@
 import { threeMaterials } from '../renderer/material/Material'
 import * as THREE from 'three'
-import HatuEdge from "./edge/HatuEdge"
+import HatuEdge from './edge/HatuEdge'
 
 export default class HatuNode extends THREE.Mesh {
 
-  constructor (node) {
+  /**
+   *
+   * @param node
+   * @param {Swc} swc
+   */
+  constructor (node, swc) {
     let r1 = node.radius || 0.01
     let geometry = new THREE.SphereBufferGeometry(r1, HatuNode.calcSeg(r1), HatuNode.calcSeg(r1))
     super(geometry, threeMaterials[node.type].clone())
@@ -13,6 +18,7 @@ export default class HatuNode extends THREE.Mesh {
     this.type = node.type
     this.father = node.parent
     this.position.set(node.x, node.y, node.z)
+    this.swc = swc
   }
 
   get isRoot () {
@@ -80,4 +86,27 @@ export default class HatuNode extends THREE.Mesh {
     this.geometry = new THREE.SphereBufferGeometry(r1, HatuNode.calcSeg(r1), HatuNode.calcSeg(r1))
   }
 
+  get x () {
+    return this.position.x
+  }
+
+  set x (x) {
+    this.position.x = x
+  }
+
+  get y () {
+    return this.position.y
+  }
+
+  set y (y) {
+    this.position.y = y
+  }
+
+  get z () {
+    return this.position.z
+  }
+
+  set z (z) {
+    this.position.z = z
+  }
 }

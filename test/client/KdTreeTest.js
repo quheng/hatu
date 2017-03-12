@@ -1,3 +1,4 @@
+/* eslint-env mocha */
 import { expect } from 'chai'
 import KdTree from '../../client/util/swc/KdTree'
 

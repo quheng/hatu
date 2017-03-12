@@ -78,10 +78,11 @@ export default class KdTree {
 
   iterate (action) {
     function innerIterate (node) {
-      if (node === null)
+      if (node === null) {
         return
-      else
+      } else {
         action(node.obj)
+      }
       innerIterate(node.left)
       innerIterate(node.right)
     }

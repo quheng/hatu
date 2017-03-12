@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 export default class HatuOrthographicCamera extends THREE.OrthographicCamera {
 
-  constructor (boundingBox, far, position, viewer) {
+  constructor (boundingBox, far, viewer) {
     let width = boundingBox.xmax - boundingBox.xmin
     let height = boundingBox.ymax - boundingBox.ymin
     if (width / height > viewer.WIDTH / viewer.HEIGHT) {
@@ -13,7 +13,6 @@ export default class HatuOrthographicCamera extends THREE.OrthographicCamera {
 
     super(width / -2, width / 2, height / 2, height / -2, 1, far)
     this.viewer = viewer
-    this.position.copy(position)
     this.maxFar = far
   }
 

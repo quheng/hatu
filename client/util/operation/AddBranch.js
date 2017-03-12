@@ -7,7 +7,7 @@ export default class AddBranch extends NodeOperation {
    * @param {HatuNode} node
    */
   dragStart (node) {
-    this.gui.node = node
+    this.proxy.setNode(node)
   }
 
   /**
@@ -15,19 +15,19 @@ export default class AddBranch extends NodeOperation {
    * @param position
    */
   clickNothing (position) {
-    if (this.gui.selectedNode) {
+    if (this.proxy.getNode()) {
       this.position = position
-      this.gui.viewer.operationProxy.conduct(this)
+      this.proxy.conduct(this)
     }
   }
 
   conduct () {
-    this.target = this.gui.viewer.swc.addBranch(this.gui.selectedNode, this.position)
-    this.gui.setupOperation()
+    let node=this.proxy.getNode()
+    this.target = node.swc.addBranch(node, this.position)
   }
 
   cancel () {
-    this.gui.viewer.swc.undoAddBranch(this.target)
+    this.target.swc.undoAddBranch(this.target)
   }
 
   deactivate () {

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import HatuNode from "./HatuNode"
-import KdTree from "./KdTree"
+import HatuNode from './HatuNode'
+import KdTree from './KdTree'
 
 export default class Swc extends THREE.Object3D {
 
@@ -73,7 +73,7 @@ export default class Swc extends THREE.Object3D {
           z: z,
           radius: radius,
           parent: parent
-        })
+        }, this)
         if (parent === -1) {
           this.root = index
         }
@@ -91,7 +91,6 @@ export default class Swc extends THREE.Object3D {
     })
 
     nodes.forEach(node => {
-
       this.pushNode(node)
 
       if (!node.isRoot) {
@@ -156,6 +155,7 @@ export default class Swc extends THREE.Object3D {
   /**
    *
    * @param {HatuEdge} edge
+   * @return {HatuNode}
    */
   addNode (edge) {
     let child = edge.node
@@ -179,7 +179,7 @@ export default class Swc extends THREE.Object3D {
    *
    * @param {HatuNode} parent
    * @param {Vector3} position
-   *
+   * @return {HatuNode}
    */
   addBranch (parent, position) {
     let node = this.defaultNode(this.lastIndex, parent, position)
@@ -210,7 +210,7 @@ export default class Swc extends THREE.Object3D {
       y: position.y,
       z: position.z,
       radius: this.avgRad
-    })
+    }, this)
   }
 
   /**
@@ -282,7 +282,11 @@ export default class Swc extends THREE.Object3D {
    * @return {String}
    */
   serialize () {
-
+    let dest = ''
+    this.nodes.forEach((node) => {
+      dest.concat(`${node.index} ${node.type} ${node.position.x} ${node.position.y} ${node.position.z} ${node.radius} ${node.father}\n`)
+    })
+    return dest
   }
 
   avgRadii () {

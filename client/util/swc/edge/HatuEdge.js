@@ -1,5 +1,5 @@
-import HatuCylinder from "./HatuCylinder"
-import HatuSkeleton from "./HatuSkeleton"
+import HatuCylinder from './HatuCylinder'
+import HatuSkeleton from './HatuSkeleton'
 
 export default class HatuEdge {
 
@@ -11,6 +11,7 @@ export default class HatuEdge {
   constructor (node, nodeParent) {
     this.node = node
     this.nodeParent = nodeParent
+    this.swc = node.swc
     this.cylinder = new HatuCylinder(node, nodeParent, this)
     this.skeleton = new HatuSkeleton(node, nodeParent, this)
   }

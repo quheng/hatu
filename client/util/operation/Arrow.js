@@ -1,9 +1,10 @@
-import NodeOperation from './NodeOperation'
+import NodeOperation from "./NodeOperation"
+import { CURSOR_MOVE_EVENT, CURSOR_AUTO_EVENT, GUI_UPDATE_EVENT } from "./OperationProxy"
 
 export default class Arrow extends NodeOperation {
 
-  constructor (gui) {
-    super(gui)
+  constructor (proxy) {
+    super(proxy)
     this.mode = 'drag'
   }
 
@@ -12,9 +13,9 @@ export default class Arrow extends NodeOperation {
    * @param {HatuNode} node
    */
   dragStart (node) {
-    this.gui.node = node
+    this.proxy.setNode(node)
     this.oldPosition = node.position.clone()
-    this.gui.dom.style.cursor = 'move'
+    this.proxy.dispatchEvent({ type: CURSOR_MOVE_EVENT })
   }
 
   /**
@@ -25,7 +26,7 @@ export default class Arrow extends NodeOperation {
   drag (node, position) {
     node.position.copy(position)
     node.adjust()
-    this.gui.node = node
+    this.proxy.dispatchEvent({ type: GUI_UPDATE_EVENT })
   }
 
   /**
@@ -33,15 +34,15 @@ export default class Arrow extends NodeOperation {
    * @param {HatuNode} node
    */
   dragEnd (node) {
-    this.gui.node = node
-    this.gui.dom.style.cursor = 'auto'
+    this.proxy.setNode(node)
+    this.proxy.dispatchEvent({ type: CURSOR_AUTO_EVENT })
     this.newPosition = node.position.clone()
-    this.gui.viewer.operationProxy.conduct(this)
+    this.proxy.conduct(this)
   }
 
   conduct () {
-    if (this.gui.selectedNode) {
-      this.target = this.gui.selectedNode
+    if (this.proxy.getNode()) {
+      this.target = this.proxy.getNode()
     } else {
       return
     }
@@ -50,25 +51,23 @@ export default class Arrow extends NodeOperation {
         this.target.position.copy(this.newPosition)
         break
       case 'radius':
-        console.log('conduct radius')
         this.oldRadius = this.target.radius
         this.target.radius = this.radius
         break
       case 'x':
-        this.oldX = this.target.position.x
-        this.target.position.x = this.x
+        this.oldX = this.target.x
+        this.target.x = this.x
         break
       case 'y':
-        this.oldY = this.target.position.y
-        this.target.position.y = this.y
+        this.oldY = this.target.y
+        this.target.y = this.y
         break
       case 'z':
-        this.oldZ = this.target.position.z
-        this.target.position.z = this.z
+        this.oldZ = this.target.z
+        this.target.z = this.z
         break
     }
     this.target.adjust()
-    this.gui.setupOperation()
   }
 
   cancel () {

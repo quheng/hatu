@@ -3,7 +3,6 @@ import { threeColors } from '../../renderer/material/Material'
 
 export default class HatuSkeleton extends THREE.Line {
 
-
   /**
    *
    * @param {HatuNode} node
