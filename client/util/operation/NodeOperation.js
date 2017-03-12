@@ -1,4 +1,4 @@
-import { DRAG_NODE_MODE_EVENT, CURSOR_POINTER_EVENT, CURSOR_AUTO_EVENT } from "./OperationProxy"
+import { DRAG_NODE_MODE_EVENT, CURSOR_POINTER_EVENT, CURSOR_AUTO_EVENT } from './OperationProxy'
 
 export default class NodeOperation {
 

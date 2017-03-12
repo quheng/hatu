@@ -1,5 +1,5 @@
-import NodeOperation from "./NodeOperation"
-import { DRAG_EDGE_MODE_EVENT } from "./OperationProxy"
+import NodeOperation from './NodeOperation'
+import { DRAG_EDGE_MODE_EVENT } from './OperationProxy'
 
 export default class AddNode extends NodeOperation {
 

@@ -1,10 +1,10 @@
-import * as Dat from "dat.gui"
+import * as Dat from 'dat.gui'
 import {
   GUI_UPDATE_EVENT,
   CURSOR_POINTER_EVENT,
   CURSOR_AUTO_EVENT,
   CURSOR_MOVE_EVENT
-} from "../operation/OperationProxy"
+} from '../operation/OperationProxy'
 
 function near (a, b) {
   return Math.abs(a - b) < 0.00001
@@ -33,10 +33,18 @@ export default class HatuGUI {
     let self = this
     this.operationProxy = viewer.operationProxy
     this.operation = this.operationProxy.operationName
-    this.operationProxy.addEventListener(GUI_UPDATE_EVENT, () => self.update())
-    this.operationProxy.addEventListener(CURSOR_POINTER_EVENT, () => self.dom.style.cursor = 'pointer')
-    this.operationProxy.addEventListener(CURSOR_AUTO_EVENT, () => self.dom.style.cursor = 'auto')
-    this.operationProxy.addEventListener(CURSOR_MOVE_EVENT, () => self.dom.style.cursor = 'move')
+    this.operationProxy.addEventListener(GUI_UPDATE_EVENT, () => {
+      self.update()
+    })
+    this.operationProxy.addEventListener(CURSOR_POINTER_EVENT, () => {
+      self.dom.style.cursor = 'pointer'
+    })
+    this.operationProxy.addEventListener(CURSOR_AUTO_EVENT, () => {
+      self.dom.style.cursor = 'auto'
+    })
+    this.operationProxy.addEventListener(CURSOR_MOVE_EVENT, () => {
+      self.dom.style.cursor = 'move'
+    })
     this.operationProxy.setupOperation()
 
     let overviewFolder = this.gui.addFolder('Overview')
@@ -53,7 +61,7 @@ export default class HatuGUI {
         if (self.operationProxy.getNode() && !near(self.operationProxy.getNode()[name], target)) {
           self.operationProxy.currentOperation.mode = name
           self.operationProxy.currentOperation[name] = target
-          self.operationProxy.conduct(self.nodeOperation)
+          self.operationProxy.conduct(self.operationProxy.currentOperation)
         }
       })
     }

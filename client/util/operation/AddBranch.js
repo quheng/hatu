@@ -22,7 +22,7 @@ export default class AddBranch extends NodeOperation {
   }
 
   conduct () {
-    let node=this.proxy.getNode()
+    let node = this.proxy.getNode()
     this.target = node.swc.addBranch(node, this.position)
   }
 

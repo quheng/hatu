@@ -1,12 +1,12 @@
 'use strict'
 const THREE = require('three')
 
-import TrackballControls from "./control/TrackballControls"
-import { DRAG_NODE_MODE_EVENT, OperationProxy, DRAG_EDGE_MODE_EVENT } from "./operation/OperationProxy"
-import KeyControls from "./control/KeyControls"
-import HatuOrthographicCamera from "./control/HatuOrthographicCamera"
-import HatuGUI from "./control/HatuGUI"
-import DragControls from "./control/DragControls"
+import TrackballControls from './control/TrackballControls'
+import { DRAG_NODE_MODE_EVENT, OperationProxy, DRAG_EDGE_MODE_EVENT } from './operation/OperationProxy'
+import KeyControls from './control/KeyControls'
+import HatuOrthographicCamera from './control/HatuOrthographicCamera'
+import HatuGUI from './control/HatuGUI'
+import DragControls from './control/DragControls'
 
 export default class HatuViewer {
 
@@ -135,8 +135,12 @@ export default class HatuViewer {
   setupOperationProxy () {
     let proxy = new OperationProxy()
     let self = this
-    proxy.addEventListener(DRAG_NODE_MODE_EVENT, () => self.dragControls.mode = 'node')
-    proxy.addEventListener(DRAG_EDGE_MODE_EVENT, () => self.dragControls.mode = 'edge')
+    proxy.addEventListener(DRAG_NODE_MODE_EVENT, () => {
+      self.dragControls.mode = 'node'
+    })
+    proxy.addEventListener(DRAG_EDGE_MODE_EVENT, () => {
+      self.dragControls.mode = 'edge'
+    })
     return proxy
   }
 

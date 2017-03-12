@@ -284,7 +284,7 @@ export default class Swc extends THREE.Object3D {
   serialize () {
     let dest = ''
     this.nodes.forEach((node) => {
-      dest.concat(`${node.index} ${node.type} ${node.position.x} ${node.position.y} ${node.position.z} ${node.radius} ${node.father}\n`)
+      dest = dest.concat(`${node.index} ${node.type} ${node.position.x} ${node.position.y} ${node.position.z} ${node.radius} ${node.father}\n`)
     })
     return dest
   }

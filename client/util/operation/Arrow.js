@@ -1,11 +1,12 @@
-import NodeOperation from "./NodeOperation"
-import { CURSOR_MOVE_EVENT, CURSOR_AUTO_EVENT, GUI_UPDATE_EVENT } from "./OperationProxy"
+import NodeOperation from './NodeOperation'
+import { CURSOR_MOVE_EVENT, CURSOR_AUTO_EVENT, GUI_UPDATE_EVENT } from './OperationProxy'
 
 export default class Arrow extends NodeOperation {
 
   constructor (proxy) {
     super(proxy)
     this.mode = 'drag'
+    this.target = null
   }
 
   /**
@@ -13,6 +14,7 @@ export default class Arrow extends NodeOperation {
    * @param {HatuNode} node
    */
   dragStart (node) {
+    this.target = node
     this.proxy.setNode(node)
     this.oldPosition = node.position.clone()
     this.proxy.dispatchEvent({ type: CURSOR_MOVE_EVENT })
@@ -41,11 +43,7 @@ export default class Arrow extends NodeOperation {
   }
 
   conduct () {
-    if (this.proxy.getNode()) {
-      this.target = this.proxy.getNode()
-    } else {
-      return
-    }
+    if (!this.target) this.target = this.proxy.getNode()
     switch (this.mode) {
       case 'drag':
         this.target.position.copy(this.newPosition)
