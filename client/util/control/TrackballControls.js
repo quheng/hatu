@@ -3,7 +3,7 @@ const THREE = require('three')
 import HatuOrthographicCamera from './HatuOrthographicCamera'
 
 export default class TrackballControls extends THREE.EventDispatcher {
-  constructor (object, domElement) {
+  constructor (viewer, domElement) {
     super()
 
     let _this = this
@@ -17,7 +17,6 @@ export default class TrackballControls extends THREE.EventDispatcher {
       TOUCH_PAN: 5
     }
 
-    this.object = object
     this.domElement = (domElement !== undefined) ? domElement : document
 
     // API
@@ -73,8 +72,8 @@ export default class TrackballControls extends THREE.EventDispatcher {
     // for reset
 
     this.target0 = this.target.clone()
-    this.position0 = this.object.position.clone()
-    this.up0 = this.object.up.clone()
+    this.position0 = viewer.camera.position.clone()
+    this.up0 = viewer.camera.up.clone()
 
     // events
 
@@ -130,10 +129,10 @@ export default class TrackballControls extends THREE.EventDispatcher {
         mouseOnBall.z = Math.sqrt(1.0 - length * length)
       }
 
-      _eye.copy(_this.object.position).sub(_this.target)
+      _eye.copy(viewer.camera.position).sub(_this.target)
 
-      let projection = _this.object.up.clone().setLength(mouseOnBall.y)
-      projection.add(_this.object.up.clone().cross(_eye).setLength(mouseOnBall.x))
+      let projection = viewer.camera.up.clone().setLength(mouseOnBall.y)
+      projection.add(viewer.camera.up.clone().cross(_eye).setLength(mouseOnBall.x))
       projection.add(_eye.setLength(mouseOnBall.z))
 
       return projection
@@ -151,7 +150,7 @@ export default class TrackballControls extends THREE.EventDispatcher {
         quaternion.setFromAxisAngle(axis, -angle)
 
         _eye.applyQuaternion(quaternion)
-        _this.object.up.applyQuaternion(quaternion)
+        viewer.camera.up.applyQuaternion(quaternion)
 
         _rotateEnd.applyQuaternion(quaternion)
 
@@ -187,12 +186,12 @@ export default class TrackballControls extends THREE.EventDispatcher {
       if (_state === STATE.TOUCH_ZOOM) {
         let factor = _touchZoomDistanceStart / _touchZoomDistanceEnd
         _touchZoomDistanceStart = _touchZoomDistanceEnd
-        _this.object.orthographicZoom(factor)
+        viewer.camera.orthographicZoom(factor)
       } else {
         let factor = 1.0 + (_zoomEnd.y - _zoomStart.y) * _this.zoomSpeed
 
         if (factor !== 1.0 && factor > 0.0) {
-          _this.object.orthographicZoom(factor)
+          viewer.camera.orthographicZoom(factor)
           if (_this.staticMoving) {
             _zoomStart.copy(_zoomEnd)
             _this.dispatchEvent(zoomEvent)
@@ -209,10 +208,10 @@ export default class TrackballControls extends THREE.EventDispatcher {
       if (mouseChange.lengthSq()) {
         mouseChange.multiplyScalar(_eye.length() * _this.panSpeed)
 
-        let pan = _eye.clone().cross(_this.object.up).setLength(mouseChange.x)
-        pan.add(_this.object.up.clone().setLength(mouseChange.y))
+        let pan = _eye.clone().cross(viewer.camera.up).setLength(mouseChange.x)
+        pan.add(viewer.camera.up.clone().setLength(mouseChange.y))
 
-        _this.object.position.add(pan)
+        viewer.camera.position.add(pan)
         _this.target.add(pan)
 
         if (_this.staticMoving) {
@@ -226,24 +225,24 @@ export default class TrackballControls extends THREE.EventDispatcher {
     this.checkDistances = function () {
       if (!_this.noZoom || !_this.noPan) {
         if (_eye.lengthSq() > _this.maxDistance * _this.maxDistance) {
-          _this.object.position.addVectors(_this.target, _eye.setLength(_this.maxDistance))
+          viewer.camera.position.addVectors(_this.target, _eye.setLength(_this.maxDistance))
         }
 
         if (_eye.lengthSq() < _this.minDistance * _this.minDistance) {
-          _this.object.position.addVectors(_this.target, _eye.setLength(_this.minDistance))
+          viewer.camera.position.addVectors(_this.target, _eye.setLength(_this.minDistance))
         }
       }
     }
 
     this.update = function () {
-      _eye.subVectors(_this.object.position, _this.target)
+      _eye.subVectors(viewer.camera.position, _this.target)
 
       if (!_this.noRotate) {
         _this.rotateCamera()
       }
 
       if (!_this.noZoom) {
-        if (_this.object instanceof HatuOrthographicCamera) {
+        if (viewer.camera instanceof HatuOrthographicCamera) {
           _this.orthographicZoomCamera()
         } else {
           _this.zoomCamera()
@@ -255,16 +254,16 @@ export default class TrackballControls extends THREE.EventDispatcher {
         _this.panCamera()
       }
 
-      _this.object.position.addVectors(_this.target, _eye)
+      viewer.camera.position.addVectors(_this.target, _eye)
 
       _this.checkDistances()
 
-      _this.object.lookAt(_this.target)
+      viewer.camera.lookAt(_this.target)
 
-      if (lastPosition.distanceToSquared(_this.object.position) > 0) {
+      if (lastPosition.distanceToSquared(viewer.camera.position) > 0) {
         _this.dispatchEvent(changeEvent)
 
-        lastPosition.copy(_this.object.position)
+        lastPosition.copy(viewer.camera.position)
       }
     }
 
@@ -273,16 +272,16 @@ export default class TrackballControls extends THREE.EventDispatcher {
       _prevState = STATE.NONE
 
       _this.target.copy(_this.target0)
-      _this.object.position.copy(_this.position0)
-      _this.object.up.copy(_this.up0)
+      viewer.camera.position.copy(_this.position0)
+      viewer.camera.up.copy(_this.up0)
 
-      _eye.subVectors(_this.object.position, _this.target)
+      _eye.subVectors(viewer.camera.position, _this.target)
 
-      _this.object.lookAt(_this.target)
+      viewer.camera.lookAt(_this.target)
 
       _this.dispatchEvent(changeEvent)
 
-      lastPosition.copy(_this.object.position)
+      lastPosition.copy(viewer.camera.position)
     }
 
     // listeners

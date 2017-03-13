@@ -29,7 +29,6 @@ export default class PolicyManager {
   }
 
   notify () {
-    console.log('change')
     this.updateTime = Date.now()
   }
 }

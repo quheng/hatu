@@ -13,79 +13,111 @@ export default class HatuViewer {
   /**
    *
    * @param container
-   * @param {Swc} swc
-   * @param {Slices} slices
    */
-  constructor (container, swc, slices) {
+  constructor (container) {
     this.container = container
-    this.swc = swc
 
     this.HEIGHT = container.offsetHeight
     this.WIDTH = container.offsetWidth
     this.LEFT = container.offsetLeft
     this.TOP = container.offsetTop
 
-    this.boundingBox = this.swc.boundingBox
-    this.centerNode = this.swc.centerNode
-    this.center = this.swc.center
-
-    this.slices = slices
-    this.slices.viewer = this
+    this.boundingBox = this.defaultBoundingBox()
+    this.center = this.defaultCenter()
+    this.supervisor = null
 
     this.renderer = this.setUpRenderer()
 
     this.scene = new THREE.Scene()
-    this.scene.add(slices.object)
 
-    this.camera = this.setupOrthographicCamera()
+    this.camera = new HatuOrthographicCamera(this)
 
     this.controls = this.setupControl()
 
     this.operationProxy = this.setupOperationProxy()
 
-    this.keyControls = this.setupKeyControl()
+    this.setupKeyControl()
 
     this.gui = this.setupGUI()
-
-    this.scene.add(this.swc)
 
     this.light = new THREE.DirectionalLight(0xffffff)
     this.scene.add(this.light)
 
     this.dragControls = this.setupDragControl()
+
+    this.animate()
+  }
+
+  /**
+   *
+   * @param {Supervisor} supervisor
+   */
+  start (supervisor) {
+    if (this.supervisor) {
+      console.warn('Starting HatuViewer failed. Please finish at first.')
+    } else {
+      this.supervisor = supervisor
+      this.scene.add(this.supervisor.getSlice().object)
+      let slice = this.supervisor.getSlice()
+      slice.viewer = this
+      this.boundingBox = slice.boundingBox
+
+      this.center = slice.center
+      this.supervisor.getSwcs().forEach(swc => {
+        this.scene.add(swc)
+        swc.setPosition(-this.center[0], -this.center[1], -this.center[2])
+      })
+
+      this.camera.update()
+      this.gui.setMaxElevation(slice.maxElevation)
+    }
+  }
+
+  finish () {
+    if (this.supervisor) {
+      this.supervisor.getSwcs().forEach(swc => {
+        this.scene.remove(swc)
+      })
+      this.scene.remove(this.supervisor.getSlice().object)
+      this.supervisor = null
+    } else {
+      console.warn('Finishing HatuViewer failed. The HatuViewer has not been started.')
+    }
   }
 
   exportSwc () {
 
   }
 
-  setPerspectiveCamera () {
-    let cameraPosition = this.camera.position
-    this.fov = 45
-    this.camera = new THREE.PerspectiveCamera(this.fov, this.WIDTH / this.HEIGHT, 1, this.calculateCameraPosition(this.fov) * 5)
-    this.camera.position.copy(cameraPosition)
-
-    this.controls.object = this.camera
-  }
-
-  setupOrthographicCamera () {
-    let camera = new HatuOrthographicCamera(this.boundingBox, this.calculateCameraPosition() * 5, this)
-    camera.position.z = this.calculateCameraPosition()
-    return camera
-  }
-
+  /**
+   *
+   * @return {TrackballControls}
+   */
   setupControl () {
-    let controls = new TrackballControls(this.camera, this.renderer.domElement)
+    let controls = new TrackballControls(this, this.renderer.domElement)
+    let self = this
     controls.noRotate = true
     controls.staticMoving = true
     controls.noRotate = true
     controls.staticMoving = true
     controls.addEventListener('change', this.render.bind(this))
-    controls.addEventListener('change', this.slices.notify)
-    controls.addEventListener('zoom', this.slices.notify)
+    controls.addEventListener('change', () => {
+      if (self.supervisor) {
+        self.supervisor.getSlice().notify(self)
+      }
+    })
+    controls.addEventListener('zoom', () => {
+      if (self.supervisor) {
+        self.supervisor.getSlice().notify(self)
+      }
+    })
     return controls
   }
 
+  /**
+   *
+   * @return {KeyControls}
+   */
   setupKeyControl () {
     let keyControls = new KeyControls()
     keyControls.addKeyListener('Ctrl+90', m => {
@@ -101,6 +133,10 @@ export default class HatuViewer {
     return keyControls
   }
 
+  /**
+   *
+   * @return {DragControls}
+   */
   setupDragControl () {
     let scope = this
     let dragControls = new DragControls(this, this.renderer.domElement)
@@ -144,64 +180,97 @@ export default class HatuViewer {
     return proxy
   }
 
+  /**
+   *
+   * @return {HatuGUI}
+   */
   setupGUI () {
     let self = this
-    let gui = new HatuGUI(this.slices.maxElevation, this)
+    let gui = new HatuGUI(this)
+
+    /**
+     *
+     * @param {Slices} slice
+     * @param elevation
+     */
+    function onElevationChange (slice, elevation) {
+      slice.setElevation(elevation)
+      slice.notify(self)
+      self.gui.visualMode = 'slices'
+      self.gui.update()
+      if (self.camera instanceof HatuOrthographicCamera) {
+        self.camera.set(elevation)
+      }
+    }
+
+    /**
+     *
+     * @param {Slices} slice
+     * @param mode
+     */
+    function onVisualModeChange (slice, mode) {
+      switch (mode) {
+        case 'whole':
+          slice.setElevation(0)
+          slice.notify(self)
+          self.camera.reset()
+          break
+        case 'slices':
+          if (self.camera instanceof HatuOrthographicCamera) {
+            self.camera.set(self.gui.elevation)
+            slice.notify(self)
+          }
+          break
+      }
+    }
+
+    /**
+     *
+     * @param {Swc[]} swcs
+     * @param mode
+     */
+    function onNeuronModeChange (swcs, mode) {
+      swcs.forEach(swc => swc.edgeMode(mode))
+    }
+
     gui.onElevationChange(elevation => {
-      self.slices.setElevation(elevation)
-      self.slices.notify()
-      this.gui.visualMode = 'slices'
-      this.gui.update()
-      if (this.camera instanceof HatuOrthographicCamera) {
-        this.camera.set(elevation)
+      if (this.supervisor) {
+        onElevationChange(this.supervisor.getSlice(), elevation)
       }
     })
 
     gui.onVisualModeChange(mode => {
-      switch (mode) {
-        case 'whole':
-          self.slices.setElevation(0)
-          self.slices.notify()
-          this.camera.reset()
-          break
-        case 'slices':
-          if (this.camera instanceof HatuOrthographicCamera) {
-            this.camera.set(this.gui.elevation)
-            self.slices.notify()
-          }
-          break
+      if (this.supervisor) {
+        onVisualModeChange(this.supervisor.getSlice(), mode)
       }
     })
 
     gui.onNeuronModeChange(mode => {
-      this.swc.edgeMode(mode)
+      onNeuronModeChange(this.supervisor.getSwcs(), mode)
     })
     return gui
   }
 
-  // calculates camera position based on bounding box
-  calculateCameraPosition () {
-    return this.boundingBox.zmax * 2 + 1000
-  }
-
-  // sets up renderer
+  /**
+   *
+   * @return {WebGLRenderer}
+   */
   setUpRenderer () {
     let renderer = new THREE.WebGLRenderer({
-      antialias: true   // to get smoother output
+      antialias: true
     })
     renderer.setClearColor(0xffffff, 1)
     renderer.setSize(this.WIDTH, this.HEIGHT)
+    // noinspection JSUnresolvedVariable
     renderer.setPixelRatio(window.devicePixelRatio)
     this.container.appendChild(renderer.domElement)
     return renderer
   }
 
   render () {
-    // actually render the scene
     this.renderer.render(this.scene, this.camera)
   }
 
-  // animation loop
   animate () {
     // loop on request animation loop
     window.requestAnimationFrame(this.animate.bind(this))
@@ -211,6 +280,10 @@ export default class HatuViewer {
     this.render()
   }
 
+  /**
+   *
+   * @return {{left: *, right: *, top: *, bottom: *}}
+   */
   getWindow () {
     let camera = this.camera
     return {
@@ -219,6 +292,21 @@ export default class HatuViewer {
       top: camera.position.y + camera.top + this.center[1],
       bottom: camera.position.y + camera.bottom + this.center[1]
     }
+  }
+
+  defaultBoundingBox () {
+    return {
+      'xmin': 0,
+      'xmax': this.WIDTH,
+      'ymin': 0,
+      'ymax': this.HEIGHT,
+      'zmin': 0,
+      'zmax': 100
+    }
+  }
+
+  defaultCenter () {
+    return [this.WIDTH / 2, this.HEIGHT / 2, 50]
   }
 
 }

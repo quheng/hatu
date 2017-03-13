@@ -1,12 +1,11 @@
 /* eslint-env mocha */
 import { expect } from 'chai'
 import * as fs from 'fs'
-import Swc from "../../client/util/swc/Swc"
-import { OperationProxy } from "../../client/util/operation/OperationProxy"
+import Swc from '../../client/util/swc/Swc'
+import { OperationProxy } from '../../client/util/operation/OperationProxy'
 
 describe('Swc Test', () => {
   let data = fs.readFileSync('test/client/slice_test.swc', 'utf-8').trim()
-
 
   it('Swc deserialization and serialization', () => {
     let swc = new Swc(data)

@@ -6,20 +6,14 @@ import {
   CURSOR_MOVE_EVENT
 } from '../operation/OperationProxy'
 
-function near (a, b) {
-  return Math.abs(a - b) < 0.00001
-}
-
 export default class HatuGUI {
 
   /**
    *
-   * @param maxElevation
    * @param {HatuViewer} viewer
    */
-  constructor (maxElevation, viewer) {
+  constructor (viewer) {
     this.gui = new Dat.GUI()
-    this.viewer = viewer
     this.dom = viewer.renderer.domElement
     this.elevation = 0
     this.visualMode = 'whole'
@@ -49,12 +43,16 @@ export default class HatuGUI {
 
     let overviewFolder = this.gui.addFolder('Overview')
 
-    this.elevationController = overviewFolder.add(this, 'elevation', 0, maxElevation).step(1)
+    this.elevationController = overviewFolder.add(this, 'elevation', 0, 0).step(1)
     this.visualModeController = overviewFolder.add(this, 'visualMode', ['slices', 'whole'])
     this.neuronModeController = overviewFolder.add(this, 'neuronMode', ['skeleton', 'cylinder'])
     overviewFolder.open()
 
     let nodeFolder = this.gui.addFolder('Node')
+
+    function near (a, b) {
+      return Math.abs(a - b) < 0.00001
+    }
 
     function edit (name) {
       nodeFolder.add(self, name).min(0).step(0.0001).onChange(target => {
@@ -89,6 +87,10 @@ export default class HatuGUI {
 
   onNeuronModeChange (f) {
     this.neuronModeController.onChange(f)
+  }
+
+  setMaxElevation (maxElevation) {
+    this.elevationController.max(maxElevation)
   }
 
   update () {

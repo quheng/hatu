@@ -21,6 +21,11 @@ export default class HatuEdge {
     this.skeleton.adjust()
   }
 
+  /**
+   *
+   * @param mode
+   * @return {HatuCylinder|HatuSkeleton}
+   */
   obj (mode) {
     return this[mode]
   }

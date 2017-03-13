@@ -6,6 +6,7 @@ import Slices from '../../util/slice/Slices'
 
 import { connect } from 'react-redux'
 import Swc from '../../util/swc/Swc'
+import Editor from '../../util/Editor'
 
 class ThreeView extends React.Component {
 
@@ -18,7 +19,8 @@ class ThreeView extends React.Component {
       let swc = new Swc(swcFile)
       let slices = new Slices(1024, 1024, 97)
       let hatuViewer = new HatuViewer(this.refs.container, swc, slices)
-      hatuViewer.animate()
+      let editor = new Editor(swc, slices)
+      hatuViewer.start(editor)
     } catch (err) {
       console.log(err)
     }

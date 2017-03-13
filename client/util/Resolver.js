@@ -1,15 +1,17 @@
 import Supervisor from './Supervisor'
 
-export default class Editor extends Supervisor {
+export default class Resolver extends Supervisor {
 
   /**
    *
-   * @param {Swc} swc
+   * @param {Swc} master
+   * @param {Swc} slave
    * @param {Slices} slices
    */
-  constructor (swc, slices) {
+  constructor (master, slave, slices) {
     super()
-    this.swc = swc
+    this.master = master
+    this.slave = slave
     this.slices = slices
   }
 
@@ -18,7 +20,7 @@ export default class Editor extends Supervisor {
    * @return {[Swc]}
    */
   getSwcs () {
-    return [this.swc]
+    return [this.master, this.slave]
   }
 
   /**
@@ -34,7 +36,7 @@ export default class Editor extends Supervisor {
    * @return {string}
    */
   getResult () {
-    return this.swc.serialize()
+    return this.master.serialize()
   }
 
   /**
@@ -42,7 +44,7 @@ export default class Editor extends Supervisor {
    * @return {HatuNode[]}
    */
   getNodes () {
-    return this.swc.getNodes()
+    return this.master.getNodes().concat(this.slave.getNodes())
   }
 
   /**
@@ -50,6 +52,6 @@ export default class Editor extends Supervisor {
    * @return {HatuSkeleton[]|HatuCylinder[]}
    */
   getEdges () {
-    return this.swc.getEdges()
+    return this.master.getEdges().concat(this.slave.getEdges())
   }
 }

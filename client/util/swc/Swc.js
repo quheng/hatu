@@ -13,7 +13,6 @@ export default class Swc extends THREE.Object3D {
     this.edges = []
     this.kdTree = Swc.initKdTree()
     this.deserialize(source)
-    this.setPosition(-this.center[0], -this.center[1], -this.center[2])
   }
 
   /**
@@ -44,14 +43,14 @@ export default class Swc extends THREE.Object3D {
     let floatReg = '-?\\d*(?:\\.\\d+)?'
     let positiveIntReg = '\\d+'
     let pattern = new RegExp('^[ \\t]*(' + [
-        positiveIntReg,                // index
-        positiveIntReg,                // type
-        floatReg,                      // x
-        floatReg,                      // y
-        floatReg,                      // z
-        floatReg,                      // radius
-        '-1|' + positiveIntReg         // parent
-      ].join(')[ \\t]+(') + ')[ \\t]*$')
+      positiveIntReg,                // index
+      positiveIntReg,                // type
+      floatReg,                      // x
+      floatReg,                      // y
+      floatReg,                      // z
+      floatReg,                      // radius
+      '-1|' + positiveIntReg         // parent
+    ].join(')[ \\t]+(') + ')[ \\t]*$')
 
     let nodes = []
 
@@ -270,10 +269,18 @@ export default class Swc extends THREE.Object3D {
     return array.filter(e => e !== element)
   }
 
+  /**
+   *
+   * @return {HatuNode[]}
+   */
   getNodes () {
     return this.nodes
   }
 
+  /**
+   *
+   * @return {HatuSkeleton[]|HatuCylinder[]}
+   */
   getEdges () {
     return this.edges.map(e => e.obj(this.neuronMode))
   }
