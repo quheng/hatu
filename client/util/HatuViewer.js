@@ -68,6 +68,8 @@ export default class HatuViewer {
         swc.setPosition(-this.center[0], -this.center[1], -this.center[2])
       })
 
+      this.supervisor.getAnnotation().position.set(-this.center[0], -this.center[1], -this.center[2])
+      this.scene.add(this.supervisor.getAnnotation())
       this.camera.update()
       this.gui.setMaxElevation(slice.maxElevation)
     }
@@ -79,6 +81,7 @@ export default class HatuViewer {
         this.scene.remove(swc)
       })
       this.scene.remove(this.supervisor.getSlice().object)
+      this.scene.remove(this.supervisor.getAnnotation())
       this.supervisor = null
     } else {
       console.warn('Finishing HatuViewer failed. The HatuViewer has not been started.')

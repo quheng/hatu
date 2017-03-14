@@ -1,4 +1,10 @@
+import * as THREE from "three"
 export default class Supervisor {
+
+
+  constructor () {
+    this.annotation = new THREE.Object3D()
+  }
 
   /**
    *
@@ -35,5 +41,13 @@ export default class Supervisor {
    */
   getEdges () {
 
+  }
+
+  /**
+   *
+   * @return {Object3D}
+   */
+  getAnnotation () {
+    return this.annotation
   }
 }

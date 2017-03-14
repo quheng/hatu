@@ -1,12 +1,11 @@
 import React from 'react'
 import styles from './index.css'
 import HatuViewer from '../../util/HatuViewer'
-
 import Slices from '../../util/slice/Slices'
-
 import { connect } from 'react-redux'
 import Swc from '../../util/swc/Swc'
-import Editor from '../../util/Editor'
+import { OperationProxy } from '../../util/operation/OperationProxy'
+import Resolver from '../../util/resolver/Resolver'
 
 class ThreeView extends React.Component {
 
@@ -18,9 +17,18 @@ class ThreeView extends React.Component {
     try {
       let swc = new Swc(swcFile)
       let slices = new Slices(1024, 1024, 97)
-      let hatuViewer = new HatuViewer(this.refs.container, swc, slices)
-      let editor = new Editor(swc, slices)
-      hatuViewer.start(editor)
+      let hatuViewer = new HatuViewer(this.refs.container)
+
+      let proxy = new OperationProxy()
+      proxy.setupOperation()
+      swc.nodes.slice(2, 6).forEach(node => {
+        proxy.currentOperation.dragStart(node)
+        proxy.currentOperation.drag(node, node.position.clone().setX(node.position.x + 40))
+        proxy.currentOperation.dragEnd(node)
+      })
+      let adjusted = swc.serialize()
+      let resolver = new Resolver(new Swc(swcFile), new Swc(adjusted), slices)
+      hatuViewer.start(resolver)
     } catch (err) {
       console.log(err)
     }

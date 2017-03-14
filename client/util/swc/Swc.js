@@ -27,7 +27,7 @@ export default class Swc extends THREE.Object3D {
      * @return {number}
      */
     function distance (a, b) {
-      return a.distanceTo(b)
+      return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2) + Math.pow(a.z - b.z, 2)
     }
 
     return new KdTree([], distance, ['x', 'y', 'z'])
@@ -210,6 +210,15 @@ export default class Swc extends THREE.Object3D {
       z: position.z,
       radius: this.avgRad
     }, this)
+  }
+
+  /**
+   *
+   * @param {HatuNode} node
+   * @return {HatuNode}
+   */
+  nearest (node) {
+    return (this.kdTree.nearest(node, 1))[0][0]
   }
 
   /**

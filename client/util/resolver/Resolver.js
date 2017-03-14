@@ -1,4 +1,5 @@
-import Supervisor from './Supervisor'
+import Supervisor from "../Supervisor"
+import DashedLine from "./DashedLine"
 
 export default class Resolver extends Supervisor {
 
@@ -13,6 +14,8 @@ export default class Resolver extends Supervisor {
     this.master = master
     this.slave = slave
     this.slices = slices
+    this.master.getNodes().forEach(node => this.annotation.add(new DashedLine(node, slave)))
+    this.slave.getNodes().forEach(node => this.annotation.add(new DashedLine(node, master)))
   }
 
   /**
@@ -54,4 +57,5 @@ export default class Resolver extends Supervisor {
   getEdges () {
     return this.master.getEdges().concat(this.slave.getEdges())
   }
+
 }

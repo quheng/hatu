@@ -73,4 +73,9 @@ describe('Swc Test', () => {
     }
     expect(swc.serialize().trim()).to.be.equal(conductResult)
   })
+
+  it('Swc KdTree integrate', () => {
+    let swc = new Swc(data)
+    expect(swc.nodes[1].toString()).to.be.equal(swc.nearest(swc.nodes[1]).toString())
+  })
 })

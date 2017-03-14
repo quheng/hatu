@@ -18,7 +18,20 @@ export default class HatuNode extends THREE.Mesh {
     this.type = node.type
     this.father = node.parent
     this.position.set(node.x, node.y, node.z)
+    this.observers = new Set()
     this.swc = swc
+  }
+
+  toString () {
+    return {
+      index: this.index,
+      type: this.type,
+      father: this.father,
+      radius: this.radius,
+      x: this.x,
+      y: this.y,
+      z: this.z
+    }.toString()
   }
 
   get isRoot () {
@@ -75,6 +88,18 @@ export default class HatuNode extends THREE.Mesh {
       this.parentEdge.adjust()
     }
     this.childrenNode.forEach((edge, node) => edge.adjust())
+    this.observers.forEach(observer => {
+      // console.log(observer.node.toString())
+      observer.notify()
+    })
+  }
+
+  addObserver (observer) {
+    this.observers.add(observer)
+  }
+
+  deleteObserver (observer) {
+    this.observers.delete(observer)
   }
 
   get radius () {
