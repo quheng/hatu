@@ -8,7 +8,7 @@ describe('Swc Test', () => {
   let data = fs.readFileSync('test/client/slice_test.swc', 'utf-8').trim()
 
   it('Swc deserialization and serialization', () => {
-    let swc = new Swc(data)
+    let swc = new Swc(data, 0x0)
     let proxy = new OperationProxy()
     proxy.setupOperation()
     let res = swc.serialize()
@@ -16,7 +16,7 @@ describe('Swc Test', () => {
   })
 
   it('Operation Arrow drag test', () => {
-    let swc = new Swc(data)
+    let swc = new Swc(data, 0x0)
     let proxy = new OperationProxy()
     proxy.setupOperation()
     swc.nodes.slice(2, 6).forEach(node => {
@@ -48,7 +48,7 @@ describe('Swc Test', () => {
   })
 
   it('Operation Arrow edit test', () => {
-    let swc = new Swc(data)
+    let swc = new Swc(data, 0x0)
     let proxy = new OperationProxy()
     proxy.setupOperation()
     function edit (name, target) {

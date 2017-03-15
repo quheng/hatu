@@ -1,6 +1,5 @@
-import * as THREE from "three"
+import * as THREE from 'three'
 export default class Supervisor {
-
 
   constructor () {
     this.annotation = new THREE.Object3D()

@@ -1,6 +1,6 @@
-import { threeMaterials } from '../renderer/material/Material'
-import * as THREE from 'three'
-import HatuEdge from './edge/HatuEdge'
+import { colors } from "../renderer/material/Material"
+import * as THREE from "three"
+import HatuEdge from "./edge/HatuEdge"
 
 export default class HatuNode extends THREE.Mesh {
 
@@ -8,11 +8,18 @@ export default class HatuNode extends THREE.Mesh {
    *
    * @param node
    * @param {Swc} swc
+   * @param {Number} emissive
    */
-  constructor (node, swc) {
+  constructor (node, swc, emissive) {
     let r1 = node.radius || 0.01
     let geometry = new THREE.SphereBufferGeometry(r1, HatuNode.calcSeg(r1), HatuNode.calcSeg(r1))
-    super(geometry, threeMaterials[node.type].clone())
+    let material = new THREE.MeshPhongMaterial({
+      color: colors[0],
+      specular: colors[0],
+    })
+
+    material.emissive.setHex(emissive)
+    super(geometry, material)
     this.childrenNode = new Map()
     this.index = node.index
     this.type = node.type
@@ -88,10 +95,7 @@ export default class HatuNode extends THREE.Mesh {
       this.parentEdge.adjust()
     }
     this.childrenNode.forEach((edge, node) => edge.adjust())
-    this.observers.forEach(observer => {
-      // console.log(observer.node.toString())
-      observer.notify()
-    })
+    this.observers.forEach(observer => observer.notify())
   }
 
   addObserver (observer) {

@@ -1,8 +1,8 @@
 const THREE = require('three')
 
 // color array, nodes of type 0 show as first color, etc.
-const colors = [
-  0x00be9e,
+export const colors = [
+  0x999999,
   0x3919cb,
   0x7d0bc4,
   0xff6700,

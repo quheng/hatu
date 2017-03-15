@@ -4,7 +4,12 @@ import KdTree from './KdTree'
 
 export default class Swc extends THREE.Object3D {
 
-  constructor (source) {
+  /**
+   *
+   * @param {String} source
+   * @param {Number} themeColor
+   */
+  constructor (source, themeColor) {
     super()
     this.centerNodeIndex = 1
     this.neuronMode = 'skeleton'
@@ -12,6 +17,8 @@ export default class Swc extends THREE.Object3D {
     this.lastIndex = -1
     this.edges = []
     this.kdTree = Swc.initKdTree()
+    this.themeColor = themeColor
+
     this.deserialize(source)
   }
 
@@ -43,14 +50,14 @@ export default class Swc extends THREE.Object3D {
     let floatReg = '-?\\d*(?:\\.\\d+)?'
     let positiveIntReg = '\\d+'
     let pattern = new RegExp('^[ \\t]*(' + [
-      positiveIntReg,                // index
-      positiveIntReg,                // type
-      floatReg,                      // x
-      floatReg,                      // y
-      floatReg,                      // z
-      floatReg,                      // radius
-      '-1|' + positiveIntReg         // parent
-    ].join(')[ \\t]+(') + ')[ \\t]*$')
+        positiveIntReg,                // index
+        positiveIntReg,                // type
+        floatReg,                      // x
+        floatReg,                      // y
+        floatReg,                      // z
+        floatReg,                      // radius
+        '-1|' + positiveIntReg         // parent
+      ].join(')[ \\t]+(') + ')[ \\t]*$')
 
     let nodes = []
 
@@ -72,7 +79,7 @@ export default class Swc extends THREE.Object3D {
           z: z,
           radius: radius,
           parent: parent
-        }, this)
+        }, this, this.themeColor)
         if (parent === -1) {
           this.root = index
         }
