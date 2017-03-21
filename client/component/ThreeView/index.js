@@ -36,9 +36,12 @@ class ThreeView extends React.Component {
 
       let adjusted = swc.serialize()
       console.log(adjusted)
-      let resolver = new Resolver(new Swc(swcFile, 0x444400), new Swc(adjusted, 0x000022), slices)
 
+      ///////////////////////////////////////////////////////////////////////
+      //This two lines are the actual interface to start a resolver
+      let resolver = new Resolver(swcFile, adjusted, slices)
       hatuViewer.start(resolver)
+      ///////////////////////////////////////////////////////////////////////
     } catch (err) {
       console.log(err)
     }

@@ -1,19 +1,20 @@
 import Supervisor from '../Supervisor'
 import Matcher from './Matcher'
 import { CONDUCT_EVENT } from '../operation/OperationProxy'
+import Swc from '../swc/Swc'
 
 export default class Resolver extends Supervisor {
 
   /**
    *
-   * @param {Swc} master
-   * @param {Swc} slave
+   * @param {string} master
+   * @param {string} slave
    * @param {Slices} slices
    */
   constructor (master, slave, slices) {
     super()
-    this.master = master
-    this.slave = slave
+    this.master = new Swc(master, 0x444400)
+    this.slave = new Swc(slave, 0x000022)
     this.slices = slices
     this.matcher = new Matcher(this.master, this.slave)
     this.operationMap.set('match', () => this.matcher.match())

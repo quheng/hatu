@@ -11,6 +11,10 @@ export default class Matcher {
     this.isDyed = false
   }
 
+  /**
+   *
+   * @return {boolean}
+   */
   match () {
     this.clear(this.master.root)
     this.clear(this.slave.root)
@@ -19,8 +23,10 @@ export default class Matcher {
     this.checkChildren(this.slave.root)
     this.merge(this.master.root)
     this.merge(this.slave.root)
+    this.mergeable = true
     this.dye(this.master)
     this.dye(this.slave)
+    return this.mergeable
   }
 
   dye (swc) {
@@ -29,6 +35,7 @@ export default class Matcher {
       if (node.mergeable) {
         node.emissive = 0x0000aa
       } else {
+        this.mergeable = false
         node.emissive = 0xaa0000
       }
       if (node.matched) {

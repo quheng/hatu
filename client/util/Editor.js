@@ -1,15 +1,16 @@
 import Supervisor from './Supervisor'
+import Swc from './swc/Swc'
 
 export default class Editor extends Supervisor {
 
   /**
    *
-   * @param {Swc} swc
+   * @param {string} source
    * @param {Slices} slices
    */
-  constructor (swc, slices) {
+  constructor (source, slices) {
     super()
-    this.swc = swc
+    this.swc = new Swc(source, 0)
     this.slices = slices
   }
 
