@@ -8,7 +8,7 @@ describe('KdTree Test', function () {
   it('KdTree create', function () {
     let test = fs.readFileSync('test/client/slice_test.swc', 'utf-8').trim()
     let adjust = fs.readFileSync('test/client/slice_adjust.swc', 'utf-8').trim()
-    let resolver = new Resolver(new Swc(test, 0x0), new Swc(adjust,0x0), null)
+    let resolver = new Resolver(new Swc(test, 0x0), new Swc(adjust, 0x0), null)
 
     let proxy = new OperationProxy()
     proxy.setupOperation()

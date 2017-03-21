@@ -23,7 +23,7 @@ export default class HatuGUI {
     this.x = 0
     this.y = 0
     this.z = 0
-
+    this.customedOperations = []
     let self = this
     this.operationProxy = viewer.operationProxy
     this.operation = this.operationProxy.operationName
@@ -59,7 +59,7 @@ export default class HatuGUI {
         if (self.operationProxy.getNode() && !near(self.operationProxy.getNode()[name], target)) {
           self.operationProxy.currentOperation.mode = name
           self.operationProxy.currentOperation[name] = target
-          self.operationProxy.conduct(self.operationProxy.currentOperation)
+          self.operationProxy.currentOperation.edit()
         }
       })
     }
@@ -91,6 +91,21 @@ export default class HatuGUI {
 
   setMaxElevation (maxElevation) {
     this.elevationController.max(maxElevation)
+  }
+
+  /**
+   *
+   * @param {Map.<string, function()>} mode
+   */
+  setGuiMode (mode) {
+    mode.forEach((op, key) => {
+      this[key] = op
+      this.customedOperations.push(this.gui.add(this, key))
+    })
+  }
+
+  reset () {
+    this.customedOperations.forEach(controller => this.gui.remove(controller))
   }
 
   update () {

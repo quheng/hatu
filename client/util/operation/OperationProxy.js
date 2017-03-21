@@ -10,6 +10,7 @@ export const DRAG_EDGE_MODE_EVENT = 'EDGE_MODE'
 export const CURSOR_POINTER_EVENT = 'CURSOR_POINTER'
 export const CURSOR_AUTO_EVENT = 'CURSOR_AUTO'
 export const CURSOR_MOVE_EVENT = 'CURSOR_MOVE'
+export const CONDUCT_EVENT = 'CONDUCT'
 
 export class OperationProxy extends THREE.EventDispatcher {
 
@@ -47,6 +48,7 @@ export class OperationProxy extends THREE.EventDispatcher {
     this.rear++
     this.operations = this.operations.slice(0, this.rear)
     this.setupOperation()
+    this.dispatchEvent({ type: CONDUCT_EVENT })
   }
 
   /**
@@ -69,11 +71,10 @@ export class OperationProxy extends THREE.EventDispatcher {
 
   setNode (value) {
     if (this.selectedNode) {
-      this.selectedNode.material.emissive.setHex(this.selectedNode.currentHex)
+      this.selectedNode.emissive = this.selectedNode.themeColor
     }
     this.selectedNode = value
-    this.selectedNode.currentHex = value.material.emissive.getHex()
-    this.selectedNode.material.emissive.setHex(0xff0000)
+    this.selectedNode.emissive = 0xff0000
     this.dispatchEvent({ type: GUI_UPDATE_EVENT })
   }
 

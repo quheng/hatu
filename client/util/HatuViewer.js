@@ -72,6 +72,8 @@ export default class HatuViewer {
       this.scene.add(this.supervisor.getAnnotation())
       this.camera.update()
       this.gui.setMaxElevation(slice.maxElevation)
+      this.gui.setGuiMode(this.supervisor.getGuiMode())
+      this.supervisor.getOperationEvents().forEach((listener, event) => this.operationProxy.addEventListener(event, listener))
     }
   }
 
@@ -83,6 +85,8 @@ export default class HatuViewer {
       this.scene.remove(this.supervisor.getSlice().object)
       this.scene.remove(this.supervisor.getAnnotation())
       this.supervisor = null
+      this.gui.reset()
+      this.supervisor.getOperationEvents().forEach((listener, event) => this.operationProxy.removeEventListener(event, listener))
     } else {
       console.warn('Finishing HatuViewer failed. The HatuViewer has not been started.')
     }
@@ -251,6 +255,7 @@ export default class HatuViewer {
     gui.onNeuronModeChange(mode => {
       onNeuronModeChange(this.supervisor.getSwcs(), mode)
     })
+
     return gui
   }
 

@@ -54,7 +54,7 @@ describe('Swc Test', () => {
     function edit (name, target) {
       proxy.currentOperation.mode = name
       proxy.currentOperation[name] = target
-      proxy.conduct(proxy.currentOperation)
+      proxy.currentOperation.edit()
     }
 
     proxy.currentOperation.dragStart(swc.nodes[4])

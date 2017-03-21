@@ -1,5 +1,6 @@
 import Supervisor from '../Supervisor'
-import DashedLine from './DashedLine'
+import Matcher from './Matcher'
+import { CONDUCT_EVENT } from '../operation/OperationProxy'
 
 export default class Resolver extends Supervisor {
 
@@ -14,17 +15,9 @@ export default class Resolver extends Supervisor {
     this.master = master
     this.slave = slave
     this.slices = slices
-    this.edgeNum = this.master.getNodes().length + this.slave.getNodes().length
-    this.master.getNodes().forEach(node => {
-      let line = new DashedLine(node, slave, this)
-      this.annotation.add(line)
-      node.annotationLine=line
-    })
-    this.slave.getNodes().forEach(node => {
-      let line = new DashedLine(node, master, this)
-      this.annotation.add(line)
-      node.annotationLine=line
-    })
+    this.matcher = new Matcher(this.master, this.slave)
+    this.operationMap.set('match', () => this.matcher.match())
+    this.operationEvents.set(CONDUCT_EVENT, () => this.matcher.recover())
   }
 
   /**
@@ -66,4 +59,5 @@ export default class Resolver extends Supervisor {
   getEdges () {
     return this.master.getEdges().concat(this.slave.getEdges())
   }
+
 }

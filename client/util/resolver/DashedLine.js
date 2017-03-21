@@ -29,7 +29,7 @@ export default class DashedLine extends THREE.Line {
 
   notify () {
     this.minimalDistance = 10000000
-    let oldSlave=this.slave
+    let oldSlave = this.slave
     this.another.getNodes().forEach(node => {
       let distance = node.distanceTo(this.node)
       let line = node.annotationLine
@@ -37,7 +37,7 @@ export default class DashedLine extends THREE.Line {
         this.minimalDistance = distance
         this.slave = node
       }
-      if (line.slave=this.node){
+      if (line.slave === this.node) {
         line.updateSlave()
         line.updateGeometry()
       }
@@ -46,7 +46,7 @@ export default class DashedLine extends THREE.Line {
         line.updateGeometry()
       }
     })
-    if (!oldSlave.annotationLine){
+    if (!oldSlave.annotationLine) {
       console.log(oldSlave)
     }
     oldSlave.annotationLine.updateSlave()

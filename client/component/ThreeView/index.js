@@ -15,7 +15,7 @@ class ThreeView extends React.Component {
 
   componentWillReceiveProps ({ swcFile }) {
     try {
-      let swc = new Swc(swcFile,0x0)
+      let swc = new Swc(swcFile, 0x0)
       let slices = new Slices(1024, 1024, 97)
       let hatuViewer = new HatuViewer(this.refs.container)
 
@@ -26,8 +26,18 @@ class ThreeView extends React.Component {
         proxy.currentOperation.drag(node, node.position.clone().setX(node.position.x + 40))
         proxy.currentOperation.dragEnd(node)
       })
+      for (let i = 0; i < 2; i++) {
+        let node = swc.nodes[swc.nodes.length - 1]
+        let position = node.position.clone()
+        position.setX(position.x + 10)
+        position.setY(position.y - 40)
+        swc.addBranch(node, position)
+      }
+
       let adjusted = swc.serialize()
-      let resolver = new Resolver(new Swc(swcFile,0x444400), new Swc(adjusted,0x000022), slices)
+      console.log(adjusted)
+      let resolver = new Resolver(new Swc(swcFile, 0x444400), new Swc(adjusted, 0x000022), slices)
+
       hatuViewer.start(resolver)
     } catch (err) {
       console.log(err)

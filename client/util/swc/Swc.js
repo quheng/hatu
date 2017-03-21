@@ -50,14 +50,14 @@ export default class Swc extends THREE.Object3D {
     let floatReg = '-?\\d*(?:\\.\\d+)?'
     let positiveIntReg = '\\d+'
     let pattern = new RegExp('^[ \\t]*(' + [
-        positiveIntReg,                // index
-        positiveIntReg,                // type
-        floatReg,                      // x
-        floatReg,                      // y
-        floatReg,                      // z
-        floatReg,                      // radius
-        '-1|' + positiveIntReg         // parent
-      ].join(')[ \\t]+(') + ')[ \\t]*$')
+      positiveIntReg,                // index
+      positiveIntReg,                // type
+      floatReg,                      // x
+      floatReg,                      // y
+      floatReg,                      // z
+      floatReg,                      // radius
+      '-1|' + positiveIntReg         // parent
+    ].join(')[ \\t]+(') + ')[ \\t]*$')
 
     let nodes = []
 
@@ -81,7 +81,7 @@ export default class Swc extends THREE.Object3D {
           parent: parent
         }, this, this.themeColor)
         if (parent === -1) {
-          this.root = index
+          this.rootNode = nodes[index]
         }
         if (this.lastIndex < index) {
           this.lastIndex = index
@@ -167,8 +167,8 @@ export default class Swc extends THREE.Object3D {
     let child = edge.node
     let parent = edge.nodeParent
     let position = child.position.clone().add(parent.position).divideScalar(2)
-    let node = this.defaultNode(this.lastIndex, parent, position)
     this.lastIndex += 1
+    let node = this.defaultNode(this.lastIndex, parent, position)
     parent.removeChild(child)
     this.pushEdge(node.setParent(parent))
     this.pushEdge(child.setParent(node))
@@ -188,8 +188,8 @@ export default class Swc extends THREE.Object3D {
    * @return {HatuNode}
    */
   addBranch (parent, position) {
-    let node = this.defaultNode(this.lastIndex, parent, position)
     this.lastIndex += 1
+    let node = this.defaultNode(this.lastIndex, parent, position)
     let edge = node.setParent(parent)
     this.pushNode(node)
     this.pushEdge(edge)
@@ -216,7 +216,18 @@ export default class Swc extends THREE.Object3D {
       y: position.y,
       z: position.z,
       radius: this.avgRad
-    }, this)
+    }, this, this.themeColor)
+  }
+
+  /**
+   *
+   * @param {HatuNode} node
+   * @param {Vector3} oldPosition
+   */
+  update (node, oldPosition) {
+    let tmp = this.defaultNode(1, this.root, oldPosition)
+    this.kdTree.remove(tmp)
+    this.kdTree.insert(node)
   }
 
   /**
@@ -310,6 +321,14 @@ export default class Swc extends THREE.Object3D {
       dest = dest.concat(`${node.index} ${node.type} ${node.position.x} ${node.position.y} ${node.position.z} ${node.radius} ${node.father}\n`)
     })
     return dest
+  }
+
+  /**
+   *
+   * @return {HatuNode}
+   */
+  get root () {
+    return this.rootNode
   }
 
   avgRadii () {

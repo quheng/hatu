@@ -1,6 +1,6 @@
-import { colors } from "../renderer/material/Material"
-import * as THREE from "three"
-import HatuEdge from "./edge/HatuEdge"
+import { colors } from '../renderer/material/Material'
+import * as THREE from 'three'
+import HatuEdge from './edge/HatuEdge'
 
 export default class HatuNode extends THREE.Mesh {
 
@@ -8,17 +8,16 @@ export default class HatuNode extends THREE.Mesh {
    *
    * @param node
    * @param {Swc} swc
-   * @param {Number} emissive
+   * @param {Number} themeColor
    */
-  constructor (node, swc, emissive) {
+  constructor (node, swc, themeColor) {
     let r1 = node.radius || 0.01
     let geometry = new THREE.SphereBufferGeometry(r1, HatuNode.calcSeg(r1), HatuNode.calcSeg(r1))
     let material = new THREE.MeshPhongMaterial({
       color: colors[0],
-      specular: colors[0],
+      specular: colors[0]
     })
 
-    material.emissive.setHex(emissive)
     super(geometry, material)
     this.childrenNode = new Map()
     this.index = node.index
@@ -27,6 +26,20 @@ export default class HatuNode extends THREE.Mesh {
     this.position.set(node.x, node.y, node.z)
     this.observers = new Set()
     this.swc = swc
+    this.themeColor = themeColor
+    this.emissive = themeColor
+  }
+
+  set emissive (color) {
+    this.material.emissive.setHex(color)
+  }
+
+  /**
+   *
+   * @return {Iterator.<HatuNode>}
+   */
+  get sons () {
+    return this.childrenNode.keys()
   }
 
   toString () {
@@ -138,4 +151,29 @@ export default class HatuNode extends THREE.Mesh {
   set z (z) {
     this.position.z = z
   }
+
+  set matched (v) {
+    this.isMatched = v
+  }
+
+  get matched () {
+    return this.isMatched
+  }
+
+  set mergeable (v) {
+    this.isMergeable = v
+  }
+
+  get mergeable () {
+    return this.isMergeable
+  }
+
+  set matchedChildren (v) {
+    this.umc = v
+  }
+
+  get matchedChildren () {
+    return this.umc
+  }
+
 }

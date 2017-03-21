@@ -42,30 +42,48 @@ export default class Arrow extends NodeOperation {
     this.proxy.conduct(this)
   }
 
-  conduct () {
+  edit () {
     if (!this.target) this.target = this.proxy.getNode()
+    this.oldPosition = this.target.position.clone()
     switch (this.mode) {
-      case 'drag':
-        this.target.position.copy(this.newPosition)
-        break
       case 'radius':
         this.oldRadius = this.target.radius
         this.target.radius = this.radius
         break
       case 'x':
-        this.oldX = this.target.x
         this.target.x = this.x
         break
       case 'y':
-        this.oldY = this.target.y
         this.target.y = this.y
         break
       case 'z':
-        this.oldZ = this.target.z
         this.target.z = this.z
         break
     }
+    this.newPosition = this.target.position.clone()
+    this.proxy.conduct(this)
+  }
+
+  conduct () {
+    switch (this.mode) {
+      case 'drag':
+        this.target.position.copy(this.newPosition)
+        break
+      case 'radius':
+        this.target.radius = this.radius
+        break
+      case 'x':
+        this.target.position.copy(this.newPosition)
+        break
+      case 'y':
+        this.target.position.copy(this.newPosition)
+        break
+      case 'z':
+        this.target.position.copy(this.newPosition)
+        break
+    }
     this.target.adjust()
+    this.target.swc.update(this.target, this.oldPosition)
   }
 
   cancel () {
@@ -80,16 +98,17 @@ export default class Arrow extends NodeOperation {
         this.target.radius = this.oldRadius
         break
       case 'x':
-        this.target.position.x = this.oldX
+        this.target.position.copy(this.oldPosition)
         break
       case 'y':
-        this.target.position.y = this.oldY
+        this.target.position.copy(this.oldPosition)
         break
       case 'z':
-        this.target.position.z = this.oldZ
+        this.target.position.copy(this.oldPosition)
         break
     }
     this.target.adjust()
+    this.target.swc.update(this.target, this.newPosition)
   }
 
   deactivate () {

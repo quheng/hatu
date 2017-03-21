@@ -3,6 +3,8 @@ export default class Supervisor {
 
   constructor () {
     this.annotation = new THREE.Object3D()
+    this.operationMap = new Map()
+    this.operationEvents = new Map()
   }
 
   /**
@@ -49,4 +51,21 @@ export default class Supervisor {
   getAnnotation () {
     return this.annotation
   }
+
+  /**
+   *
+   * @return {Map.<string, function()>}
+   */
+  getGuiMode () {
+    return this.operationMap
+  }
+
+  /**
+   *
+   * @return {Map.<string, function()>}
+   */
+  getOperationEvents () {
+    return this.operationEvents
+  }
+
 }

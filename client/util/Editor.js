@@ -52,4 +52,5 @@ export default class Editor extends Supervisor {
   getEdges () {
     return this.swc.getEdges()
   }
+
 }
