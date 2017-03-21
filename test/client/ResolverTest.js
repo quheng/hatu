@@ -1,8 +1,8 @@
 /* eslint-env mocha */
-import Resolver from "../../client/util/resolver/Resolver"
-import * as fs from "fs"
-import { OperationProxy } from "../../client/util/operation/OperationProxy"
-import Swc from "../../client/util/swc/Swc"
+import Resolver from '../../client/util/resolver/Resolver'
+import * as fs from 'fs'
+import { OperationProxy } from '../../client/util/operation/OperationProxy'
+import Swc from '../../client/util/swc/Swc'
 import { expect } from 'chai'
 
 describe('Resolver Test', function () {
@@ -27,7 +27,6 @@ describe('Resolver Test', function () {
     let adjusted = swc.serialize()
 
     let resolver = new Resolver(test, adjusted, null)
-
 
     expect(resolver.matcher.match()).to.be.equal(false)
   })
