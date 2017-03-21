@@ -1,6 +1,6 @@
 'use strict'
 
-import HatuNode from '../renderer/HatuNode'
+import HatuNode from '../swc/HatuNode'
 import * as THREE from 'three'
 
 export default class DragControls extends THREE.EventDispatcher {
@@ -15,7 +15,7 @@ export default class DragControls extends THREE.EventDispatcher {
     this.mode = 'node'
     let _plane = new THREE.Plane()
     // TODO: We need a sample node to initiate viewport plane and the center node 1 is chosen. However, the No.1 node might not exist. Be careful.
-    _plane.setFromNormalAndCoplanarPoint(_viewer.camera.getWorldDirection(_plane.normal), _viewer.neuronRenderer.nodes[_viewer.centerNode].position)
+    _plane.setFromNormalAndCoplanarPoint(_viewer.camera.getWorldDirection(_plane.normal), new THREE.Vector3(0, 0, 0))
 
     let _raycaster = new THREE.Raycaster()
 
@@ -113,11 +113,15 @@ export default class DragControls extends THREE.EventDispatcher {
     }
 
     function intersectObjects () {
-      switch (scope.mode) {
-        case 'node' :
-          return _raycaster.intersectObjects(_viewer.neuronRenderer.getNodes())
-        case 'edge':
-          return _raycaster.intersectObjects(_viewer.neuronRenderer.getEdges())
+      if (_viewer.supervisor) {
+        switch (scope.mode) {
+          case 'node' :
+            return _raycaster.intersectObjects(_viewer.supervisor.getNodes())
+          case 'edge':
+            return _raycaster.intersectObjects(_viewer.supervisor.getEdges())
+        }
+      } else {
+        return _raycaster.intersectObjects([])
       }
     }
 
@@ -130,27 +134,6 @@ export default class DragControls extends THREE.EventDispatcher {
     this.activate = activate
     this.deactivate = deactivate
     this.dispose = dispose
-
-    // Backward compatibility
-
-    this.setObjects = function () {
-      console.error('THREE.DragControls: setObjects() has been removed.')
-    }
-
-    this.on = function (type, listener) {
-      console.warn('THREE.DragControls: on() has been deprecated. Use addEventListener() instead.')
-      scope.addEventListener(type, listener)
-    }
-
-    this.off = function (type, listener) {
-      console.warn('THREE.DragControls: off() has been deprecated. Use removeEventListener() instead.')
-      scope.removeEventListener(type, listener)
-    }
-
-    this.notify = function (type) {
-      console.error('THREE.DragControls: notify() has been deprecated. Use dispatchEvent() instead.')
-      scope.dispatchEvent({ type: type })
-    }
   }
 
   set objects (objects) {

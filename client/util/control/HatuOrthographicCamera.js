@@ -2,19 +2,14 @@ import * as THREE from 'three'
 
 export default class HatuOrthographicCamera extends THREE.OrthographicCamera {
 
-  constructor (boundingBox, far, position, viewer) {
-    let width = boundingBox.xmax - boundingBox.xmin
-    let height = boundingBox.ymax - boundingBox.ymin
-    if (width / height > viewer.WIDTH / viewer.HEIGHT) {
-      height = width / viewer.WIDTH * viewer.HEIGHT
-    } else {
-      width = height / viewer.HEIGHT * viewer.WIDTH
-    }
-
-    super(width / -2, width / 2, height / 2, height / -2, 1, far)
+  /**
+   *
+   * @param {HatuViewer} viewer
+   */
+  constructor (viewer) {
+    super(0, 1, 0, 1, 1, 2)
     this.viewer = viewer
-    this.position.copy(position)
-    this.maxFar = far
+    this.update()
   }
 
   reset () {
@@ -24,7 +19,10 @@ export default class HatuOrthographicCamera extends THREE.OrthographicCamera {
   }
 
   set (elevation) {
-    let basis = this.position.z - elevation + this.viewer.slices.maxElevation / 2
+    if (!this.viewer.supervisor) {
+      return
+    }
+    let basis = this.position.z - elevation + this.viewer.supervisor.getSlice().maxElevation / 2
     this.near = basis - 1
     this.far = basis + 1
     this.updateProjectionMatrix()
@@ -36,6 +34,26 @@ export default class HatuOrthographicCamera extends THREE.OrthographicCamera {
     this.top = this.top * factor
     this.bottom = this.bottom * factor
 
+    this.updateProjectionMatrix()
+  }
+
+  update () {
+    let width = this.viewer.boundingBox.xmax - this.viewer.boundingBox.xmin
+    let height = this.viewer.boundingBox.ymax - this.viewer.boundingBox.ymin
+    if (width / height > this.viewer.WIDTH / this.viewer.HEIGHT) {
+      height = width / this.viewer.WIDTH * this.viewer.HEIGHT
+    } else {
+      width = height / this.viewer.HEIGHT * this.viewer.WIDTH
+    }
+    let far = (this.viewer.boundingBox.zmax * 2 + 1000) * 5
+    this.left = width / -2
+    this.right = width / 2
+    this.top = height / 2
+    this.bottom = height / -2
+    this.near = 1
+    this.far = far
+    this.maxFar = far
+    this.position.setZ(this.viewer.boundingBox.zmax * 2 + 1000)
     this.updateProjectionMatrix()
   }
 

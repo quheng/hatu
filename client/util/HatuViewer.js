@@ -2,204 +2,296 @@
 const THREE = require('three')
 
 import TrackballControls from './control/TrackballControls'
-import OperationProxy from './control/OperationProxy'
+import { DRAG_NODE_MODE_EVENT, OperationProxy, DRAG_EDGE_MODE_EVENT } from './operation/OperationProxy'
 import KeyControls from './control/KeyControls'
-import RendererFactory from './renderer/RendererFactory'
 import HatuOrthographicCamera from './control/HatuOrthographicCamera'
 import HatuGUI from './control/HatuGUI'
 import DragControls from './control/DragControls'
 
 export default class HatuViewer {
 
-  constructor (container, swc, slices, showCones) {
+  /**
+   *
+   * @param container
+   */
+  constructor (container) {
     this.container = container
-    this.swc = swc
 
-    // html element that will recieve webgl canvas
     this.HEIGHT = container.offsetHeight
-    // width of canvas
     this.WIDTH = container.offsetWidth
     this.LEFT = container.offsetLeft
     this.TOP = container.offsetTop
-    // which node to center neuron on (starts at 1), -1 to center at center of bounding box
-    this.centerNode = swc.centerNode
 
-    // show cones between cylindars for particle and sphere mode
-    this.showCones = showCones
+    this.boundingBox = this.defaultBoundingBox()
+    this.center = this.defaultCenter()
+    this.supervisor = null
 
-    // initialize bounding box
-    this.boundingBox = this.swc.calculateBoundingBox()
-    this.center = this.calculateCenterNode()
-    this.slices = slices
-    this.slices.viewer = this
-
-    // setup render
     this.renderer = this.setUpRenderer()
-    let gl = this.renderer.context
-    // Activate depth extension, if available
-    gl.getExtension('EXT_frag_depth')
 
-    // create a scene
     this.scene = new THREE.Scene()
 
-    this.scene.add(slices.object)
-    // put a camera in the scene
-    this.fov = 45
-    let cameraPosition = this.calculateCameraPosition()
-    this.camera = new THREE.PerspectiveCamera(this.fov, this.WIDTH / this.HEIGHT, 1, cameraPosition * 5)
-    this.camera.position.z = cameraPosition
+    this.camera = new HatuOrthographicCamera(this)
 
-    // Controls
-    this.controls = new TrackballControls(this.camera, this.renderer.domElement)
-    this.controls.noRotate = true
-    this.controls.staticMoving = true
-    this.controls.addEventListener('change', this.render.bind(this))
-    this.controls.addEventListener('change', this.slices.notify)
-    this.controls.addEventListener('zoom', this.slices.notify)
+    this.controls = this.setupControl()
 
-    this.keyControls = new KeyControls()
+    this.operationProxy = this.setupOperationProxy()
 
-    this.operationProxy = new OperationProxy(this)
+    this.setupKeyControl()
 
-    this.keyControls.addKeyListener('Ctrl+90', m => {
+    this.gui = this.setupGUI()
+
+    this.light = new THREE.DirectionalLight(0xffffff)
+    this.scene.add(this.light)
+
+    this.dragControls = this.setupDragControl()
+
+    this.animate()
+  }
+
+  /**
+   *
+   * @param {Supervisor} supervisor
+   */
+  start (supervisor) {
+    if (this.supervisor) {
+      console.warn('Starting HatuViewer failed. Please finish at first.')
+    } else {
+      this.supervisor = supervisor
+      this.scene.add(this.supervisor.getSlice().object)
+      let slice = this.supervisor.getSlice()
+      slice.viewer = this
+      this.boundingBox = slice.boundingBox
+
+      this.center = slice.center
+      this.supervisor.getSwcs().forEach(swc => {
+        this.scene.add(swc)
+        swc.setPosition(-this.center[0], -this.center[1], -this.center[2])
+      })
+
+      this.supervisor.getAnnotation().position.set(-this.center[0], -this.center[1], -this.center[2])
+      this.scene.add(this.supervisor.getAnnotation())
+      this.camera.update()
+      this.gui.setMaxElevation(slice.maxElevation)
+      this.gui.setGuiMode(this.supervisor.getGuiMode())
+      this.supervisor.getOperationEvents().forEach((listener, event) => this.operationProxy.addEventListener(event, listener))
+    }
+  }
+
+  finish () {
+    if (this.supervisor) {
+      this.supervisor.getSwcs().forEach(swc => {
+        this.scene.remove(swc)
+      })
+      this.scene.remove(this.supervisor.getSlice().object)
+      this.scene.remove(this.supervisor.getAnnotation())
+      this.supervisor = null
+      this.gui.reset()
+      this.supervisor.getOperationEvents().forEach((listener, event) => this.operationProxy.removeEventListener(event, listener))
+    } else {
+      console.warn('Finishing HatuViewer failed. The HatuViewer has not been started.')
+    }
+  }
+
+  exportSwc () {
+
+  }
+
+  /**
+   *
+   * @return {TrackballControls}
+   */
+  setupControl () {
+    let controls = new TrackballControls(this, this.renderer.domElement)
+    let self = this
+    controls.noRotate = true
+    controls.staticMoving = true
+    controls.noRotate = true
+    controls.staticMoving = true
+    controls.addEventListener('change', this.render.bind(this))
+    controls.addEventListener('change', () => {
+      if (self.supervisor) {
+        self.supervisor.getSlice().notify(self)
+      }
+    })
+    controls.addEventListener('zoom', () => {
+      if (self.supervisor) {
+        self.supervisor.getSlice().notify(self)
+      }
+    })
+    return controls
+  }
+
+  /**
+   *
+   * @return {KeyControls}
+   */
+  setupKeyControl () {
+    let keyControls = new KeyControls()
+    keyControls.addKeyListener('Ctrl+90', m => {
       m.event.preventDefault()
       this.operationProxy.undo()
     })
 
-    this.keyControls.addKeyListener('Ctrl+89', m => {
+    keyControls.addKeyListener('Ctrl+89', m => {
       m.event.preventDefault()
       this.operationProxy.redo()
     })
 
-    this.gui = new HatuGUI(slices.maxElevation, this)
+    return keyControls
+  }
 
-    this.rendererFactory = new RendererFactory(this)
-    this.neuronRenderer = this.rendererFactory.create(this.gui.neuronMode)
-
-    this.scene.add(this.neuronRenderer)
-
-    // Lights
-    // doesn't actually work with any of the current shaders
-    this.light = new THREE.DirectionalLight(0xffffff)
-    this.light.position.set(0, 0, 1000)
-    this.scene.add(this.light)
-
+  /**
+   *
+   * @return {DragControls}
+   */
+  setupDragControl () {
     let scope = this
-    this.dragControls = new DragControls(this, this.renderer.domElement)
-    this.dragControls.addEventListener('dragstart', function (event) {
+    let dragControls = new DragControls(this, this.renderer.domElement)
+    dragControls.addEventListener('dragstart', event => {
       scope.controls.enabled = false
-      scope.gui.nodeOperation.dragStart(event.object)
+      scope.operationProxy.currentOperation.dragStart(event.object)
     })
-    this.dragControls.addEventListener('drag', function (event) {
+    dragControls.addEventListener('drag', event => {
       scope.controls.enabled = true
-      scope.gui.nodeOperation.drag(event.object, event.position)
+      scope.operationProxy.currentOperation.drag(event.object, event.position)
     })
-    this.dragControls.addEventListener('dragend', function (event) {
+    dragControls.addEventListener('dragend', event => {
       scope.controls.enabled = true
-      scope.gui.nodeOperation.dragEnd(event.object)
+      scope.operationProxy.currentOperation.dragEnd(event.object)
     })
-    this.dragControls.addEventListener('hoveron', function (event) {
-      scope.gui.nodeOperation.hoverOn(event.object)
+    dragControls.addEventListener('hoveron', event => {
+      scope.operationProxy.currentOperation.hoverOn(event.object)
     })
-    this.dragControls.addEventListener('hoveroff', function (event) {
-      scope.gui.nodeOperation.hoverOff(event.object)
+    dragControls.addEventListener('hoveroff', event => {
+      scope.operationProxy.currentOperation.hoverOff(event.object)
     })
-    this.dragControls.addEventListener('clicknothing', function (event) {
-      scope.gui.nodeOperation.clickNothing(event.position)
+    dragControls.addEventListener('clicknothing', event => {
+      scope.operationProxy.currentOperation.clickNothing(event.position)
     })
+    return dragControls
+  }
 
-    this.gui.onElevationChange(elevation => {
-      slices.setElevation(elevation)
-      slices.notify()
-      this.gui.visualMode = 'slices'
-      this.gui.update()
-      if (this.camera instanceof HatuOrthographicCamera) {
-        this.camera.set(elevation)
+  /**
+   *
+   * @return {OperationProxy}
+   */
+  setupOperationProxy () {
+    let proxy = new OperationProxy()
+    let self = this
+    proxy.addEventListener(DRAG_NODE_MODE_EVENT, () => {
+      self.dragControls.mode = 'node'
+    })
+    proxy.addEventListener(DRAG_EDGE_MODE_EVENT, () => {
+      self.dragControls.mode = 'edge'
+    })
+    return proxy
+  }
+
+  /**
+   *
+   * @return {HatuGUI}
+   */
+  setupGUI () {
+    let self = this
+    let gui = new HatuGUI(this)
+
+    /**
+     *
+     * @param {Slices} slice
+     * @param elevation
+     */
+    function onElevationChange (slice, elevation) {
+      slice.setElevation(elevation)
+      slice.notify(self)
+      self.gui.visualMode = 'slices'
+      self.gui.update()
+      if (self.camera instanceof HatuOrthographicCamera) {
+        self.camera.set(elevation)
       }
-    })
+    }
 
-    this.gui.onVisualModeChange(mode => {
+    /**
+     *
+     * @param {Slices} slice
+     * @param mode
+     */
+    function onVisualModeChange (slice, mode) {
       switch (mode) {
         case 'whole':
-          slices.setElevation(0)
-          slices.notify()
-          this.camera.reset()
+          slice.setElevation(0)
+          slice.notify(self)
+          self.camera.reset()
           break
         case 'slices':
-          if (this.camera instanceof HatuOrthographicCamera) {
-            this.camera.set(this.gui.elevation)
-            slices.notify()
+          if (self.camera instanceof HatuOrthographicCamera) {
+            self.camera.set(self.gui.elevation)
+            slice.notify(self)
           }
           break
       }
+    }
+
+    /**
+     *
+     * @param {Swc[]} swcs
+     * @param mode
+     */
+    function onNeuronModeChange (swcs, mode) {
+      swcs.forEach(swc => swc.edgeMode(mode))
+    }
+
+    gui.onElevationChange(elevation => {
+      if (this.supervisor) {
+        onElevationChange(this.supervisor.getSlice(), elevation)
+      }
     })
 
-    this.gui.onNeuronModeChange(mode => {
-      this.swc = this.exportSwc()
-      this.scene.remove(this.neuronRenderer)
-      this.neuronRenderer = this.rendererFactory.create(mode)
-      this.dragControls.objects = this.neuronRenderer.children
-      this.scene.add(this.neuronRenderer)
+    gui.onVisualModeChange(mode => {
+      if (this.supervisor) {
+        onVisualModeChange(this.supervisor.getSlice(), mode)
+      }
     })
+
+    gui.onNeuronModeChange(mode => {
+      onNeuronModeChange(this.supervisor.getSwcs(), mode)
+    })
+
+    return gui
   }
 
-  exportSwc () {
-    return this.neuronRenderer.exportAsSwc()
-  }
-
-  setPerspectiveCamera () {
-    let cameraPosition = this.camera.position
-    this.camera = new THREE.PerspectiveCamera(this.fov, this.WIDTH / this.HEIGHT, 1, this.calculateCameraPosition(this.fov) * 5)
-    this.camera.position.copy(cameraPosition)
-
-    this.controls.object = this.camera
-  }
-
-  setOrthographicCamera () {
-    this.camera = new HatuOrthographicCamera(this.boundingBox, this.calculateCameraPosition() * 5, this.camera.position, this)
-    this.controls.object = this.camera
-  }
-
-  calculateCenterNode () {
-    // neuron centers around 1st node by default
-    let center
-    center = [(this.boundingBox.xmax + this.boundingBox.xmin) / 2, (this.boundingBox.ymax + this.boundingBox.ymin) / 2, (this.boundingBox.zmax + this.boundingBox.zmin) / 2]
-    return center
-  }
-
-  // calculates camera position based on boudning box
-  calculateCameraPosition () {
-    return this.boundingBox.zmax * 2 + 1000
-  }
-
-  // sets up renderer
+  /**
+   *
+   * @return {WebGLRenderer}
+   */
   setUpRenderer () {
     let renderer = new THREE.WebGLRenderer({
-      antialias: true   // to get smoother output
+      antialias: true
     })
     renderer.setClearColor(0xffffff, 1)
     renderer.setSize(this.WIDTH, this.HEIGHT)
+    // noinspection JSUnresolvedVariable
     renderer.setPixelRatio(window.devicePixelRatio)
     this.container.appendChild(renderer.domElement)
     return renderer
   }
 
   render () {
-    // actually render the scene
     this.renderer.render(this.scene, this.camera)
   }
 
-  // animation loop
   animate () {
     // loop on request animation loop
     window.requestAnimationFrame(this.animate.bind(this))
     this.controls.update()
     let p = this.camera.position
     this.light.position.set(p.x, p.y, p.z)
-    // do the render
     this.render()
   }
 
+  /**
+   *
+   * @return {{left: *, right: *, top: *, bottom: *}}
+   */
   getWindow () {
     let camera = this.camera
     return {
@@ -208,6 +300,21 @@ export default class HatuViewer {
       top: camera.position.y + camera.top + this.center[1],
       bottom: camera.position.y + camera.bottom + this.center[1]
     }
+  }
+
+  defaultBoundingBox () {
+    return {
+      'xmin': 0,
+      'xmax': this.WIDTH,
+      'ymin': 0,
+      'ymax': this.HEIGHT,
+      'zmin': 0,
+      'zmax': 100
+    }
+  }
+
+  defaultCenter () {
+    return [this.WIDTH / 2, this.HEIGHT / 2, 50]
   }
 
 }

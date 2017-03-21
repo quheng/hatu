@@ -9,7 +9,6 @@ const emptyMaterial = new THREE.MeshBasicMaterial({
 export default class Slices {
 
   constructor (width, height, elevation) {
-    this.viewer = null
     this.width = width
     this.height = height
     this.elevation = 0
@@ -23,31 +22,51 @@ export default class Slices {
     this.mesh = new THREE.Mesh(geometry, this.getMaterial())
     this.updateElevation = false
     this.mesh.position.set(0, 0, 0)
+    this.calculateBoundingBox()
+  }
 
-    let scope = this
-
-    this.notify = () => {
-      let window = scope.viewer.getWindow()
-      scope.left = Math.max(window.left, 0)
-      scope.right = Math.min(window.right, scope.width)
-      scope.top = Math.min(window.top, scope.height)
-      scope.bottom = Math.max(window.bottom, 0)
-
-      scope.policyManager.notify()
-      scope.updatePosition()
+  calculateBoundingBox () {
+    let boundingBox = {
+      'xmin': 0,
+      'xmax': this.width,
+      'ymin': 0,
+      'ymax': this.height,
+      'zmin': 0,
+      'zmax': this.maxElevation
     }
+    this.boundingBox = boundingBox
+    this.center = [(boundingBox.xmax + boundingBox.xmin) / 2, (boundingBox.ymax + boundingBox.ymin) / 2, (boundingBox.zmax + boundingBox.zmin) / 2]
   }
 
   update () {
     this.mesh.material = this.getMaterial()
   }
 
-  updatePosition () {
+  /**
+   *
+   * @param {HatuViewer} viewer
+   */
+  notify (viewer) {
+    let window = viewer.getWindow()
+    this.left = Math.max(window.left, 0)
+    this.right = Math.min(window.right, this.width)
+    this.top = Math.min(window.top, this.height)
+    this.bottom = Math.max(window.bottom, 0)
+
+    this.policyManager.notify()
+    this.updatePosition(viewer.center)
+  }
+
+  updatePosition (center) {
     this.mesh.geometry = new THREE.PlaneGeometry(this.right - this.left, this.top - this.bottom)
-    this.mesh.position.set((this.right + this.left) / 2 - this.viewer.center[0], (this.top + this.bottom) / 2 - this.viewer.center[1], this.elevation - this.maxElevation / 2)
+    this.mesh.position.set((this.right + this.left) / 2 - center[0], (this.top + this.bottom) / 2 - center[1], this.elevation - this.maxElevation / 2)
     this.mesh.material = emptyMaterial
   }
 
+  /**
+   *
+   * @return {MeshBasicMaterial}
+   */
   getMaterial () {
     let url = `/image?elevation=${this.elevation}&left=${this.left}&right=${this.right}&top=${this.bottom}&bottom=${this.top}`
     console.log(url)
@@ -62,6 +81,10 @@ export default class Slices {
     this.updateElevation = true
   }
 
+  /**
+   *
+   * @return {Mesh}
+   */
   get object () {
     return this.mesh
   }

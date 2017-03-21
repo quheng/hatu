@@ -1,15 +1,18 @@
+import { DRAG_NODE_MODE_EVENT, CURSOR_POINTER_EVENT, CURSOR_AUTO_EVENT } from './OperationProxy'
+
 export default class NodeOperation {
 
   /**
    *
-   * @param {HatuGUI} gui
+   * @param {OperationProxy} proxy
    */
-  constructor (gui) {
-    this.gui = gui
+
+  constructor (proxy) {
+    this.proxy = proxy
   }
 
   activate () {
-    this.gui.viewer.dragControls.mode = 'node'
+    this.proxy.dispatchEvent({ type: DRAG_NODE_MODE_EVENT })
   }
 
   /**
@@ -25,7 +28,7 @@ export default class NodeOperation {
    * @param {HatuNode} node
    */
   hoverOn (node) {
-    this.gui.dom.style.cursor = 'pointer'
+    this.proxy.dispatchEvent({ type: CURSOR_POINTER_EVENT })
   }
 
   /**
@@ -33,7 +36,7 @@ export default class NodeOperation {
    * @param object
    */
   hoverOff (object) {
-    this.gui.dom.style.cursor = 'auto'
+    this.proxy.dispatchEvent({ type: CURSOR_AUTO_EVENT })
   }
 
   /**

@@ -11,17 +11,16 @@ export default class DeleteNode extends NodeOperation {
       window.alert('The root node couldn\'t be deleted!')
     } else {
       this.node = node
-      this.gui.viewer.operationProxy.conduct(this)
+      this.proxy.conduct(this)
     }
   }
 
   conduct () {
-    this.gui.viewer.neuronRenderer.deleteNode(this.node)
-    this.gui.setupOperation()
+    this.node.swc.deleteNode(this.node)
   }
 
   cancel () {
-    this.gui.viewer.neuronRenderer.undoDeleteNode(this.node)
+    this.node.swc.undoDeleteNode(this.node)
   }
 
 }
