@@ -6,7 +6,6 @@ import uuid from 'uuid'
 import _ from 'lodash'
 
 import database from './database'
-
 import { Strategy as LocalStrategy } from 'passport-local'
 
 const encrypt = (password, salt) => {
@@ -25,6 +24,7 @@ async function setupPassport (userDao, done) {
         if (_.isEmpty(userInfo)) {
           loginFail(done)
         }
+        console.log(userInfo)
         const salt = userInfo.get('salt')
         const correctPassword = userInfo.get('password')
         if (correctPassword === encrypt(password, salt)) {
@@ -50,8 +50,7 @@ async function setupPassport (userDao, done) {
   })
 }
 
-export default async function () {
-  const userRouter = express.Router()
+async function initUserInfo() {
   const userDao = database.define('user_info', {
     username: {
       type: Sequelize.STRING,
@@ -61,12 +60,31 @@ export default async function () {
       type: Sequelize.STRING
     },
     salt: {
-      type: Sequelize.STRING
+      type: Sequelize.UUID
     }
   })
 
   await userDao.sync()
   await setupPassport(userDao)
+  const initUser = 'hatu'
+  const initUserSalt = uuid.v4()
+  const initUserPw = 'hatu'
+
+  const preHatu = await userDao.findByPrimary(initUser)
+  if (_.isEmpty(preHatu)) {
+    await userDao.create({
+      username: initUser,
+      salt: initUserSalt,
+      password: encrypt(initUserPw, initUserSalt)
+    })
+  }
+  return userDao
+}
+
+
+export default async function () {
+  const userRouter = express.Router()
+  const userDao = await initUserInfo()
 
   userRouter.post('/login',
     passport.authenticate('local'), (req, res) => {

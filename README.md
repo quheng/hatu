@@ -19,11 +19,12 @@ export postgres_user=password
 1. `yarn`
 2. `npm start`
 Tips: if you live in China, `npm install -g cyarn --registry=https://registry.npm.taobao.org` and use `cyarn` will be fast
+3. use default user `hatu@hatu` to login or register a new user
 
 # Database
 Use `Sequelize` as ORM framework, data types mentioned below are provide by Sequelize.
 
-1. user
+1. user info
 
 | fields    | data type | notes              |
 |-----------|-----------|--------------------|
@@ -31,7 +32,7 @@ Use `Sequelize` as ORM framework, data types mentioned below are provide by Sequ
 | password  | STRING    |                    |
 | salt      | UUID      | using for security |
 
-2. image
+2. image info
 
 | fields    | data type | notes                     |
 |-----------|-----------|---------------------------|
@@ -39,7 +40,7 @@ Use `Sequelize` as ORM framework, data types mentioned below are provide by Sequ
 | image     | STRING    | image name stored in dvid |
 | role      | STRING    | using for authorization   |
 
-3. swc
+3. swc info
 
 order by createdAt
 

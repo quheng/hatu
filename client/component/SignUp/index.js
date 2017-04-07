@@ -22,9 +22,9 @@ const SignUpForm = Form.create()(React.createClass({
 
         api.signUp(values)
           .then(res => {
-            message.success('注册成功，请登录')
             this.setState({ loading: false })
             if (res.status === 200) {
+              message.success('注册成功，请登录')
               setTimeout(() => {
                 browserHistory.push('/login')
               }, 500)
