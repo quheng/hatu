@@ -43,12 +43,12 @@ Use `Sequelize` as ORM framework, data types mentioned below are provide by Sequ
 
 order by createdAt
 
-| fields    | data type | notes                      |
-|-----------|-----------|----------------------------|
-| image     | STRING    | image name stored in dvid  |
-| swc       | UUID      | image name stored in dvid  |
-| createdAt | TIME      | when created this swc file |
-| username  | STRING    | who created this swc file  |
+| fields    | data type | notes                               |
+|-----------|-----------|-------------------------------------|
+| image     | STRING    | image name stored in dvid           |
+| swc       | UUID      | primaryKey, swc name stored in dvid |
+| createdAt | TIME      | when created this swc file          |
+| username  | STRING    | who created this swc file           |
 
     
 # Test

@@ -5,21 +5,10 @@ import bodyParser from 'body-parser'
 import passport from 'passport'
 import session from 'express-session'
 import webpackConfigure from './webpackConfigure'
-import database from './database'
-import userRouterGenerator from './users'
+import userRouterGenerator from './database/users'
 
 import { dvidAddress, setupDvid } from './dvid'
 import { imageHandler } from './image'
-
-database
-  .authenticate()
-  .then(function () {
-    console.log('Connection has been established successfully.')
-  })
-  .catch(function (err) {
-    console.log('Unable to connect to the database:', err)
-    process.exit(-1)
-  })
 
 const app = express()
 webpackConfigure(app)
@@ -48,7 +37,7 @@ function getProxyOption (uuid) {
 
 async function setupRoute () {
   const uuid = await setupDvid()
-  const userRoute = await userRouterGenerator(database)
+  const userRoute = await userRouterGenerator()
   app.use('/users', userRoute)
   app.get('/image', imageHandler)
   app.use('/api', getProxyOption(uuid))

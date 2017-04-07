@@ -5,6 +5,8 @@ import crypto from 'crypto'
 import uuid from 'uuid'
 import _ from 'lodash'
 
+import database from './database'
+
 import { Strategy as LocalStrategy } from 'passport-local'
 
 const encrypt = (password, salt) => {
@@ -48,7 +50,7 @@ async function setupPassport (userDao, done) {
   })
 }
 
-export default async function (database) {
+export default async function () {
   const userRouter = express.Router()
   const userDao = database.define('user_info', {
     username: {
