@@ -5,7 +5,7 @@ import bodyParser from 'body-parser'
 import passport from 'passport'
 import session from 'express-session'
 import webpackConfigure from './webpackConfigure'
-import userRouterGenerator from './database/users'
+import userRouterGenerator from './database/users_info'
 
 import { dvidAddress, setupDvid } from './dvid'
 import { imageHandler } from './image'
