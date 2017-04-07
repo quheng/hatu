@@ -1,4 +1,4 @@
-import ImageInstance from './image/ImageInstance'
+import ImageInstance from './ImageInstance'
 
 export function imageHandler (req, res) {
   let elevation = Number(req.query.elevation)

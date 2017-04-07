@@ -24,7 +24,6 @@ async function setupPassport (userDao, done) {
         if (_.isEmpty(userInfo)) {
           loginFail(done)
         }
-        console.log(userInfo)
         const salt = userInfo.get('salt')
         const correctPassword = userInfo.get('password')
         if (correctPassword === encrypt(password, salt)) {
@@ -70,14 +69,13 @@ async function initUserInfo() {
   const initUserSalt = uuid.v4()
   const initUserPw = 'hatu'
 
-  const preHatu = await userDao.findByPrimary(initUser)
-  if (_.isEmpty(preHatu)) {
-    await userDao.create({
-      username: initUser,
+  const preHatu = await userDao.findOrCreate({
+    where: {username: initUser},
+    defaults: {
       salt: initUserSalt,
       password: encrypt(initUserPw, initUserSalt)
-    })
-  }
+    }
+  })
   return userDao
 }
 

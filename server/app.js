@@ -5,10 +5,12 @@ import bodyParser from 'body-parser'
 import passport from 'passport'
 import session from 'express-session'
 import webpackConfigure from './webpackConfigure'
-import userRouterGenerator from './database/users_info'
+
+import userRouterGenerator from './database/user_info'
+import imageRouterGenerator from './database/image_info'
 
 import { dvidAddress, setupDvid } from './dvid'
-import { imageHandler } from './image'
+import { imageHandler } from './image/image'
 
 const app = express()
 webpackConfigure(app)
@@ -38,7 +40,10 @@ function getProxyOption (uuid) {
 async function setupRoute () {
   const uuid = await setupDvid()
   const userRoute = await userRouterGenerator()
+  const imageRoute = await imageRouterGenerator()
+
   app.use('/users', userRoute)
+  app.use('/api', imageRoute)
   app.get('/image', imageHandler)
   app.use('/api', getProxyOption(uuid))
   app.use('/uuid', (req, res) => res.send(uuid))
