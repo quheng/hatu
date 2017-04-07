@@ -10,7 +10,6 @@ import userRouterGenerator from './database/user_info'
 import imageRouterGenerator from './database/image_info'
 
 import { dvidAddress, setupDvid } from './dvid'
-import { imageHandler } from './image/image'
 
 const app = express()
 webpackConfigure(app)
@@ -44,7 +43,6 @@ async function setupRoute () {
 
   app.use('/users', userRoute)
   app.use('/api', imageRoute)
-  app.get('/image', imageHandler)
   app.use('/api', getProxyOption(uuid))
   app.use('/uuid', (req, res) => res.send(uuid))
   app.use('/assets/static', express.static(path.join(__dirname, '..', 'public')))
@@ -55,7 +53,6 @@ setupRoute()
 
 const secretRoutes = [
   '/api',
-  '/image',
   '/uuid',
   '/assets'
 ]

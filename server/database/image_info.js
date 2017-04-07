@@ -1,9 +1,9 @@
 import passport from 'passport'
 import express from 'express'
 import Sequelize from 'sequelize'
-import _ from 'lodash'
 
 import database from './database'
+import ImageInstance from '../image/ImageInstance'
 
 async function initImageInfo() {
   const imageDao = database.define('image_info', {
@@ -50,14 +50,6 @@ export default async function () {
   const imageDao = await initImageInfo()
 
   imageRouter.get('/images', (req, res) => {
-    console.log(imageDao)
-    console.log({
-      where: {
-        username: req.user.username
-      }
-    })
-
-
     imageDao.findAll({
       where: {
         username: req.user.username
@@ -67,6 +59,21 @@ export default async function () {
     })
   })
 
+  imageRouter.get('/image/:name', (req, res) => {
+    const elevation = Number(req.query.elevation)
+    const left = Math.round(Number(req.query.left))
+    const right = Math.round(Number(req.query.right))
+    const top = Math.round(Number(req.query.top))
+    const bottom = Math.round(Number(req.query.bottom))
+    
+    const imageInstance = new ImageInstance(req.params.name, 256)
+    imageInstance.retrieve(left, right, top, bottom, elevation)
+      .then(data => {
+        res.writeHead(200, { 'Content-Type': 'image/jpeg' })
+        res.write(data, 'binary')
+        res.end()
+      })
+  })
 
   return imageRouter
 }

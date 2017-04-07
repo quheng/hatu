@@ -68,7 +68,8 @@ export default class Slices {
    * @return {MeshBasicMaterial}
    */
   getMaterial () {
-    let url = `/image?elevation=${this.elevation}&left=${this.left}&right=${this.right}&top=${this.bottom}&bottom=${this.top}`
+    // todo add name
+    let url = `/api/image/slice15/?elevation=${this.elevation}&left=${this.left}&right=${this.right}&top=${this.bottom}&bottom=${this.top}`
     console.log(url)
     let texture = textureLoader.load(url)
     return new THREE.MeshBasicMaterial({
