@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 
 const { Item } = Menu
 
-class SwcList extends React.Component {
+class ImageList extends React.Component {
 
   @autobind
   @injectProps
@@ -46,4 +46,4 @@ const mapDispatchToProps = ({
   loadSwcFile
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(SwcList)
+export default connect(mapStateToProps, mapDispatchToProps)(ImageList)

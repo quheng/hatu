@@ -65,7 +65,6 @@ export default async function () {
     const right = Math.round(Number(req.query.right))
     const top = Math.round(Number(req.query.top))
     const bottom = Math.round(Number(req.query.bottom))
-    
     const imageInstance = new ImageInstance(req.params.name, 256)
     imageInstance.retrieve(left, right, top, bottom, elevation)
       .then(data => {

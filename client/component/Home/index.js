@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './index.css'
 import ThreeView from '../ThreeView'
-import SwcList from '../SwcList'
+import SwcList from '../ImageList'
 
 import { connect } from 'react-redux'
 import { injectProps, autobind } from 'react-decoration'
