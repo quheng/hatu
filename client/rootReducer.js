@@ -1,7 +1,7 @@
-import swc from './modules/swc/reducer'
+import image from './modules/image/reducer'
 
 import { combineReducers } from 'redux'
 
 export default combineReducers({
-  swc
+  image
 })

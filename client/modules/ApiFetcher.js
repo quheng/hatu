@@ -42,6 +42,13 @@ class ApiFetcher {
       credentials: 'include'
     })
   }
+
+  imageList () {
+    return fetch(`${this.config.server}/api/images`, {
+      method: 'GET',
+      credentials: 'include'
+    })
+  }
 }
 
 // todo  get server address

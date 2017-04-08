@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './index.css'
-import api from '../../api'
+import ApiFetcher from '../../modules/ApiFetcher'
 
 import { Link, browserHistory } from 'react-router'
 import { Form, Icon, Input, Button, message } from 'antd'
@@ -20,7 +20,7 @@ const SignUpForm = Form.create()(React.createClass({
         }
         this.setState({ loading: true })
 
-        api.signUp(values)
+        ApiFetcher.signUp(values)
           .then(res => {
             this.setState({ loading: false })
             if (res.status === 200) {

@@ -7,7 +7,7 @@ docker run -d --name pg \
     postgres
 
 # run slice data volume
-docker run -d --name slicedb hjwissac/slicedb
+docker run -d --name slicedb hjwissac/slicedb:swc
 
 # run the dvid
 docker run -d --name dvid \
