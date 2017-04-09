@@ -1,14 +1,15 @@
 import React from 'react'
+import _ from 'lodash'
 import styles from './index.css'
 import HatuViewer from '../../util/HatuViewer'
 import Slices from '../../util/slice/Slices'
-import { connect } from 'react-redux'
 import Swc from '../../util/swc/Swc'
-import { OperationProxy } from '../../util/operation/OperationProxy'
 import Resolver from '../../util/resolver/Resolver'
 
-class ThreeView extends React.Component {
+import { connect } from 'react-redux'
+import { OperationProxy } from '../../util/operation/OperationProxy'
 
+class ThreeView extends React.Component {
   render () {
     return (<div className={styles.threeView} ref='container' />)
   }
@@ -35,7 +36,6 @@ class ThreeView extends React.Component {
       }
 
       let adjusted = swc.serialize()
-      console.log(adjusted)
 
       // /////////////////////////////////////////////////////////////////////
       // This two lines are the actual interface to start a resolver
@@ -49,7 +49,7 @@ class ThreeView extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  swcFile: state.swc.swcFile
+  swcFile: _.get(state, 'swc.swc', '')
 })
 
 export default connect(mapStateToProps, null)(ThreeView)

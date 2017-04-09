@@ -12,7 +12,6 @@ function * querySwc (swc) {
 function * loadSwcSaga (action) {
   try {
     const swc = yield call(querySwc, action.payload)
-    console.log(swc)
     yield put(actions.loadSwcSuccess({ swc }))
   } catch (error) {
     yield put(actions.loadSwcFail(error))

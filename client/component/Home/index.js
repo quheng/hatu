@@ -10,7 +10,7 @@ export default class Home extends React.Component {
         <div>
           <ImageList className={styles.imageList} />
         </div>
-        {/*<ThreeView className={styles.threeView} />*/}
+        <ThreeView className={styles.threeView} />
       </div>
     )
   }
