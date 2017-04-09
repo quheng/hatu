@@ -14,9 +14,9 @@ class ThreeView extends React.Component {
     return (<div className={styles.threeView} ref='container' />)
   }
 
-  componentWillReceiveProps ({ swcFile }) {
+  componentWillReceiveProps ({ swcInfo }) {
     try {
-      let swc = new Swc(swcFile, 0x0)
+      let swc = new Swc(swcInfo.swcContent, 0x0)
       let slices = new Slices(1024, 1024, 97)
       let hatuViewer = new HatuViewer(this.refs.container)
 
@@ -49,7 +49,7 @@ class ThreeView extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  swcFile: _.get(state, 'swc.swc', '')
+  swcInfo: _.get(state, 'swc', {})
 })
 
 export default connect(mapStateToProps, null)(ThreeView)

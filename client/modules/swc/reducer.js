@@ -1,6 +1,6 @@
 import * as actions from './action'
 
-const initState = { swc: '' }
+const initState = { swcInfo: '' }
 
 export default function (state = initState, action) {
   switch (action.type) {
@@ -10,11 +10,11 @@ export default function (state = initState, action) {
         isFetching: true
       }
     case actions.LOAD_SWC_SUCCESS: {
-      const { swc } = action.payload
+      const swcInfo = action.payload
       return {
         ...state,
         isFetching: false,
-        swc
+        swcInfo
       }
     }
     case actions.LOAD_SWC_FAIL:

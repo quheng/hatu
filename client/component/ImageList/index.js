@@ -20,7 +20,10 @@ class ImageList extends React.Component {
   @autobind
   @injectProps
   handleClick ({loadSwc}, e) {
-    loadSwc(e.key)
+    loadSwc({
+      swcName: e.key,
+      imageName: e.keyPath[1]
+    })
   }
 
   @injectProps
@@ -30,7 +33,7 @@ class ImageList extends React.Component {
         <Menu onClick={this.handleClick}>
           {
             imageList.map(imageInfo => (
-              <SubMenu key={imageInfo}
+              <SubMenu key={imageInfo.image}
                     className={styles.imageItem}
                     title={<span>{imageInfo.image}</span>}
               >
@@ -38,7 +41,6 @@ class ImageList extends React.Component {
                   imageInfo.swcHistory.map(swc => (
                     <Item
                       key={swc.swc}
-                      onClick={this.handleClick}
                     >
                       {moment(swc.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
                     </Item>

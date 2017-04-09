@@ -11,8 +11,13 @@ function * querySwc (swc) {
 
 function * loadSwcSaga (action) {
   try {
-    const swc = yield call(querySwc, action.payload)
-    yield put(actions.loadSwcSuccess({ swc }))
+    const { swcName, imageName } = action.payload
+    const swcContent = yield call(querySwc, swcName)
+    yield put(actions.loadSwcSuccess({
+      swcName,
+      imageName,
+      swcContent
+    }))
   } catch (error) {
     yield put(actions.loadSwcFail(error))
   }
