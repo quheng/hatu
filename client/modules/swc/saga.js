@@ -4,20 +4,21 @@ import ApiFetcher from '../ApiFetcher'
 import { put, call } from 'redux-saga/effects'
 import { takeEvery } from 'redux-saga'
 
-function * querySwc () {
-  const response = yield ApiFetcher.imageList()
+function * querySwc (swc) {
+  const response = yield ApiFetcher.swc(swc)
   return yield response.text()
 }
 
-function * loadSwcListSaga () {
+function * loadSwcSaga (action) {
   try {
-
-    yield put(actions.loadSwcSuccess({  }))
+    const swc = yield call(querySwc, action.payload)
+    console.log(swc)
+    yield put(actions.loadSwcSuccess({ swc }))
   } catch (error) {
     yield put(actions.loadSwcFail(error))
   }
 }
 
-export function * watchSwcListSaga () {
-  yield * takeEvery(actions.LOAD_SWC, loadSwcListSaga)
+export function * watchSwcSaga () {
+  yield * takeEvery(actions.LOAD_SWC, loadSwcSaga)
 }
