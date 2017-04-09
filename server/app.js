@@ -32,7 +32,7 @@ function getProxyOption (uuid) {
   return proxy({
     target: dvidAddress,
     pathRewrite: {
-      '^/api': '/api/node/' + uuid + '/'
+      '^/dvid': '/api/node/' + uuid + '/'
     }
   })
 }
@@ -46,7 +46,7 @@ async function setupRoute () {
   app.use('/users', userRoute)
   app.use('/api', imageRoute)
   app.use('/api', swcRoute)
-  app.use('/api', getProxyOption(uuid))
+  app.use('/dvid', getProxyOption(uuid))
   app.use('/uuid', (req, res) => res.send(uuid))
   app.use('/assets/static', express.static(path.join(__dirname, '..', 'public')))
   app.use('/*', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'index.html')))

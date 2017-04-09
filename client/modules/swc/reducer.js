@@ -1,23 +1,23 @@
 import * as actions from './action'
 
-const initState = { imageList: [] }
+const initState = { swc: '' }
 
 export default function (state = initState, action) {
   switch (action.type) {
-    case actions.LOAD_IMAGE_LIST:
+    case actions.LOAD_SWC:
       return {
         ...state,
         isFetching: true
       }
-    case actions.LOAD_IMAGE_LIST_SUCCESS: {
-      const { imageList } = action.payload
+    case actions.LOAD_SWC_SUCCESS: {
+      const { swc } = action.payload
       return {
         ...state,
         isFetching: false,
-        imageList
+        swc
       }
     }
-    case actions.LOAD_IMAGE_LIST_FAIL:
+    case actions.LOAD_SWC_FAIL:
       return {
         ...state,
         isFetching: false,

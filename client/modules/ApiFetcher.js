@@ -56,6 +56,13 @@ class ApiFetcher {
       credentials: 'include'
     })
   }
+
+  swc (swc) {
+    return fetch(`${this.config.server}/dvid/swc/key/${swc}`, {
+      method: 'GET',
+      credentials: 'include'
+    })
+  }
 }
 
 // todo  get server address

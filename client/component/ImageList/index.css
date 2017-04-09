@@ -1,8 +1,6 @@
 :local .imageList {
     width: 150px;
     height: 100%;
-    display: flex;
-    flex-direction: column;
 }
 :local .imageItem {
     width: 150px;
