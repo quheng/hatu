@@ -1,5 +1,6 @@
 import * as actions from './action'
 import ApiFetcher from '../ApiFetcher'
+import _ from 'lodash'
 
 import { put, call } from 'redux-saga/effects'
 import { takeEvery } from 'redux-saga'
@@ -9,10 +10,20 @@ function * queryImageList () {
   return yield response.text()
 }
 
+function * querySwcList (image) {
+  const response = yield ApiFetcher.swcList(image)
+  return yield response.text()
+}
+
 function * loadImageListSaga () {
   try {
     const queryRes = yield call(queryImageList)
-    yield put(actions.loadImageListSuccess({ imageList: JSON.parse(queryRes) }))
+    const imageList = JSON.parse(queryRes)
+    for (let i = 0; i < imageList.length; i++){
+      const swcList = yield call(querySwcList, imageList[i].image)
+      imageList[i]['swc'] = JSON.parse(swcList)
+    }
+    yield put(actions.loadImageListSuccess({ imageList }))
   } catch (error) {
     yield put(actions.loadImageListFail(error))
   }

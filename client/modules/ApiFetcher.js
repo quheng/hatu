@@ -49,6 +49,13 @@ class ApiFetcher {
       credentials: 'include'
     })
   }
+
+  swcList (image) {
+    return fetch(`${this.config.server}/api/swcs/${image}`, {
+      method: 'GET',
+      credentials: 'include'
+    })
+  }
 }
 
 // todo  get server address
