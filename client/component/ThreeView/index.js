@@ -17,7 +17,7 @@ class ThreeView extends React.Component {
   componentWillReceiveProps ({ swcInfo }) {
     try {
       let swc = new Swc(swcInfo.swcContent, 0x0)
-      let slices = new Slices(1024, 1024, 97)
+      let slices = new Slices(1024, 1024, 97, swcInfo.imageName)
       let hatuViewer = new HatuViewer(this.refs.container)
 
       let proxy = new OperationProxy()
@@ -39,7 +39,7 @@ class ThreeView extends React.Component {
 
       // /////////////////////////////////////////////////////////////////////
       // This two lines are the actual interface to start a resolver
-      let resolver = new Resolver(swcFile, adjusted, slices)
+      let resolver = new Resolver(swcInfo.swcContent, adjusted, slices)
       hatuViewer.start(resolver)
       // /////////////////////////////////////////////////////////////////////
     } catch (err) {
@@ -49,7 +49,7 @@ class ThreeView extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  swcInfo: _.get(state, 'swc', {})
+  swcInfo: _.get(state, 'swc.swcInfo', {})
 })
 
 export default connect(mapStateToProps, null)(ThreeView)

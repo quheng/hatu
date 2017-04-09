@@ -8,7 +8,8 @@ const emptyMaterial = new THREE.MeshBasicMaterial({
 
 export default class Slices {
 
-  constructor (width, height, elevation) {
+  constructor (width, height, elevation, imageName) {
+    this.imageName = imageName
     this.width = width
     this.height = height
     this.elevation = 0
@@ -26,7 +27,7 @@ export default class Slices {
   }
 
   calculateBoundingBox () {
-    let boundingBox = {
+    const boundingBox = {
       'xmin': 0,
       'xmax': this.width,
       'ymin': 0,
@@ -47,7 +48,7 @@ export default class Slices {
    * @param {HatuViewer} viewer
    */
   notify (viewer) {
-    let window = viewer.getWindow()
+    const window = viewer.getWindow()
     this.left = Math.max(window.left, 0)
     this.right = Math.min(window.right, this.width)
     this.top = Math.min(window.top, this.height)
@@ -68,10 +69,8 @@ export default class Slices {
    * @return {MeshBasicMaterial}
    */
   getMaterial () {
-    // todo add name
-    let url = `/api/image/slice15/?elevation=${this.elevation}&left=${this.left}&right=${this.right}&top=${this.bottom}&bottom=${this.top}`
-    console.log(url)
-    let texture = textureLoader.load(url)
+    const url = `/api/image/${this.imageName}/?elevation=${this.elevation}&left=${this.left}&right=${this.right}&top=${this.bottom}&bottom=${this.top}`
+    const texture = textureLoader.load(url)
     return new THREE.MeshBasicMaterial({
       map: texture
     })
@@ -89,5 +88,4 @@ export default class Slices {
   get object () {
     return this.mesh
   }
-
 }
