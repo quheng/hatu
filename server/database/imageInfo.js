@@ -1,10 +1,10 @@
-import passport from 'passport'
 import express from 'express'
 import Sequelize from 'sequelize'
 
 import database from './database'
 import ImageInstance from '../image/ImageInstance'
 
+import { initRole, initUser, initImage } from './initValue'
 async function initImageInfo() {
   const imageDao = database.define('image_info', {
     username: {
@@ -29,10 +29,6 @@ async function initImageInfo() {
   })
 
   await imageDao.sync()
-
-  const initUser = 'hatu'
-  const initRole = 'owner'
-  const initImage = 'slice15'
 
   await imageDao.findOrCreate({
     where: {username: initUser},

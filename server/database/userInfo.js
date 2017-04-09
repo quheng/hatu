@@ -7,7 +7,7 @@ import _ from 'lodash'
 
 import database from './database'
 import { Strategy as LocalStrategy } from 'passport-local'
-
+import { initUser, initUserPw } from './initValue'
 const encrypt = (password, salt) => {
   return crypto.createHmac('sha256', salt)
     .update(password)
@@ -65,14 +65,12 @@ async function initUserInfo() {
 
   await userDao.sync()
   await setupPassport(userDao)
-  const initUser = 'hatu'
-  const initUserSalt = uuid.v4()
-  const initUserPw = 'hatu'
+  const salt = uuid.v4()
 
   const preHatu = await userDao.findOrCreate({
     where: {username: initUser},
     defaults: {
-      salt: initUserSalt,
+      salt,
       password: encrypt(initUserPw, initUserSalt)
     }
   })

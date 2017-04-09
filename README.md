@@ -47,9 +47,10 @@ order by createdAt
 | fields    | data type | notes                               |
 |-----------|-----------|-------------------------------------|
 | image     | STRING    | image name stored in dvid           |
-| swc       | UUID      | primaryKey, swc name stored in dvid |
+| swc       | STRING    | primaryKey, swc name stored in dvid |
 | createdAt | TIME      | when created this swc file          |
 | username  | STRING    | who created this swc file           |
+| comments  | STRING    | descript this swc file              |
 
     
 # Test

@@ -6,8 +6,9 @@ import passport from 'passport'
 import session from 'express-session'
 import webpackConfigure from './webpackConfigure'
 
-import userRouterGenerator from './database/user_info'
-import imageRouterGenerator from './database/image_info'
+import userRouterGenerator from './database/userInfo'
+import imageRouterGenerator from './database/imageInfo'
+import swcRouterGenerator from './database/swcInfo'
 
 import { dvidAddress, setupDvid } from './dvid'
 
@@ -40,9 +41,11 @@ async function setupRoute () {
   const uuid = await setupDvid()
   const userRoute = await userRouterGenerator()
   const imageRoute = await imageRouterGenerator()
+  const swcRoute = await swcRouterGenerator()
 
   app.use('/users', userRoute)
   app.use('/api', imageRoute)
+  app.use('/api', swcRoute)
   app.use('/api', getProxyOption(uuid))
   app.use('/uuid', (req, res) => res.send(uuid))
   app.use('/assets/static', express.static(path.join(__dirname, '..', 'public')))
