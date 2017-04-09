@@ -2,10 +2,12 @@ import React from 'react'
 import styles from './index.css'
 import moment from 'moment'
 
-import { loadImageList } from '../../modules/image/action'
 import { Menu } from 'antd'
 import { autobind, injectProps } from 'react-decoration'
 import { connect } from 'react-redux'
+
+import { loadImageList } from '../../modules/image/action'
+import { loadSwc } from '../../modules/swc/action'
 
 const { Item, SubMenu } = Menu
 
@@ -17,8 +19,8 @@ class ImageList extends React.Component {
 
   @autobind
   @injectProps
-  handleClick ({loadSwcFile}, e) {
-    // loadSwcFile({key: e.key})
+  handleClick ({loadSwc}, e) {
+    loadSwc(e.key)
   }
 
   @injectProps
@@ -34,7 +36,12 @@ class ImageList extends React.Component {
               >
                 {
                   imageInfo.swcHistory.map(swc => (
-                    <Item key="sub3"> {moment(swc.createdAt).format('MMMM Do YYYY, h:mm:ss a')} </Item>
+                    <Item
+                      key={swc.swc}
+                      onClick={this.handleClick}
+                    >
+                      {moment(swc.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
+                    </Item>
                   ))
                 }
               </SubMenu>
@@ -51,7 +58,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = ({
-  loadImageList
+  loadImageList,
+  loadSwc
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImageList)
