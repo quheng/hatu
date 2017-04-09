@@ -71,7 +71,7 @@ async function initUserInfo() {
     where: {username: initUser},
     defaults: {
       salt,
-      password: encrypt(initUserPw, initUserSalt)
+      password: encrypt(initUserPw, salt)
     }
   })
   return userDao

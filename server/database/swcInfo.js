@@ -16,21 +16,16 @@ async function initSwcInfo() {
       }
     },
     image: {
-      type: Sequelize.STRING,
-      references: {
-        model: 'image_infos',
-        key: 'image',
-        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-      }
+      type: Sequelize.STRING
     },
     swc: {
       type: Sequelize.STRING
     },
     comments: {
-      type: Sequelize.String
+      type: Sequelize.STRING
     },
     createdAt: {
-      type: Sequelize.Date,
+      type: Sequelize.DATE,
       defaultValue: Sequelize.NOW
     }
   }, {
