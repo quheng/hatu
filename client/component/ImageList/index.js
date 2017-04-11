@@ -39,14 +39,14 @@ class ImageList extends React.Component {
     return (
       <div className={styles.imageList}>
         <Menu
-          style={{ height:'100%' }}
+          style={{ height: '100%' }}
           mode='inline'
           onClick={this.handleClick}
         >
           {
             imageList.map(imageInfo => (
               <SubMenu
-                key={imageInfo.image }
+                key={imageInfo.image}
                 className={styles.imageItem}
                 title={<span>{imageInfo.image}</span>}
               >
@@ -56,7 +56,7 @@ class ImageList extends React.Component {
                       style={{marginLeft: '-20px'}}
                       key={swc.swc}
                     >
-                      <Popover content={getSwcInfoPopover(swc)} title="swc info">
+                      <Popover content={getSwcInfoPopover(swc)} title='swc info'>
                         {
                           moment(swc.createdAt).format('MMMM Do YYYY, h:mm:ss a')
                         }
