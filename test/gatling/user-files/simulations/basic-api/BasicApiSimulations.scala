@@ -22,13 +22,13 @@ import java.util.concurrent.ThreadLocalRandom
 
 class BasicApiSimulations extends Simulation {
 
-  val jsonHeader = Map("Content-Type" -> "application/json")
+  val xFormHeader = Map("Content-Type" -> "application/x-www-form-urlencoded")
 
   object Login {
     val login = tryMax(2) { // let's try at max 2 times
-      .exec(http("Post")
+      exec(http("login")
         .post("/users/login")
-        .headers(jsonHeader)
+        .headers(xFormHeader)
         .formParam("username", "hatu")
         .formParam("password", "hatu")
         check(status.is(session => 200 + ThreadLocalRandom.current.nextInt(2)))) // we do a check on a condition that's been customized with a lambda. It will be evaluated every time a user executes the request
@@ -38,15 +38,15 @@ class BasicApiSimulations extends Simulation {
   object Images {
     val images = tryMax(2) { // let's try at max 2 times
       exec(http("Images")
-        .get("/api/images"))
+        .get("/api/images")
         .check(status.is(session => 200 + ThreadLocalRandom.current.nextInt(2)))) // we do a check on a condition that's been customized with a lambda. It will be evaluated every time a user executes the request
-    }.exitHereIfFailed // if the chain didn't finally succeed, have the user exit the whole scenario
+    }.exitHereIfFailed //Images
   }
 
   object Swcs {
     val swcs = tryMax(2) { // let's try at max 2 times
       exec(http("Swcs")
-        .get("/api/swcs/slice15"))
+        .get("/api/swcs/slice15")
         .check(status.is(session => 200 + ThreadLocalRandom.current.nextInt(2)))) // we do a check on a condition that's been customized with a lambda. It will be evaluated every time a user executes the request
     }.exitHereIfFailed // if the chain didn't finally succeed, have the user exit the whole scenario
   }
@@ -54,7 +54,7 @@ class BasicApiSimulations extends Simulation {
   object SwcContent {
     val swcContent = tryMax(2) { // let's try at max 2 times
       exec(http("SwcContent")
-        .get("/dvid/swc/key/slice15_L11.swc"))
+        .get("/dvid/swc/key/slice15_L11.swc")
         .check(status.is(session => 200 + ThreadLocalRandom.current.nextInt(2)))) // we do a check on a condition that's been customized with a lambda. It will be evaluated every time a user executes the request
     }.exitHereIfFailed // if the chain didn't finally succeed, have the user exit the whole scenario
   }
@@ -67,9 +67,6 @@ class BasicApiSimulations extends Simulation {
     .acceptEncodingHeader("gzip, deflate")
     .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
 
-  val users = scenario("Users").exec(Login.login, Images.images, Swcs.swcs, SwcContent.swcContent)
-
-  setUp(
-    users.inject(rampUsers(10) over (10 seconds))
-  ).protocols(httpConf)
+  val scn = scenario("BasicApiSimulations").exec(Login.login, Images.images, Swcs.swcs, SwcContent.swcContent)
+  setUp(scn.inject(atOnceUsers(1)).protocols(httpConf))
 }
