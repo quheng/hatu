@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './index.css'
 import moment from 'moment'
 
-import { Menu } from 'antd'
+import { Menu, Icon } from 'antd'
 import { autobind, injectProps } from 'react-decoration'
 import { connect } from 'react-redux'
 
@@ -30,20 +30,27 @@ class ImageList extends React.Component {
   render ({ imageList }) {
     return (
       <div className={styles.imageList}>
-        <Menu onClick={this.handleClick}>
+        <Menu
+          mode='inline'
+          onClick={this.handleClick}
+        >
           {
             imageList.map(imageInfo => (
               <SubMenu
-                key={imageInfo.image}
+                key={imageInfo.image }
                 className={styles.imageItem}
                 title={<span>{imageInfo.image}</span>}
               >
                 {
                   imageInfo.swcHistory.map(swc => (
                     <Item
+                      className={styles.swcItem}
                       key={swc.swc}
                     >
-                      {moment(swc.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
+                      <div
+                        className={styles.swcItem}
+                      >{moment(swc.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
+                      </div>
                     </Item>
                   ))
                 }
