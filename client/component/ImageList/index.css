@@ -1,10 +1,7 @@
 :local .imageList {
-  width: 190px;
+  width: 200px;
   height: 100%;
 }
 :local .imageItem {
-  width: 190px;
-}
-:local .swcItem {
-  margin-left: -15px;
+  width: 200px;
 }
