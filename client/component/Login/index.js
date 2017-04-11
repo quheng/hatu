@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './index.css'
-import api from '../../api'
+import ApiFetcher from '../../modules/ApiFetcher'
 
 import { Link, browserHistory } from 'react-router'
 import { Form, Icon, Input, Button, message } from 'antd'
@@ -15,7 +15,7 @@ const LoginForm = Form.create()(React.createClass({
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.setState({ loading: true })
-        api.logIn(values)
+        ApiFetcher.logIn(values)
           .then(res => {
             this.setState({ loading: false })
             if (res.status === 200) {

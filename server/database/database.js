@@ -37,4 +37,14 @@ const database = new Sequelize(process.env.PG_DATABASE, process.env.PG_USER, pro
   }
 })
 
+database
+  .authenticate()
+  .then(function () {
+    console.log('Connection has been established successfully.')
+  })
+  .catch(function (err) {
+    console.log('Unable to connect to the database:', err)
+    process.exit(-1)
+  })
+
 export default database

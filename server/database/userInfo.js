@@ -5,8 +5,9 @@ import crypto from 'crypto'
 import uuid from 'uuid'
 import _ from 'lodash'
 
+import database from './database'
 import { Strategy as LocalStrategy } from 'passport-local'
-
+import { initUser, initUserPw } from './initValue'
 const encrypt = (password, salt) => {
   return crypto.createHmac('sha256', salt)
     .update(password)
@@ -48,8 +49,7 @@ async function setupPassport (userDao, done) {
   })
 }
 
-export default async function (database) {
-  const userRouter = express.Router()
+async function initUserInfo () {
   const userDao = database.define('user_info', {
     username: {
       type: Sequelize.STRING,
@@ -59,12 +59,27 @@ export default async function (database) {
       type: Sequelize.STRING
     },
     salt: {
-      type: Sequelize.STRING
+      type: Sequelize.UUID
     }
   })
 
   await userDao.sync()
   await setupPassport(userDao)
+  const salt = uuid.v4()
+
+  await userDao.findOrCreate({
+    where: {username: initUser},
+    defaults: {
+      salt,
+      password: encrypt(initUserPw, salt)
+    }
+  })
+  return userDao
+}
+
+export default async function () {
+  const userRouter = express.Router()
+  const userDao = await initUserInfo()
 
   userRouter.post('/login',
     passport.authenticate('local'), (req, res) => {
