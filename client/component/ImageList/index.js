@@ -39,7 +39,7 @@ class ImageList extends React.Component {
     return (
       <div className={styles.imageList}>
         <Menu
-          style={{height:'100%'}}
+          style={{ height:'100%' }}
           mode='inline'
           onClick={this.handleClick}
         >
