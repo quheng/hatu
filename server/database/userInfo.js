@@ -49,7 +49,7 @@ async function setupPassport (userDao, done) {
   })
 }
 
-async function initUserInfo() {
+async function initUserInfo () {
   const userDao = database.define('user_info', {
     username: {
       type: Sequelize.STRING,
@@ -67,7 +67,7 @@ async function initUserInfo() {
   await setupPassport(userDao)
   const salt = uuid.v4()
 
-  const preHatu = await userDao.findOrCreate({
+  await userDao.findOrCreate({
     where: {username: initUser},
     defaults: {
       salt,
@@ -76,7 +76,6 @@ async function initUserInfo() {
   })
   return userDao
 }
-
 
 export default async function () {
   const userRouter = express.Router()

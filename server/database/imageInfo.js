@@ -5,7 +5,8 @@ import database from './database'
 import ImageInstance from '../image/ImageInstance'
 
 import { initRole, initUser, initImage } from './initValue'
-async function initImageInfo() {
+
+async function initImageInfo () {
   const imageDao = database.define('image_info', {
     username: {
       type: Sequelize.STRING,
@@ -39,7 +40,6 @@ async function initImageInfo() {
   })
   return imageDao
 }
-
 
 export default async function () {
   const imageRouter = express.Router()

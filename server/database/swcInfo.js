@@ -5,7 +5,7 @@ import database from './database'
 
 import { initUser, initImage, initSwc } from './initValue'
 
-async function initSwcInfo() {
+async function initSwcInfo () {
   const swcDao = database.define('swc_info', {
     username: {
       type: Sequelize.STRING,
@@ -48,7 +48,6 @@ async function initSwcInfo() {
   })
   return swcDao
 }
-
 
 export default async function () {
   const swcRouter = express.Router()

@@ -18,7 +18,7 @@ function * loadImageListSaga () {
   try {
     const queryRes = yield call(queryImageList)
     const imageList = JSON.parse(queryRes)
-    for (let i = 0; i < imageList.length; i++){
+    for (let i = 0; i < imageList.length; i++) {
       const swcList = yield call(querySwcList, imageList[i].image)
       imageList[i]['swcHistory'] = JSON.parse(swcList).sort((first, second) => (first.createdAt < second.createdAt)) || []
     }

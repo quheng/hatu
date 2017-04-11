@@ -33,9 +33,10 @@ class ImageList extends React.Component {
         <Menu onClick={this.handleClick}>
           {
             imageList.map(imageInfo => (
-              <SubMenu key={imageInfo.image}
-                    className={styles.imageItem}
-                    title={<span>{imageInfo.image}</span>}
+              <SubMenu
+                key={imageInfo.image}
+                className={styles.imageItem}
+                title={<span>{imageInfo.image}</span>}
               >
                 {
                   imageInfo.swcHistory.map(swc => (
