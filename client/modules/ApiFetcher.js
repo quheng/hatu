@@ -66,4 +66,4 @@ class ApiFetcher {
 }
 
 // todo  get server address
-export default new ApiFetcher({server: 'http://localhost:2222'})
+export default new ApiFetcher({server: ''})
