@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": ". ./scripts/default_environment.sh && BABEL_ENV=dev babel-node server",
-    "start:prod": "NODE_ENV=production node lib",
+    "start:prod": "./scripts/default_environment.sh && NODE_ENV=production node lib",
     "build": "npm-run-all build:client build:server",
     "build:server": "babel server --out-dir lib",
     "build:client": "webpack --config config/webpack.config.js",
