@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './index.css'
 import moment from 'moment'
 
-import { Menu } from 'antd'
+import { Menu, Popover } from 'antd'
 import { autobind, injectProps } from 'react-decoration'
 import { connect } from 'react-redux'
 
@@ -10,6 +10,14 @@ import { loadImageList } from '../../modules/image/action'
 import { loadSwc } from '../../modules/swc/action'
 
 const { Item, SubMenu } = Menu
+
+const getSwcInfoPopover = (swc) => (
+  <div>
+    <p>creator: {swc.username}</p>
+    <p>comments: {swc.comments}</p>
+    <p>created time: {moment(swc.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</p>
+  </div>
+)
 
 class ImageList extends React.Component {
 
@@ -30,7 +38,11 @@ class ImageList extends React.Component {
   render ({ imageList }) {
     return (
       <div className={styles.imageList}>
-        <Menu onClick={this.handleClick}>
+        <Menu
+          style={{ height: '100%' }}
+          mode='inline'
+          onClick={this.handleClick}
+        >
           {
             imageList.map(imageInfo => (
               <SubMenu
@@ -41,9 +53,14 @@ class ImageList extends React.Component {
                 {
                   imageInfo.swcHistory.map(swc => (
                     <Item
+                      style={{marginLeft: '-20px'}}
                       key={swc.swc}
                     >
-                      {moment(swc.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
+                      <Popover content={getSwcInfoPopover(swc)} title='swc info'>
+                        {
+                          moment(swc.createdAt).format('MMMM Do YYYY, h:mm:ss a')
+                        }
+                      </Popover>
                     </Item>
                   ))
                 }
