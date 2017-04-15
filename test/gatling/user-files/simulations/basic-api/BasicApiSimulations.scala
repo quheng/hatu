@@ -25,42 +25,38 @@ class BasicApiSimulations extends Simulation {
   val xFormHeader = Map("Content-Type" -> "application/x-www-form-urlencoded")
 
   object Login {
-    val login = tryMax(2) { // let's try at max 2 times
+    val login = repeat(100) {
       exec(http("login")
         .post("/users/login")
         .headers(xFormHeader)
         .formParam("username", "hatu")
-        .formParam("password", "hatu")
-        check(status.is(session => 200 + ThreadLocalRandom.current.nextInt(2)))) // we do a check on a condition that's been customized with a lambda. It will be evaluated every time a user executes the request
-    }.exitHereIfFailed
+        .formParam("password", "hatu"))
+    }
   }
 
   object Images {
-    val images = tryMax(2) { // let's try at max 2 times
+    val images = repeat(1000) { 
       exec(http("Images")
-        .get("/api/images")
-        .check(status.is(session => 200 + ThreadLocalRandom.current.nextInt(2)))) // we do a check on a condition that's been customized with a lambda. It will be evaluated every time a user executes the request
-    }.exitHereIfFailed //Images
+        .get("/api/images"))
+    }
   }
 
   object Swcs {
-    val swcs = tryMax(2) { // let's try at max 2 times
+    val swcs = repeat(1000) { 
       exec(http("Swcs")
-        .get("/api/swcs/slice15")
-        .check(status.is(session => 200 + ThreadLocalRandom.current.nextInt(2)))) // we do a check on a condition that's been customized with a lambda. It will be evaluated every time a user executes the request
-    }.exitHereIfFailed // if the chain didn't finally succeed, have the user exit the whole scenario
+        .get("/api/swcs/slice15"))
+    }
   }
 
   object SwcContent {
-    val swcContent = tryMax(2) { // let's try at max 2 times
+    val swcContent = repeat(1000) {
       exec(http("SwcContent")
-        .get("/dvid/swc/key/slice15_L11.swc")
-        .check(status.is(session => 200 + ThreadLocalRandom.current.nextInt(2)))) // we do a check on a condition that's been customized with a lambda. It will be evaluated every time a user executes the request
-    }.exitHereIfFailed // if the chain didn't finally succeed, have the user exit the whole scenario
+        .get("/dvid/swc/key/slice15_L11.swc"))
+    }
   }
 
   val httpConf = http
-    .baseURL("http://localhost:2222")
+    .baseURL("http://10.214.0.195:2222")
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
     .doNotTrackHeader("1")
     .acceptLanguageHeader("en-US,en;q=0.5")
@@ -68,5 +64,5 @@ class BasicApiSimulations extends Simulation {
     .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
 
   val scn = scenario("BasicApiSimulations").exec(Login.login, Images.images, Swcs.swcs, SwcContent.swcContent)
-  setUp(scn.inject(atOnceUsers(1)).protocols(httpConf))
+  setUp(scn.inject(atOnceUsers(10)).protocols(httpConf))
 }
