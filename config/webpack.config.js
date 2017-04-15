@@ -158,8 +158,8 @@ const prod = {
 }
 
 const customizeOptions = {
-  customizeArray (a, b, key) { return [...a, ...b] },
-  customizeObject (a, b, key) { return _.mergeWith(a, b) }
+  customizeArray (a, b) { return [...a, ...b] },
+  customizeObject (a, b) { return _.mergeWith(a, b) }
 }
 
 if (
@@ -172,7 +172,8 @@ if (
   module.exports = merge(customizeOptions)(common, dev)
 } else if (
   TARGET === 'analyze' ||
-  TARGET === 'build:client'
+  TARGET === 'build:client' ||
+  TARGET === 'start:prod'
 ) {
   module.exports = merge(customizeOptions)(common, prod)
 } else {
