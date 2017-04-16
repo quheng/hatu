@@ -42,7 +42,28 @@ class ApiFetcher {
       credentials: 'include'
     })
   }
+
+  imageList () {
+    return fetch(`${this.config.server}/api/images`, {
+      method: 'GET',
+      credentials: 'include'
+    })
+  }
+
+  swcList (image) {
+    return fetch(`${this.config.server}/api/swcs/${image}`, {
+      method: 'GET',
+      credentials: 'include'
+    })
+  }
+
+  swc (swc) {
+    return fetch(`${this.config.server}/dvid/swc/key/${swc}`, {
+      method: 'GET',
+      credentials: 'include'
+    })
+  }
 }
 
 // todo  get server address
-export default new ApiFetcher({server: 'http://localhost:2222'})
+export default new ApiFetcher({server: ''})

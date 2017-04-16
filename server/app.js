@@ -5,21 +5,12 @@ import bodyParser from 'body-parser'
 import passport from 'passport'
 import session from 'express-session'
 import webpackConfigure from './webpackConfigure'
-import database from './database'
-import userRouterGenerator from './users'
+
+import userRouterGenerator from './database/userInfo'
+import imageRouterGenerator from './database/imageInfo'
+import swcRouterGenerator from './database/swcInfo'
 
 import { dvidAddress, setupDvid } from './dvid'
-import { imageHandler } from './image'
-
-database
-  .authenticate()
-  .then(function () {
-    console.log('Connection has been established successfully.')
-  })
-  .catch(function (err) {
-    console.log('Unable to connect to the database:', err)
-    process.exit(-1)
-  })
 
 const app = express()
 webpackConfigure(app)
@@ -41,17 +32,21 @@ function getProxyOption (uuid) {
   return proxy({
     target: dvidAddress,
     pathRewrite: {
-      '^/api': '/api/node/' + uuid + '/'
+      '^/dvid': '/api/node/' + uuid + '/'
     }
   })
 }
 
 async function setupRoute () {
   const uuid = await setupDvid()
-  const userRoute = await userRouterGenerator(database)
+  const userRoute = await userRouterGenerator()
+  const imageRoute = await imageRouterGenerator()
+  const swcRoute = await swcRouterGenerator()
+
   app.use('/users', userRoute)
-  app.get('/image', imageHandler)
-  app.use('/api', getProxyOption(uuid))
+  app.use('/api', imageRoute)
+  app.use('/api', swcRoute)
+  app.use('/dvid', getProxyOption(uuid))
   app.use('/uuid', (req, res) => res.send(uuid))
   app.use('/assets/static', express.static(path.join(__dirname, '..', 'public')))
   app.use('/*', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'index.html')))
@@ -61,7 +56,6 @@ setupRoute()
 
 const secretRoutes = [
   '/api',
-  '/image',
   '/uuid',
   '/assets'
 ]

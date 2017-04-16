@@ -19,11 +19,44 @@ export postgres_user=password
 1. `yarn`
 2. `npm start`
 Tips: if you live in China, `npm install -g cyarn --registry=https://registry.npm.taobao.org` and use `cyarn` will be fast
+3. use default user `hatu@hatu` to login or register a new user
 
+# Database
+Use `Sequelize` as ORM framework, data types mentioned below are provide by Sequelize.
+
+1. user info
+
+| fields    | data type | notes              |
+|-----------|-----------|--------------------|
+| username  | STRING    | primaryKey         |
+| password  | STRING    |                    |
+| salt      | UUID      | using for security |
+
+2. image info
+
+| fields    | data type | notes                     |
+|-----------|-----------|---------------------------|
+| username  | STRING    |                           |
+| image     | STRING    | image name stored in dvid |
+| role      | STRING    | using for authorization   |
+
+3. swc info
+
+order by createdAt
+
+| fields    | data type | notes                               |
+|-----------|-----------|-------------------------------------|
+| image     | STRING    | image name stored in dvid           |
+| swc       | STRING    | primaryKey, swc name stored in dvid |
+| createdAt | TIME      | when created this swc file          |
+| username  | STRING    | who created this swc file           |
+| comments  | STRING    | descript this swc file              |
+
+    
 # Test
 `npm run test`
 
-#Visualization Mode
+# Visualization Mode
 
 * Whole  
 In this mode, we could observe whole neuron structure and conduct operation.
@@ -35,7 +68,7 @@ Once the `Slice` mode is applied, we could use slide bar to control which slice 
 
 ![visual_whole](image/visual_slices.png)
 
-#Neuron Mode
+# Neuron Mode
 The `Hatu` provide two different visualization modes for neuron structure.
 
 * Skeleton  
@@ -46,7 +79,7 @@ And `Sphere` mode would visualize it as a cylinder.
 
 ![visual_whole](image/neuron_sphere.png)
 
-#Operation
+# Operation
 Four basic operations are supported. You could use `right click` to drag the canvas and `left click` to select node. Besides, The `mouse wheel` could be used to zoom the view. 
 
 * **Arrow**     

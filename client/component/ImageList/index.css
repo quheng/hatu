@@ -1,0 +1,7 @@
+:local .imageList {
+  width: 200px;
+  height: 100%;
+}
+:local .imageItem {
+  width: 200px;
+}
