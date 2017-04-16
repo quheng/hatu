@@ -7,7 +7,7 @@ import { expect } from 'chai'
 
 describe('Resolver Test', function () {
   it('Match test', function () {
-    let test = fs.readFileSync('test/client/slice_test.swc', 'utf-8').trim()
+    let test = fs.readFileSync('test/client/res/slice_test.swc', 'utf-8').trim()
     let proxy = new OperationProxy()
     proxy.setupOperation()
 
@@ -26,8 +26,8 @@ describe('Resolver Test', function () {
     }
     let adjusted = swc.serialize()
 
-    let resolver = new Resolver(test, adjusted, null)
+    let resolver = new Resolver(test, adjusted, null, test)
 
-    expect(resolver.matcher.match()).to.be.equal(false)
+    expect(resolver.match()).to.be.equal(true)
   })
 })

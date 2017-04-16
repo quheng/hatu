@@ -65,6 +65,7 @@ export default class HatuNode extends THREE.Mesh {
   /**
    *
    * @param {HatuNode} node
+   * @return {Number}
    */
   distanceTo (node) {
     return this.position.distanceTo(node.position)
@@ -152,28 +153,17 @@ export default class HatuNode extends THREE.Mesh {
     this.position.z = z
   }
 
-  set matched (v) {
-    this.isMatched = v
+
+  bindProxy (proxy) {
+    this.proxy = proxy
   }
 
-  get matched () {
-    return this.isMatched
-  }
-
-  set mergeable (v) {
-    this.isMergeable = v
-  }
-
-  get mergeable () {
-    return this.isMergeable
-  }
-
-  set matchedChildren (v) {
-    this.umc = v
-  }
-
-  get matchedChildren () {
-    return this.umc
+  /**
+   *
+   * @return {NodeProxy}
+   */
+  getProxy () {
+    return this.proxy
   }
 
 }
