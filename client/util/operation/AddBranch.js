@@ -16,23 +16,14 @@ export default class AddBranch extends Interpolate {
    */
   clickNothing (position) {
     if (this.proxy.getNode()) {
+      this.parent = this.proxy.getNode()
+      let swc = this.parent.swc
       this.newPosition = position
+      swc.lastIndex += 1
+      this.index = swc.lastIndex
+      this.newRadius = swc.avgRad
       this.proxy.conduct(this)
     }
-  }
-
-  conduct () {
-    this.parent = this.proxy.getNode()
-    let swc = this.parent.swc
-    swc.pushOp(this)
-    this.target = swc.addBranch(this.parent, this.newPosition)
-    this.newRadius = this.target.radius
-  }
-
-  cancel () {
-    let swc = this.target.swc
-    swc.popOp()
-    swc.undoAddBranch(this.target)
   }
 
   deactivate () {

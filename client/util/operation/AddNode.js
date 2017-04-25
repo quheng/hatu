@@ -12,24 +12,15 @@ export default class AddNode extends Interpolate {
    * @param {HatuCylinder | HatuSkeleton} edge
    */
   dragStart (edge) {
-    this.edge = edge.edge
+    let child = edge.edge.node
+    this.parent = edge.edge.nodeParent
+    this.children.push(child)
+    let swc = child.swc
+    this.newPosition = child.position.clone().add(this.parent.position).divideScalar(2)
+    swc.lastIndex += 1
+    this.index = swc.lastIndex
+    this.newRadius = swc.avgRad
     this.proxy.conduct(this)
-  }
-
-  conduct () {
-    let swc = this.edge.swc
-    swc.pushOp(this)
-    this.target = swc.addNode(this.edge)
-    this.newPosition = this.target.position.clone()
-    this.newRadius = this.target.radius
-    this.parent = this.edge.nodeParent
-    this.children.push(this.edge.node)
-  }
-
-  cancel () {
-    let swc = this.target.swc
-    swc.popOp()
-    swc.undoAddNode(this.target)
   }
 
 }

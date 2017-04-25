@@ -1,4 +1,4 @@
-import { DRAG_NODE_MODE_EVENT, CURSOR_POINTER_EVENT, CURSOR_AUTO_EVENT } from './OperationProxy'
+import { DRAG_NODE_MODE_EVENT, CURSOR_POINTER_EVENT, CURSOR_AUTO_EVENT } from "./OperationProxy"
 
 export default class NodeOperation {
 
@@ -6,18 +6,26 @@ export default class NodeOperation {
    *
    * @param {OperationProxy} proxy
    */
-
   constructor (proxy) {
     this.proxy = proxy
     this.target = null
   }
 
+  /**
+   *
+   * @param {Array.<String>} src
+   * @param {Swc} swc
+   * @return {NodeOperation}
+   */
+  from (src, swc) {
+
+  }
 
   /**
    *
    * @return {HatuNode}
    */
-  getTarget(){
+  getTarget () {
     return this.target
   }
 

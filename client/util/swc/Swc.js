@@ -14,6 +14,7 @@ export default class Swc extends THREE.Object3D {
     this.centerNodeIndex = 1
     this.neuronMode = 'skeleton'
     this.nodes = []
+    this.nodeMap = new Map()
     this.lastIndex = -1
     this.edges = []
     this.ops = []
@@ -184,6 +185,41 @@ export default class Swc extends THREE.Object3D {
 
   /**
    *
+   * @param {Number} index
+   * @param {HatuNode} parent
+   * @param {Array.<HatuNode>} children
+   * @param {Vector3} position
+   * @param {Number} radius
+   */
+  interpolate (index, parent, children, position, radius) {
+    let node = new HatuNode({
+      index: index,
+      parent: parent.index,
+      type: parent.type,
+      x: position.x,
+      y: position.y,
+      z: position.z,
+      radius: radius
+    }, this, this.themeColor)
+
+    children.forEach(child => this.removeEdge(parent.removeChild(child)))
+    this.pushEdge(node.setParent(parent))
+    this.pushNode(node)
+    children.forEach(child => this.pushEdge(child.setParent(node)))
+    return node
+  }
+
+  /**
+   *
+   * @param {Number} index
+   * @return {HatuNode}
+   */
+  getNodeByIndex (index) {
+    return this.nodeMap.get(index)
+  }
+
+  /**
+   *
    * @param {HatuNode} parent
    * @param {Vector3} position
    * @return {HatuNode}
@@ -246,6 +282,7 @@ export default class Swc extends THREE.Object3D {
    */
   pushNode (node) {
     this.nodes.push(node)
+    this.nodeMap.set(node.index, node)
     this.kdTree.insert(node)
     super.add(node)
   }

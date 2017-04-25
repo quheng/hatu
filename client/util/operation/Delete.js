@@ -4,6 +4,17 @@ export default class Delete extends NodeOperation {
 
   /**
    *
+   * @param {Array.<String>} src
+   * @param {Swc} swc
+   * @return {NodeOperation}
+   */
+  from (src, swc) {
+    this.target = swc.getNodeByIndex(parseInt(src[1]))
+    return this
+  }
+
+  /**
+   *
    * @param {HatuNode} node
    */
   dragStart (node) {
@@ -28,7 +39,7 @@ export default class Delete extends NodeOperation {
   }
 
   toString () {
-    return `Delete(${this.target.index})`
+    return `Delete ${this.target.index}`
   }
 
 }

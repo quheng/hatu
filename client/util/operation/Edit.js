@@ -1,5 +1,6 @@
 import NodeOperation from './NodeOperation'
 import { CURSOR_MOVE_EVENT, CURSOR_AUTO_EVENT, GUI_UPDATE_EVENT } from './OperationProxy'
+import * as THREE from "three"
 
 export default class Edit extends NodeOperation {
 
@@ -7,6 +8,22 @@ export default class Edit extends NodeOperation {
     super(proxy)
     this.mode = 'drag'
     this.target = null
+  }
+
+  /**
+   *
+   * @param {Array.<String>} src
+   * @param {Swc} swc
+   * @return {NodeOperation}
+   */
+  from (src, swc) {
+    this.target = swc.getNodeByIndex(parseInt(src[1]))
+    let position = src[2].slice(1, src[2].length-1).split(',')
+    this.oldPosition = this.target.position.clone()
+    this.oldRadius = this.target.radius
+    this.newPosition = new THREE.Vector3(parseFloat(position[0]), parseFloat(position[1]), parseFloat(position[2]))
+    this.newRadius = parseFloat(src[3])
+    return this
   }
 
   /**
@@ -106,7 +123,7 @@ export default class Edit extends NodeOperation {
   }
 
   toString () {
-    return `Edit(${this.target.index},${this.newPosition.x},${this.newPosition.y},${this.newPosition.z},${this.newRadius})`
+    return `Edit ${this.target.index} (${this.newPosition.x},${this.newPosition.y},${this.newPosition.z}) ${this.newRadius}`
   }
 
 }

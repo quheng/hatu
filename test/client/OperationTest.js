@@ -90,14 +90,25 @@ describe('Operation Test', () => {
 
     console.log('-------------------operations-------------------')
 
-    swc.operations.forEach(op => console.log(op.toString()))
+    let ops = swc.operations.map(op => op.toString()).join('\n')
+    console.log(ops)
 
     console.log('--------------------compress--------------------')
 
-    proxy.compress(swc).forEach(op => console.log(op.toString()))
+    let comOps = proxy.compress(swc).map(op => op.toString()).join('\n')
+    console.log(comOps)
 
     console.log('----------------------swc-----------------------')
 
     console.log(swc.serialize())
+
+    proxy = new OperationProxy()
+    swc = new Swc(data, 0x0)
+    proxy.from(ops, swc)
+
+    let comSwc = new Swc(data, 0x0)
+    proxy.from(comOps, comSwc)
+
+    expect(swc.serialize()).to.be.equal(comSwc.serialize())
   })
 })

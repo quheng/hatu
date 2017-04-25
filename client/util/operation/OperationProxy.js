@@ -164,7 +164,28 @@ export class OperationProxy extends THREE.EventDispatcher {
     return res
   }
 
-  read(){
-
+  /**
+   *
+   * @param {String} src
+   * @param {Swc} swc
+   */
+  from (src, swc) {
+    let splittedLine = src.replace(/\r\n/g, '\n').split('\n')
+    splittedLine.forEach(line => {
+      let parts = line.split(' ')
+      let op
+      switch (parts[0]) {
+        case 'Edit':
+          op = new Edit(this).from(parts, swc)
+          break
+        case 'Interpolate':
+          op = new Interpolate(this).from(parts, swc)
+          break
+        case 'Delete':
+          op = new Delete(this).from(parts, swc)
+          break
+      }
+      op.conduct()
+    })
   }
 }
