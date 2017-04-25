@@ -9,6 +9,16 @@ export default class NodeOperation {
 
   constructor (proxy) {
     this.proxy = proxy
+    this.target = null
+  }
+
+
+  /**
+   *
+   * @return {HatuNode}
+   */
+  getTarget(){
+    return this.target
   }
 
   activate () {
@@ -76,6 +86,14 @@ export default class NodeOperation {
   }
 
   cancel () {
+  }
+
+  /**
+   *
+   * @return {string}
+   */
+  toString () {
+    return ''
   }
 
 }

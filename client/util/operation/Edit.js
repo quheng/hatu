@@ -1,7 +1,7 @@
 import NodeOperation from './NodeOperation'
 import { CURSOR_MOVE_EVENT, CURSOR_AUTO_EVENT, GUI_UPDATE_EVENT } from './OperationProxy'
 
-export default class Arrow extends NodeOperation {
+export default class Edit extends NodeOperation {
 
   constructor (proxy) {
     super(proxy)
@@ -15,8 +15,13 @@ export default class Arrow extends NodeOperation {
    */
   dragStart (node) {
     this.target = node
-    this.proxy.setNode(node)
-    this.oldPosition = node.position.clone()
+    this.proxy.setNode(this.target)
+    this.oldPosition = this.target.position.clone()
+    this.oldRadius = this.target.radius
+
+    this.newPosition = this.target.position.clone()
+    this.newRadius = this.target.radius
+
     this.proxy.dispatchEvent({ type: CURSOR_MOVE_EVENT })
   }
 
@@ -38,13 +43,15 @@ export default class Arrow extends NodeOperation {
   dragEnd (node) {
     this.proxy.setNode(node)
     this.proxy.dispatchEvent({ type: CURSOR_AUTO_EVENT })
-    this.newPosition = node.position.clone()
+    this.newPosition.copy(node.position)
     this.proxy.conduct(this)
   }
 
   edit () {
     if (!this.target) this.target = this.proxy.getNode()
     this.oldPosition = this.target.position.clone()
+    this.oldRadius = this.target.radius
+
     switch (this.mode) {
       case 'radius':
         this.oldRadius = this.target.radius
@@ -60,55 +67,34 @@ export default class Arrow extends NodeOperation {
         this.target.z = this.z
         break
     }
+
     this.newPosition = this.target.position.clone()
+    this.newRadius = this.target.radius
     this.proxy.conduct(this)
   }
 
   conduct () {
-    switch (this.mode) {
-      case 'drag':
-        this.target.position.copy(this.newPosition)
-        break
-      case 'radius':
-        this.target.radius = this.radius
-        break
-      case 'x':
-        this.target.position.copy(this.newPosition)
-        break
-      case 'y':
-        this.target.position.copy(this.newPosition)
-        break
-      case 'z':
-        this.target.position.copy(this.newPosition)
-        break
-    }
+    this.target.position.copy(this.newPosition)
+    this.target.radius = this.newRadius
     this.target.adjust()
-    this.target.swc.update(this.target, this.oldPosition)
+
+    let swc = this.target.swc
+    swc.pushOp(this)
+    swc.update(this.target, this.oldPosition)
   }
 
   cancel () {
     if (!this.target) {
       return
     }
-    switch (this.mode) {
-      case 'drag':
-        this.target.position.copy(this.oldPosition)
-        break
-      case 'radius':
-        this.target.radius = this.oldRadius
-        break
-      case 'x':
-        this.target.position.copy(this.oldPosition)
-        break
-      case 'y':
-        this.target.position.copy(this.oldPosition)
-        break
-      case 'z':
-        this.target.position.copy(this.oldPosition)
-        break
-    }
+
+    this.target.position.copy(this.oldPosition)
+    this.target.radius = this.oldRadius
+
     this.target.adjust()
-    this.target.swc.update(this.target, this.newPosition)
+    let swc = this.target.swc
+    swc.popOp()
+    swc.update(this.target, this.newPosition)
   }
 
   deactivate () {
@@ -118,4 +104,9 @@ export default class Arrow extends NodeOperation {
   uninstall () {
 
   }
+
+  toString () {
+    return `Edit(${this.target.index},${this.newPosition.x},${this.newPosition.y},${this.newPosition.z},${this.newRadius})`
+  }
+
 }

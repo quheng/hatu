@@ -1,10 +1,10 @@
 import { fork } from 'redux-saga/effects'
-import { watchSwcListSaga, watchSwcFileSaga, watchWriteSwcFileSaga } from './modules/swc/saga'
+import { watchImageListSaga } from './modules/image/saga'
+import { watchSwcSaga } from './modules/swc/saga'
 
 export default function * rootSaga () {
   yield [
-    fork(watchSwcListSaga),
-    fork(watchSwcFileSaga),
-    fork(watchWriteSwcFileSaga)
+    fork(watchImageListSaga),
+    fork(watchSwcSaga)
   ]
 }

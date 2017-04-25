@@ -60,7 +60,6 @@ export default class NodeProxy {
     this.parentProxy = v
   }
 
-
   /**
    *
    * @return {NodeProxy}
@@ -84,10 +83,9 @@ export default class NodeProxy {
    * @return {NodeProxy}
    */
   getMatched (swc) {
-    if (this.isMatched.has(swc))
+    if (this.isMatched.has(swc)) {
       return this.isMatched.get(swc)
-    else
-      return null
+    } else { return null }
   }
 
   /**
@@ -105,10 +103,11 @@ export default class NodeProxy {
    * @return {boolean}
    */
   getMergeable (swc) {
-    if (this.isMergeable.has(swc))
+    if (this.isMergeable.has(swc)) {
       return this.isMergeable.get(swc)
-    else
+    } else {
       return false
+    }
   }
 
   /**
@@ -127,10 +126,9 @@ export default class NodeProxy {
    * @return {NodeProxy}
    */
   getMatchedChildren (swc) {
-    if (this.umc.has(swc))
-      return this.umc.get(swc)
-    else
+    if (this.umc.has(swc)) { return this.umc.get(swc) } else {
       return null
+    }
   }
 
   setLabel (label) {
@@ -149,7 +147,6 @@ export default class NodeProxy {
   static from (swc) {
     return NodeProxy.construct(swc.root)
   }
-
 
   /**
    *

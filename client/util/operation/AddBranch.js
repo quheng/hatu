@@ -1,6 +1,6 @@
-import NodeOperation from './NodeOperation'
+import Interpolate from './Interpolate'
 
-export default class AddBranch extends NodeOperation {
+export default class AddBranch extends Interpolate {
 
   /**
    *
@@ -12,22 +12,27 @@ export default class AddBranch extends NodeOperation {
 
   /**
    *
-   * @param position
+   * @param {Vector3} position
    */
   clickNothing (position) {
     if (this.proxy.getNode()) {
-      this.position = position
+      this.newPosition = position
       this.proxy.conduct(this)
     }
   }
 
   conduct () {
-    let node = this.proxy.getNode()
-    this.target = node.swc.addBranch(node, this.position)
+    this.parent = this.proxy.getNode()
+    let swc = this.parent.swc
+    swc.pushOp(this)
+    this.target = swc.addBranch(this.parent, this.newPosition)
+    this.newRadius = this.target.radius
   }
 
   cancel () {
-    this.target.swc.undoAddBranch(this.target)
+    let swc = this.target.swc
+    swc.popOp()
+    swc.undoAddBranch(this.target)
   }
 
   deactivate () {

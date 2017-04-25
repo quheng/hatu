@@ -1,38 +1,37 @@
-import Swc from "../../../client/util/swc/Swc"
-import { OperationProxy } from "../../../client/util/operation/OperationProxy"
+import Swc from '../../../client/util/swc/Swc'
+import { OperationProxy } from '../../../client/util/operation/OperationProxy'
 
-let swc = new Swc('1 0 101.851 919.604 69.4822 10.9438 -1', 0x0)
+let mSwc = new Swc('1 0 101.851 919.604 69.4822 10.9438 -1', 0x0)
 let proxy = new OperationProxy()
 proxy.setupOperation()
 
-let position = swc.nodes[0].position.clone()
+let mPosition = mSwc.nodes[0].position.clone()
 
-position.setY(position.y - 40)
-swc.addBranch(swc.nodes[0], position)
+mPosition.setY(mPosition.y - 40)
+mSwc.addBranch(mSwc.nodes[0], mPosition)
 
-position.setX(position.x - 10)
-position.setY(position.y - 40)
-swc.addBranch(swc.nodes[1], position)
+mPosition.setX(mPosition.x - 10)
+mPosition.setY(mPosition.y - 40)
+mSwc.addBranch(mSwc.nodes[1], mPosition)
 
-position = swc.nodes[0].position.clone()
-position.setX(position.x + 20)
-position.setY(position.y - 20)
+mPosition = mSwc.nodes[0].position.clone()
+mPosition.setX(mPosition.x + 20)
+mPosition.setY(mPosition.y - 20)
 
-swc.addBranch(swc.nodes[0], position)
+mSwc.addBranch(mSwc.nodes[0], mPosition)
 
-let masterStr = swc.serialize()
+let masterStr = mSwc.serialize()
 let normalUser = new Swc(masterStr, 0x0)
-position = normalUser.nodes[1].position.clone()
-position.setX(position.x + 20)
-position.setY(position.y - 40)
-normalUser.addBranch(swc.nodes[1], position)
+mPosition = normalUser.nodes[1].position.clone()
+mPosition.setX(mPosition.x + 20)
+mPosition.setY(mPosition.y - 40)
+normalUser.addBranch(mSwc.nodes[1], mPosition)
 let normalStr = normalUser.serialize()
 
 export let samples = {
   master: masterStr,
   normalUser: normalStr
 }
-
 
 /**
  *

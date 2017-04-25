@@ -1,23 +1,22 @@
-import React from "react"
-import styles from "./index.css"
-import HatuViewer from "../../util/HatuViewer"
-import Slices from "../../util/slice/Slices"
-import { connect } from "react-redux"
-import Swc from "../../util/swc/Swc"
-import Resolver from "../../util/resolver/Resolver"
-import { modify, samples } from "../../../test/client/sample/SwcSamples"
+import React from 'react'
+import styles from './index.css'
+import HatuViewer from '../../util/HatuViewer'
+import Slices from '../../util/slice/Slices'
+import { connect } from 'react-redux'
+import Swc from '../../util/swc/Swc'
+import Resolver from '../../util/resolver/Resolver'
+import { modify, samples } from '../../../test/client/sample/SwcSamples'
 
 class ThreeView extends React.Component {
-
   render () {
     return (<div className={styles.threeView} ref='container' />)
   }
 
-  componentWillReceiveProps ({ swcFile }) {
+  componentWillReceiveProps ({ swcInfo }) {
     try {
-      let swc = new Swc(swcFile, 0x0)
-      let slices = new Slices(1024, 1024, 97)
-      let hatuViewer = new HatuViewer(this.refs.container)
+      const swc = new Swc(swcInfo.swcContent, 0x0)
+      const slices = new Slices(1024, 1024, 97, swcInfo.imageName)
+      const hatuViewer = new HatuViewer(this.refs.container)
 
       let adjusted = modify(swc)
 
@@ -27,6 +26,7 @@ class ThreeView extends React.Component {
       console.log(samples.master)
       console.log(samples.normalUser)
       let resolver = new Resolver(samples.master, samples.normalUser, slices, samples.master)
+
       hatuViewer.start(resolver)
       // /////////////////////////////////////////////////////////////////////
     } catch (err) {
@@ -36,7 +36,7 @@ class ThreeView extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  swcFile: state.swc.swcFile
+  swcInfo: _.get(state, 'swc.swcInfo', {})
 })
 
 export default connect(mapStateToProps, null)(ThreeView)

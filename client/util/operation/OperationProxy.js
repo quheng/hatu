@@ -1,8 +1,9 @@
 import * as THREE from 'three'
-import Arrow from './Arrow'
+import Edit from './Edit'
 import AddBranch from './AddBranch'
 import AddNode from './AddNode'
-import DeleteNode from './DeleteNode'
+import Delete from './Delete'
+import Interpolate from "./Interpolate"
 
 export const GUI_UPDATE_EVENT = 'GUI_UPDATE'
 export const DRAG_NODE_MODE_EVENT = 'NODE_MODE'
@@ -19,7 +20,7 @@ export class OperationProxy extends THREE.EventDispatcher {
     this.operations = []
     this.rear = 0
     this.selectedNode = null
-    this.operationName = 'Arrow'
+    this.operationName = 'Edit'
   }
 
   undo () {
@@ -58,14 +59,14 @@ export class OperationProxy extends THREE.EventDispatcher {
    */
   create (name) {
     switch (name) {
-      case 'Arrow':
-        return new Arrow(this)
+      case 'Edit':
+        return new Edit(this)
       case 'AddBranch':
         return new AddBranch(this)
       case 'AddNode':
         return new AddNode(this)
-      case 'DeleteNode':
-        return new DeleteNode(this)
+      case 'Delete':
+        return new Delete(this)
     }
   }
 
@@ -109,5 +110,61 @@ export class OperationProxy extends THREE.EventDispatcher {
     this.setupOperation()
     this.currentOperation.activate()
     this.resetNode()
+  }
+
+  /**
+   *
+   * @param {Swc} swc
+   * @return {Array.<NodeOperation>}
+   */
+  compress (swc) {
+    let operationMap = new Map()
+    swc.operations.forEach(op => {
+      let ops
+      if (operationMap.has(op.target.index)) {
+        ops = operationMap.get(op.target.index)
+        if (op instanceof Delete) {
+          if (ops[0] instanceof Interpolate) {
+            ops = []
+          } else {
+            ops = [op]
+          }
+        } else if (op instanceof Edit) {
+          if (ops[0] instanceof Interpolate) {
+            ops[0].newPosition.copy(op.newPosition)
+            ops[0].newRadius = op.newRadius
+          } else {
+            ops = [op]
+          }
+        }
+      } else {
+        ops = [op]
+      }
+      operationMap.set(op.target.index, ops)
+    })
+
+    let res = []
+    for (let opArray of operationMap.values()) {
+      opArray.forEach(op => res.push(op))
+    }
+    res.forEach(op => {
+      if (op instanceof Interpolate) {
+        let parent = op.getTarget().parentNode
+        while (parent.index > op.getTarget().index) parent = parent.parentNode
+        op.parent = parent
+
+        op.children = []
+        for (let son of op.getTarget().sons) {
+          if (son.index < op.getTarget().index) {
+            op.children.push(son)
+          }
+        }
+      }
+    })
+    return res
+  }
+
+  read(){
+
   }
 }

@@ -120,10 +120,17 @@ export default class HatuNode extends THREE.Mesh {
     this.observers.delete(observer)
   }
 
+  /**
+   * @return {number}
+   */
   get radius () {
     return this.geometry.parameters.radius
   }
 
+  /**
+   *
+   * @param {number} radius
+   */
   set radius (radius) {
     let r1 = radius || 0.01
     this.geometry = new THREE.SphereBufferGeometry(r1, HatuNode.calcSeg(r1), HatuNode.calcSeg(r1))
@@ -152,7 +159,6 @@ export default class HatuNode extends THREE.Mesh {
   set z (z) {
     this.position.z = z
   }
-
 
   bindProxy (proxy) {
     this.proxy = proxy

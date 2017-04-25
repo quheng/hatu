@@ -51,10 +51,12 @@ export default class Matcher {
     for (let child of root.sons) {
       this.checkChildren(child, swc)
       let matchedNode = child.getMatched(swc)
-      if (matchedNode == null)
+      if (matchedNode == null) {
         matchedNode = child.getMatchedChildren(swc)
-      if (matchedNode)
+      }
+      if (matchedNode) {
         root.setMatchedChildren(swc, matchedNode)
+      }
     }
   }
 
@@ -73,6 +75,5 @@ export default class Matcher {
       this.merge(child, swc)
     }
   }
-
 
 }

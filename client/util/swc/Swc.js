@@ -1,6 +1,6 @@
-import * as THREE from 'three'
-import HatuNode from './HatuNode'
-import KdTree from './KdTree'
+import * as THREE from "three"
+import HatuNode from "./HatuNode"
+import KdTree from "./KdTree"
 
 export default class Swc extends THREE.Object3D {
 
@@ -16,6 +16,7 @@ export default class Swc extends THREE.Object3D {
     this.nodes = []
     this.lastIndex = -1
     this.edges = []
+    this.ops = []
     this.kdTree = Swc.initKdTree()
     this.themeColor = themeColor
 
@@ -50,14 +51,14 @@ export default class Swc extends THREE.Object3D {
     let floatReg = '-?\\d*(?:\\.\\d+)?'
     let positiveIntReg = '\\d+'
     let pattern = new RegExp('^[ \\t]*(' + [
-      positiveIntReg,                // index
-      positiveIntReg,                // type
-      floatReg,                      // x
-      floatReg,                      // y
-      floatReg,                      // z
-      floatReg,                      // radius
-      '-1|' + positiveIntReg         // parent
-    ].join(')[ \\t]+(') + ')[ \\t]*$')
+        positiveIntReg,                // index
+        positiveIntReg,                // type
+        floatReg,                      // x
+        floatReg,                      // y
+        floatReg,                      // z
+        floatReg,                      // radius
+        '-1|' + positiveIntReg         // parent
+      ].join(')[ \\t]+(') + ')[ \\t]*$')
 
     let nodes = []
 
@@ -275,6 +276,29 @@ export default class Swc extends THREE.Object3D {
   removeEdge (edge) {
     this.edges = this.erase(this.edges, edge)
     super.remove(edge.obj(this.neuronMode))
+  }
+
+  /**
+   *
+   * @param {NodeOperation} op
+   */
+  pushOp (op) {
+    this.ops.push(op)
+  }
+
+  /**
+   * @return {NodeOperation}
+   */
+  popOp () {
+    return this.ops.pop()
+  }
+
+  /**
+   *
+   * @return {Array.<NodeOperation>}
+   */
+  get operations () {
+    return this.ops
   }
 
   edgeMode (mode) {

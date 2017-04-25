@@ -78,7 +78,6 @@ export default class Resolver extends Supervisor {
         if (!node.isRoot && !node.getProxy().parent.getMergeable(this.slave)) {
           this.search(node.getProxy(), slaveNode)
         }
-
       }
     })
   }
@@ -107,12 +106,12 @@ export default class Resolver extends Supervisor {
       }
     }
 
-    if (masterEnd && slaveEnd)
+    if (masterEnd && slaveEnd) {
       if (this.checkCorrect(masterNode, masterEnd) || this.checkCorrect(slaveNode, slaveEnd)) {
         this.unChangedMerge(masterNode, masterEnd, this.slave)
         this.unChangedMerge(slaveNode, slaveEnd, this.master)
       }
-
+    }
   }
 
   /**
@@ -125,8 +124,9 @@ export default class Resolver extends Supervisor {
     let tmp = start
     while (tmp != end && !tmp.isRoot) {
       tmp = tmp.parent
-      if (!tmp.getMatched(this.ancestor))
+      if (!tmp.getMatched(this.ancestor)) {
         return false
+      }
     }
     return true
   }
