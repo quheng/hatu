@@ -1,8 +1,9 @@
 import express from 'express'
 import Sequelize from 'sequelize'
-import database from './database'
 import path from 'path'
 import fs from 'fs'
+
+import database from './database'
 
 import { spawn } from 'child_process'
 import { initUser, initImage, initSwc } from './initValue'
@@ -69,7 +70,7 @@ export default async function () {
     const image = req.params.name
     // const temFileName = uuid.v4() // todo
     const temFileName = 'tem.swc'
-    const process = spawn(process.env.NEUTU_COMMAND, [
+    const neutu = spawn(process.env.NEUTU_COMMAND, [
       '--command',
       '--trace',
       `http:0.0.0.0:${process.env.DVID_PORT}:${image}:grayscale`, // todo use dvid host
@@ -83,7 +84,7 @@ export default async function () {
       temFileName
     ])
     const filePath = path.join(__dirname, '..', 'tem', temFileName)
-    process.on('close', (code) => {
+    neutu.on('close', (code) => {
       if (code !== 0 || !fs.existsSync(filePath)) {
         res.sendStatus(400)
       } else {
