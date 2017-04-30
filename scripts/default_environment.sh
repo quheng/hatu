@@ -11,4 +11,4 @@ export DVID_PORT='2048'
 
 # neutu
 
-export NEUTU_PATH=''
+export NEUTU_COMMAND='~/miniconda2/envs/neutu-env/bin/neutu'
