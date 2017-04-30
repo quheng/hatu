@@ -1,5 +1,5 @@
 # temdata
-.swc
+*.swc
 
 # Logs
 logs
