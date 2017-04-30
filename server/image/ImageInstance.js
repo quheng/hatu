@@ -1,6 +1,7 @@
-import { dvidAddress, uuid } from '../dvid'
 import sharp from 'sharp'
 import fetch from 'isomorphic-fetch'
+
+import { dvidAddress, uuid } from '../dvid'
 
 const MAX_AREA = 512 * 512
 
