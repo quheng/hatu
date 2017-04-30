@@ -2,6 +2,7 @@ import express from 'express'
 import Sequelize from 'sequelize'
 import path from 'path'
 import fs from 'fs'
+import uuid from 'uuid'
 
 import database from './database'
 
@@ -68,8 +69,7 @@ export default async function () {
   swcRouter.get('/swc/trace/:image', (req, res) => {
     const {x, y, z} = req.query
     const image = req.params.name
-    // const temFileName = uuid.v4() // todo
-    const temFileName = 'tem.swc'
+    const temFileName = uuid.v4()
     const neutu = spawn(process.env.NEUTU_COMMAND, [
       '--command',
       '--trace',
