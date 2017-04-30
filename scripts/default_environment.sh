@@ -8,3 +8,7 @@ export PG_DATABASE='hatu_test'
 # dvid
 export DVID_HOST='http://localhost'
 export DVID_PORT='2048'
+
+# neutu
+
+export NEUTU_PATH=''
