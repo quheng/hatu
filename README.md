@@ -3,17 +3,10 @@
 Welcome to the Hatu wiki! Hatu is a neuron image reconstruction and visualization project. So far, we have supported swc visualization and edit.
 
 # dependencies
-`Hatu` depends on `divd` and `postgres`. If you has these dependencies, you just need to set config in `./scripts/default_environment` to make sure that `divd` can connect to these dependencies.
-If you do not has these dependencies, you can run `./scripts/run_dependencies.sh` to start up them in docker.
+`Hatu` depends on [divd](https://github.com/janelia-flyem/dvid), [postgres](https://www.postgresql.org) and [neutu](https://github.com/janelia-flyem/NeuTu). If you do not has these dependencies, you can run `./scripts/run_dependencies.sh` to start up them in docker, but you need install neutu by yourself.
 
 # environment variable
-change to your postgres config
-```
-export postgres_endpoint=127.0.0.1  
-export postgres_host=5432  
-export postgres_user=user
-export postgres_user=password
-```
+You just need set your config in `./scripts/default_environment` to make sure that we can connect to these dependencies.
 
 # Run
 1. `yarn`
