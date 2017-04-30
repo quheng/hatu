@@ -41,17 +41,16 @@ export default class ImageInstance {
   }
 
   async fetch (x, y, z) {
-    let url = `${dvidAddress}/api/node/${uuid}/${this.name}/tile/xy/0/${x}_${y}_${z}`
+    const url = `${dvidAddress}/api/node/${uuid}/${this.name}/tile/xy/0/${x}_${y}_${z}`
     const response = await fetch(url)
-
     return sharp(await response.buffer())
   }
 
   getBounding (i, j, left, right, top, bottom) {
-    let mLeft = Math.max(i * this.tileSize, left)
-    let mTop = Math.max(j * this.tileSize, top)
-    let mRight = Math.min((i + 1) * this.tileSize, right)
-    let mBottom = Math.min((j + 1) * this.tileSize, bottom)
+    const mLeft = Math.max(i * this.tileSize, left)
+    const mTop = Math.max(j * this.tileSize, top)
+    const mRight = Math.min((i + 1) * this.tileSize, right)
+    const mBottom = Math.min((j + 1) * this.tileSize, bottom)
 
     return {
       left: mLeft - i * this.tileSize,
@@ -60,5 +59,4 @@ export default class ImageInstance {
       height: mBottom - mTop
     }
   }
-
 }
