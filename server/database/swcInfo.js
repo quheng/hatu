@@ -68,7 +68,7 @@ export default async function () {
 
   swcRouter.get('/swc/trace/:image', (req, res) => {
     const {x, y, z} = req.query
-    const image = req.params.name
+    const image = req.params.image
     const temFileName = uuid.v4()
     const filePath = path.join(__dirname, '..', 'tem', temFileName)
     const neutu = spawn(process.env.NEUTU_COMMAND, [
