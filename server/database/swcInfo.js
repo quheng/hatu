@@ -70,6 +70,7 @@ export default async function () {
     const {x, y, z} = req.query
     const image = req.params.name
     const temFileName = uuid.v4()
+    const filePath = path.join(__dirname, '..', 'tem', temFileName)
     const neutu = spawn(process.env.NEUTU_COMMAND, [
       '--command',
       '--trace',
@@ -81,9 +82,8 @@ export default async function () {
       `--scale`,
       '1',
       '-o',
-      temFileName
+      filePath
     ])
-    const filePath = path.join(__dirname, '..', 'tem', temFileName)
     neutu.on('close', (code) => {
       if (code !== 0 || !fs.existsSync(filePath)) {
         res.sendStatus(400)
