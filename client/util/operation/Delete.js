@@ -5,11 +5,10 @@ export default class Delete extends NodeOperation {
   /**
    *
    * @param {Array.<String>} src
-   * @param {Swc} swc
    * @return {NodeOperation}
    */
-  from (src, swc) {
-    this.target = swc.getNodeByIndex(parseInt(src[1]))
+  from (src) {
+    this.target = this.swc.getNodeByIndex(parseInt(src[1]))
     return this
   }
 
@@ -42,4 +41,15 @@ export default class Delete extends NodeOperation {
     return `Delete ${this.target.index}`
   }
 
+  /**
+   *
+   * @param {NodeOperation} op
+   */
+  match (op) {
+    if (op instanceof Delete) {
+      return this.target.index === op.target.index
+    } else {
+      return false
+    }
+  }
 }

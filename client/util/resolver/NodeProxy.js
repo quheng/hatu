@@ -11,6 +11,41 @@ export default class NodeProxy {
     this.isMatched = new Map()
     this.isMergeable = new Map()
     this.umc = new Map()
+    this.deleteNode = false
+    this.matchResult = false
+    this.mergeResult = false
+  }
+
+  /**
+   *
+   * @param {boolean} v
+   */
+  setMatchResult (v) {
+    this.matchResult = v
+  }
+
+  /**
+   *
+   * @return {boolean}
+   */
+  getMatchResult () {
+    return this.matchResult
+  }
+
+  /**
+   *
+   * @param {boolean} v
+   */
+  setMergeResult (v) {
+    this.mergeResult = v
+  }
+
+  /**
+   *
+   * @return {boolean}
+   */
+  getMergeResult () {
+    return this.mergeResult
   }
 
   /**
@@ -29,6 +64,15 @@ export default class NodeProxy {
    */
   distanceTo (proxy) {
     return this.node.distanceTo(proxy.node)
+  }
+
+  /**
+   *
+   * @param {NodeProxy} proxy
+   * @return {Boolean}
+   */
+  match (proxy) {
+    return this.distanceTo(proxy) < 1 && Math.pow(this.node.radius - proxy.node.radius, 2) < 1
   }
 
   /**
@@ -85,7 +129,9 @@ export default class NodeProxy {
   getMatched (swc) {
     if (this.isMatched.has(swc)) {
       return this.isMatched.get(swc)
-    } else { return null }
+    } else {
+      return null
+    }
   }
 
   /**
@@ -94,7 +140,10 @@ export default class NodeProxy {
    * @param {boolean} v
    */
   setMergeable (swc, v) {
-    this.isMergeable.set(swc, v)
+    if (this.isMergeable.has(swc))
+      this.isMergeable.set(swc, v && this.isMergeable.get(swc))
+    else
+      this.isMergeable.set(swc, v)
   }
 
   /**
@@ -126,9 +175,19 @@ export default class NodeProxy {
    * @return {NodeProxy}
    */
   getMatchedChildren (swc) {
-    if (this.umc.has(swc)) { return this.umc.get(swc) } else {
+    if (this.umc.has(swc)) {
+      return this.umc.get(swc)
+    } else {
       return null
     }
+  }
+
+  setDelete () {
+    this.deleteNode = true
+  }
+
+  isDelete () {
+    return this.deleteNode
   }
 
   setLabel (label) {
@@ -142,10 +201,9 @@ export default class NodeProxy {
   /**
    *
    * @param {Swc} swc
-   * @return {NodeProxy}
    */
   static from (swc) {
-    return NodeProxy.construct(swc.root)
+    swc.getNodes().forEach(node => NodeProxy.construct(node))
   }
 
   /**
@@ -154,10 +212,6 @@ export default class NodeProxy {
    * @return {NodeProxy}
    */
   static construct (node) {
-    let proxy = new NodeProxy(node)
-    for (let child of node.sons) {
-      proxy.setChild(NodeProxy.construct(child))
-    }
-    return proxy
+    return new NodeProxy(node)
   }
 }

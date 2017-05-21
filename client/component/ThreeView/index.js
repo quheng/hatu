@@ -1,11 +1,13 @@
-import React from 'react'
-import styles from './index.css'
-import HatuViewer from '../../util/HatuViewer'
-import Slices from '../../util/slice/Slices'
-import { connect } from 'react-redux'
-import Swc from '../../util/swc/Swc'
-import Resolver from '../../util/resolver/Resolver'
-import { modify, samples } from '../../../test/client/sample/SwcSamples'
+import React from "react"
+import styles from "./index.css"
+import HatuViewer from "../../util/HatuViewer"
+import Slices from "../../util/slice/Slices"
+import { connect } from "react-redux"
+import Swc from "../../util/swc/Swc"
+import { modify } from "../../../test/client/sample/SwcSamples"
+import Resolver from "../../util/resolver/Resolver"
+import { samples } from "../../../test/client/sample/SwcSamples"
+import Editor from "../../util/Editor"
 
 class ThreeView extends React.Component {
   render () {
@@ -23,11 +25,11 @@ class ThreeView extends React.Component {
       // /////////////////////////////////////////////////////////////////////
       // This two lines are the actual interface to start a resolver
       // let resolver = new Resolver(swcFile, adjusted, slices, swcFile)
-      console.log(samples.master)
-      console.log(samples.normalUser)
-      let resolver = new Resolver(samples.master, samples.normalUser, slices, samples.master)
 
+      let resolver = new Resolver(samples.ops1, samples.ops2, slices, samples.source)
       hatuViewer.start(resolver)
+      // let editor = new Editor(swcInfo.swcContent, slices)
+      // hatuViewer.start(editor)
       // /////////////////////////////////////////////////////////////////////
     } catch (err) {
       console.log(err)

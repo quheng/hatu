@@ -71,7 +71,7 @@ export default class HatuGUI {
 
     nodeFolder.open()
 
-    this.gui.add(this, 'operation', ['AddNode', 'AddBranch', 'DeleteNode', 'Edit'])
+    this.gui.add(this, 'operation', ['AddNode', 'AddBranch', 'Delete', 'Edit', 'DeleteParent', 'ChangeParent'])
       .onChange(() => this.operationProxy.change(this.operation))
 
     this.folders = [overviewFolder, nodeFolder]

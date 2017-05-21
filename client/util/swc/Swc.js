@@ -1,6 +1,6 @@
-import * as THREE from "three"
-import HatuNode from "./HatuNode"
-import KdTree from "./KdTree"
+import * as THREE from 'three'
+import HatuNode from './HatuNode'
+import KdTree from './KdTree'
 
 export default class Swc extends THREE.Object3D {
 
@@ -11,6 +11,7 @@ export default class Swc extends THREE.Object3D {
    */
   constructor (source, themeColor) {
     super()
+    this.sourceStr = source
     this.centerNodeIndex = 1
     this.neuronMode = 'skeleton'
     this.nodes = []
@@ -185,6 +186,42 @@ export default class Swc extends THREE.Object3D {
 
   /**
    *
+   * @param {HatuNode} node
+   * @param {HatuNode} parent
+   */
+  editParent (node, parent) {
+    let oldParent = node.parentNode
+    let oldEdge = oldParent.removeChild(node)
+    if (oldEdge) {
+      this.removeEdge(oldEdge)
+    }
+
+    if (parent) {
+      this.pushEdge(node.setParent(parent))
+    } else {
+      node.parentNode = null
+      node.parentEdge = null
+    }
+  }
+
+  /**
+   *
+   * @param {HatuNode} node
+   * @param {HatuNode} parent
+   */
+  undoEditParent (node, parent) {
+    let newParent = node.parentNode
+    let newEdge = newParent.removeChild(node)
+    if (newEdge) {
+      this.removeEdge(newEdge)
+    }
+    if (parent) {
+      this.pushEdge(node.setParent(parent))
+    }
+  }
+
+  /**
+   *
    * @param {Number} index
    * @param {HatuNode} parent
    * @param {Array.<HatuNode>} children
@@ -194,16 +231,18 @@ export default class Swc extends THREE.Object3D {
   interpolate (index, parent, children, position, radius) {
     let node = new HatuNode({
       index: index,
-      parent: parent.index,
-      type: parent.type,
+      parent: parent ? parent.index : -1,
+      type: parent ?parent.type: 1,
       x: position.x,
       y: position.y,
       z: position.z,
       radius: radius
     }, this, this.themeColor)
 
-    children.forEach(child => this.removeEdge(parent.removeChild(child)))
-    this.pushEdge(node.setParent(parent))
+    if (parent) {
+      children.forEach(child => this.removeEdge(parent.removeChild(child)))
+      this.pushEdge(node.setParent(parent))
+    }
     this.pushNode(node)
     children.forEach(child => this.pushEdge(child.setParent(node)))
     return node
@@ -215,7 +254,10 @@ export default class Swc extends THREE.Object3D {
    * @return {HatuNode}
    */
   getNodeByIndex (index) {
-    return this.nodeMap.get(index)
+    if (this.nodeMap.has(index))
+      return this.nodeMap.get(index)
+    else
+      return null
   }
 
   /**

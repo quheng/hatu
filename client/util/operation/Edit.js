@@ -1,11 +1,11 @@
 import NodeOperation from './NodeOperation'
 import { CURSOR_MOVE_EVENT, CURSOR_AUTO_EVENT, GUI_UPDATE_EVENT } from './OperationProxy'
-import * as THREE from "three"
+import * as THREE from 'three'
 
 export default class Edit extends NodeOperation {
 
-  constructor (proxy) {
-    super(proxy)
+  constructor (proxy,swc) {
+    super(proxy,swc)
     this.mode = 'drag'
     this.target = null
   }
@@ -13,12 +13,11 @@ export default class Edit extends NodeOperation {
   /**
    *
    * @param {Array.<String>} src
-   * @param {Swc} swc
    * @return {NodeOperation}
    */
-  from (src, swc) {
-    this.target = swc.getNodeByIndex(parseInt(src[1]))
-    let position = src[2].slice(1, src[2].length-1).split(',')
+  from (src) {
+    this.target = this.swc.getNodeByIndex(parseInt(src[1]))
+    let position = src[2].slice(1, src[2].length - 1).split(',')
     this.oldPosition = this.target.position.clone()
     this.oldRadius = this.target.radius
     this.newPosition = new THREE.Vector3(parseFloat(position[0]), parseFloat(position[1]), parseFloat(position[2]))
@@ -126,4 +125,15 @@ export default class Edit extends NodeOperation {
     return `Edit ${this.target.index} (${this.newPosition.x},${this.newPosition.y},${this.newPosition.z}) ${this.newRadius}`
   }
 
+  /**
+   *
+   * @param {NodeOperation} op
+   */
+  match (op) {
+    if (op instanceof Edit) {
+      return this.target.index === op.target.index && this.newPosition.distanceTo(op.newPosition) < 1 && Math.pow(this.newRadius - op.newRadius, 2) < 1
+    } else {
+      return false
+    }
+  }
 }
