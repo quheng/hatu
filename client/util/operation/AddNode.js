@@ -15,11 +15,11 @@ export default class AddNode extends Interpolate {
     let child = edge.edge.node
     this.parent = edge.edge.nodeParent
     this.children.push(child)
-    let swc = child.swc
+    this.swc = child.swc
     this.newPosition = child.position.clone().add(this.parent.position).divideScalar(2)
-    swc.lastIndex += 1
-    this.index = swc.lastIndex
-    this.newRadius = swc.avgRad
+    this.swc.lastIndex += 1
+    this.index = this.swc.lastIndex
+    this.newRadius = this.swc.avgRad
     this.proxy.conduct(this)
   }
 

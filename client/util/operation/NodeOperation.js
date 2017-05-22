@@ -113,4 +113,12 @@ export default class NodeOperation {
     return false
   }
 
+  /**
+   *
+   * @param {NodeOperation} l
+   * @return {boolean}
+   */
+  equal (l) {
+    return this.toString() === l.toString()
+  }
 }

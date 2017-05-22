@@ -45,7 +45,7 @@ export default class Interpolate extends NodeOperation {
   }
 
   toString () {
-    return `Interpolate ${this.target.index} ${this.parent ? this.parent.index : -1} (${this.children.map(child => child.index).join(',')}) (${this.newPosition.x},${this.newPosition.y},${this.newPosition.z}) ${this.newRadius}`
+    return `Interpolate ${this.target.index} ${this.parent ? this.parent.index : -1} (${this.children.map(child => child.index).join(',')}) (${this.newPosition.x.toFixed(4)},${this.newPosition.y.toFixed(4)},${this.newPosition.z.toFixed(4)}) ${this.newRadius.toFixed(4)}`
   }
 
 }

@@ -30,6 +30,7 @@ export default class Edit extends NodeOperation {
    * @param {HatuNode} node
    */
   dragStart (node) {
+    this.swc=node.swc
     this.target = node
     this.proxy.setNode(this.target)
     this.oldPosition = this.target.position.clone()
@@ -122,7 +123,7 @@ export default class Edit extends NodeOperation {
   }
 
   toString () {
-    return `Edit ${this.target.index} (${this.newPosition.x},${this.newPosition.y},${this.newPosition.z}) ${this.newRadius}`
+    return `Edit ${this.target.index} (${this.newPosition.x.toFixed(4)},${this.newPosition.y.toFixed(4)},${this.newPosition.z.toFixed(4)}) ${this.newRadius.toFixed(4)}`
   }
 
   /**

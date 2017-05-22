@@ -7,6 +7,7 @@ export default class AddBranch extends Interpolate {
    * @param {HatuNode} node
    */
   dragStart (node) {
+    this.swc=node.swc
     this.proxy.setNode(node)
   }
 
@@ -17,11 +18,11 @@ export default class AddBranch extends Interpolate {
   clickNothing (position) {
     if (this.proxy.getNode()) {
       this.parent = this.proxy.getNode()
-      let swc = this.parent.swc
+      this.swc = this.parent.swc
       this.newPosition = position
-      swc.lastIndex += 1
-      this.index = swc.lastIndex
-      this.newRadius = swc.avgRad
+      this.swc.lastIndex += 1
+      this.index = this.swc.lastIndex
+      this.newRadius = this.swc.avgRad
       this.proxy.conduct(this)
     }
   }

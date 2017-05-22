@@ -68,4 +68,12 @@ export default class Supervisor {
     return this.operationEvents
   }
 
+  /**
+   *
+   * @param callback
+   */
+  onCommit (callback) {
+    this.commitCallback = callback
+  }
+
 }

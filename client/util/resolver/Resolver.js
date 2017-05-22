@@ -30,7 +30,13 @@ export default class Resolver extends Supervisor {
       this.merger.merge()
       this.dye(this.master, this.slave)
       this.dye(this.slave, this.master)
-      return false
+    })
+
+    this.operationMap.set('commit', () => {
+      if (this.merger.merge()) {
+        if (this.commitCallback)
+          this.commitCallback(ancestor, this.merger.getResult().map(op => op.toString()).join('\n'))
+      }
     })
     this.operationEvents.set(CONDUCT_EVENT, () => this.recover())
   }

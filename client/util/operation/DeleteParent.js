@@ -18,6 +18,7 @@ export default class DeleteParent extends EditParent {
    * @param {HatuNode} node
    */
   dragStart (node) {
+    this.swc=node.swc
     if (node.isRoot) {
       window.alert('The root node has no parent!')
     } else {

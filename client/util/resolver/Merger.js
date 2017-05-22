@@ -3,6 +3,7 @@ import { OperationProxy } from "../operation/OperationProxy"
 import NodeProxy from "./NodeProxy"
 import Edit from "../operation/Edit"
 import EditParent from "../operation/EditParent"
+import Swc from "../swc/Swc"
 export default class Merger {
 
   /**
@@ -22,11 +23,11 @@ export default class Merger {
 
   /**
    *
-   * @return {Swc}
+   * @return {boolean}
    */
   merge () {
-    this.master = this.proxy.clone(this.masterSrc)
-    this.slave = this.proxy.clone(this.slaveSrc)
+    this.scan()
+
     NodeProxy.from(this.master)
     NodeProxy.from(this.slave)
 
@@ -74,7 +75,7 @@ export default class Merger {
    * @return {Array.<NodeOperation>}
    */
   getResult () {
-    return this.oldResult.concat(this.newResult)
+    return this.ancestorResult.concat(this.oldResult.concat(this.newResult))
   }
 
   check (master, slave) {
@@ -90,6 +91,30 @@ export default class Merger {
       }
     })
     return mergeable
+  }
+
+  scan () {
+    let masterOps = this.masterSrc.operations
+    let slaveOps = this.slaveSrc.operations
+    let ancestor = new Swc(this.masterSrc.sourceStr, 0x0)
+    this.ancestorResult = []
+    let len = masterOps.length > slaveOps.length ? slaveOps.length : masterOps.length
+    let i = 0
+    for (; i < len; i++) {
+      if (masterOps[i].equal(slaveOps[i])) {
+        this.proxy.from(masterOps[i].toString(), ancestor)
+        this.ancestorResult.push(masterOps[i])
+      } else
+        break
+    }
+    this.master = new Swc(ancestor.serialize(), 0x0)
+    this.slave = new Swc(ancestor.serialize(), 0x0)
+    for (let j = i; j < masterOps.length; j++) {
+      this.proxy.from(masterOps[j].toString(), this.master)
+    }
+    for (let j = i; j < slaveOps.length; j++) {
+      this.proxy.from(slaveOps[j].toString(), this.slave)
+    }
   }
 
   /**
@@ -239,7 +264,6 @@ export default class Merger {
   }
 
   mergeEPOps () {
-    this.epResult = []
     let oldNodes = new Set()
     for (let masterIndex of this.oldMasterEPOps.keys()) {
       oldNodes.add(masterIndex)

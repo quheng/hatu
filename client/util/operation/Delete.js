@@ -17,6 +17,7 @@ export default class Delete extends NodeOperation {
    * @param {HatuNode} node
    */
   dragStart (node) {
+    this.swc=node.swc
     if (node.isRoot) {
       window.alert('The root node couldn\'t be deleted!')
     } else {
