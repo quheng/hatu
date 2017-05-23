@@ -70,13 +70,20 @@ export default class DragControls extends THREE.EventDispatcher {
         if (_hovered !== object) {
           scope.dispatchEvent({ type: 'hoveron', object: object })
           _hovered = object
+
+          return
         }
       } else {
         if (_hovered !== null) {
           scope.dispatchEvent({ type: 'hoveroff', object: _hovered })
           _hovered = null
+          return
         }
       }
+      let emptyPosition = _raycaster.ray.intersectPlane(_plane)
+      emptyPosition.setX(emptyPosition.x + _viewer.center[0])
+      emptyPosition.setY(emptyPosition.y + _viewer.center[1])
+      scope.dispatchEvent({ type: 'move', position: emptyPosition })
     }
 
     function onDocumentMouseDown (event) {

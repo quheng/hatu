@@ -32,14 +32,14 @@ export default class Edit extends NodeOperation {
   dragStart (node) {
     this.swc=node.swc
     this.target = node
-    this.proxy.setNode(this.target)
+    this.getProxy().setNode(this.target)
     this.oldPosition = this.target.position.clone()
     this.oldRadius = this.target.radius
 
     this.newPosition = this.target.position.clone()
     this.newRadius = this.target.radius
 
-    this.proxy.dispatchEvent({ type: CURSOR_MOVE_EVENT })
+    this.getProxy().dispatchEvent({ type: CURSOR_MOVE_EVENT })
   }
 
   /**
@@ -50,7 +50,7 @@ export default class Edit extends NodeOperation {
   drag (node, position) {
     node.position.copy(position)
     node.adjust()
-    this.proxy.dispatchEvent({ type: GUI_UPDATE_EVENT })
+    this.getProxy().dispatchEvent({ type: GUI_UPDATE_EVENT })
   }
 
   /**
@@ -58,14 +58,14 @@ export default class Edit extends NodeOperation {
    * @param {HatuNode} node
    */
   dragEnd (node) {
-    this.proxy.setNode(node)
-    this.proxy.dispatchEvent({ type: CURSOR_AUTO_EVENT })
+    this.getProxy().setNode(node)
+    this.getProxy().dispatchEvent({ type: CURSOR_AUTO_EVENT })
     this.newPosition.copy(node.position)
-    this.proxy.conduct(this)
+    this.getProxy().conduct(this)
   }
 
   edit () {
-    if (!this.target) this.target = this.proxy.getNode()
+    if (!this.target) this.target = this.getProxy().getNode()
     this.oldPosition = this.target.position.clone()
     this.oldRadius = this.target.radius
 
@@ -87,7 +87,7 @@ export default class Edit extends NodeOperation {
 
     this.newPosition = this.target.position.clone()
     this.newRadius = this.target.radius
-    this.proxy.conduct(this)
+    this.getProxy().conduct(this)
   }
 
   conduct () {

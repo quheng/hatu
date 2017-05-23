@@ -3,7 +3,7 @@ import {
   GUI_UPDATE_EVENT,
   CURSOR_POINTER_EVENT,
   CURSOR_AUTO_EVENT,
-  CURSOR_MOVE_EVENT
+  CURSOR_MOVE_EVENT, TRACE_BOX_OPEN, TRACE_BOX_CLOSE
 } from '../operation/OperationProxy'
 
 export default class HatuGUI {
@@ -39,6 +39,8 @@ export default class HatuGUI {
     this.operationProxy.addEventListener(CURSOR_MOVE_EVENT, () => {
       self.dom.style.cursor = 'move'
     })
+    this.operationProxy.addEventListener(TRACE_BOX_OPEN, event => this.startTrace(event.trace))
+    this.operationProxy.addEventListener(TRACE_BOX_CLOSE, event => this.closeTrace(event.trace))
     this.operationProxy.setupOperation()
 
     let overviewFolder = this.gui.addFolder('Overview')
@@ -71,8 +73,10 @@ export default class HatuGUI {
 
     nodeFolder.open()
 
-    this.gui.add(this, 'operation', ['AddNode', 'AddBranch', 'Delete', 'Edit', 'DeleteParent', 'ChangeParent'])
+    this.gui.add(this, 'operation', ['AddNode', 'AddBranch', 'Delete', 'Edit', 'DeleteParent', 'ChangeParent', 'Trace'])
       .onChange(() => this.operationProxy.change(this.operation))
+
+    this.traceFolder = this.gui.addFolder('Trace')
 
     this.folders = [overviewFolder, nodeFolder]
   }
@@ -89,7 +93,12 @@ export default class HatuGUI {
     this.neuronModeController.onChange(f)
   }
 
+  /**
+   *
+   * @param {Number} maxElevation
+   */
   setMaxElevation (maxElevation) {
+    this.maxElevation = maxElevation
     this.elevationController.max(maxElevation)
   }
 
@@ -128,4 +137,37 @@ export default class HatuGUI {
     this.gui.__controllers.forEach(e => e.updateDisplay())
   }
 
+  /**
+   *
+   * @param {Trace} trace
+   */
+  startTrace (trace) {
+
+    this.traceLeft = this.traceFolder.add(trace, 'left').min(0).step(0.0001)
+    this.traceRight = this.traceFolder.add(trace, 'right').min(0).step(0.0001)
+    this.traceTop = this.traceFolder.add(trace, 'top').min(0).step(0.0001)
+    this.traceBottom = this.traceFolder.add(trace, 'bottom').min(0).step(0.0001)
+    this.traceNear = this.traceFolder.add(trace, 'near').min(0).max(this.maxElevation).step(0.0001)
+    this.traceFar = this.traceFolder.add(trace, 'far').min(0).max(this.maxElevation).step(0.0001)
+
+    this.traceYes = this.traceFolder.add(trace, 'yes')
+    this.traceNo = this.traceFolder.add(trace, 'no')
+    this.traceFolder.open()
+  }
+
+  /**
+   *
+   * @param {Trace} trace
+   */
+  closeTrace (trace) {
+    this.traceFolder.close()
+    this.traceFolder.remove(this.traceLeft)
+    this.traceFolder.remove(this.traceRight)
+    this.traceFolder.remove(this.traceTop)
+    this.traceFolder.remove(this.traceBottom)
+    this.traceFolder.remove(this.traceNear)
+    this.traceFolder.remove(this.traceFar)
+    this.traceFolder.remove(this.traceYes)
+    this.traceFolder.remove(this.traceNo)
+  }
 }

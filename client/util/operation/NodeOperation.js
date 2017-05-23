@@ -30,8 +30,16 @@ export default class NodeOperation {
     return this.target
   }
 
+  /**
+   *
+   * @return {OperationProxy}
+   */
+  getProxy(){
+    return this.proxy
+  }
+
   activate () {
-    this.proxy.dispatchEvent({ type: DRAG_NODE_MODE_EVENT })
+    this.getProxy().dispatchEvent({ type: DRAG_NODE_MODE_EVENT })
   }
 
   /**
@@ -76,9 +84,17 @@ export default class NodeOperation {
 
   /**
    *
-   * @param position
+   * @param {Vector3} position
    */
   clickNothing (position) {
+
+  }
+
+  /**
+   *
+   * @param {Vector3} position
+   */
+  move (position){
 
   }
 

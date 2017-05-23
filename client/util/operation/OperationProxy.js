@@ -8,6 +8,7 @@ import Swc from "../swc/Swc"
 import ChangeParent from "./ChangeParent"
 import DeleteParent from "./DeleteParent"
 import EditParent from "./EditParent"
+import Trace from "./Trace"
 
 export const GUI_UPDATE_EVENT = 'GUI_UPDATE'
 export const DRAG_NODE_MODE_EVENT = 'NODE_MODE'
@@ -16,6 +17,11 @@ export const CURSOR_POINTER_EVENT = 'CURSOR_POINTER'
 export const CURSOR_AUTO_EVENT = 'CURSOR_AUTO'
 export const CURSOR_MOVE_EVENT = 'CURSOR_MOVE'
 export const CONDUCT_EVENT = 'CONDUCT'
+export const CHOOSE_BOX_OPEN = 'CHOOSE_BOX_OPEN'
+export const CHOOSE_BOX_UPDATE = 'CHOOSE_BOX_UPDATE'
+export const CHOOSE_BOX_CLOSE = 'CHOOSE_BOX_CLOSE'
+export const TRACE_BOX_OPEN = 'TRACE_BOX_OPEN'
+export const TRACE_BOX_CLOSE = 'TRACE_BOX_CLOSE'
 
 export class OperationProxy extends THREE.EventDispatcher {
 
@@ -75,6 +81,8 @@ export class OperationProxy extends THREE.EventDispatcher {
         return new ChangeParent(this)
       case 'DeleteParent':
         return new DeleteParent(this)
+      case 'Trace':
+        return new Trace(this)
     }
   }
 

@@ -2,7 +2,11 @@
 const THREE = require('three')
 
 import TrackballControls from './control/TrackballControls'
-import { DRAG_NODE_MODE_EVENT, OperationProxy, DRAG_EDGE_MODE_EVENT } from './operation/OperationProxy'
+import Annotation from "./annotation/Annotation"
+import {
+  DRAG_NODE_MODE_EVENT, OperationProxy, DRAG_EDGE_MODE_EVENT, CHOOSE_BOX_OPEN, CHOOSE_BOX_UPDATE,
+  CHOOSE_BOX_CLOSE
+} from './operation/OperationProxy'
 import KeyControls from './control/KeyControls'
 import HatuOrthographicCamera from './control/HatuOrthographicCamera'
 import HatuGUI from './control/HatuGUI'
@@ -73,6 +77,8 @@ export default class HatuViewer {
       this.camera.update()
       this.gui.setMaxElevation(slice.maxElevation)
       this.gui.setGuiMode(this.supervisor.getGuiMode())
+      this.annotation = this.setupAnnotation()
+      this.scene.add(this.annotation)
       this.supervisor.getOperationEvents().forEach((listener, event) => this.operationProxy.addEventListener(event, listener))
     }
   }
@@ -84,6 +90,7 @@ export default class HatuViewer {
       })
       this.scene.remove(this.supervisor.getSlice().object)
       this.scene.remove(this.supervisor.getAnnotation())
+      this.scene.remove(this.annotation)
       this.supervisor = null
       this.gui.reset()
       this.supervisor.getOperationEvents().forEach((listener, event) => this.operationProxy.removeEventListener(event, listener))
@@ -167,6 +174,9 @@ export default class HatuViewer {
     })
     dragControls.addEventListener('clicknothing', event => {
       scope.operationProxy.currentOperation.clickNothing(event.position)
+    })
+    dragControls.addEventListener('move', event => {
+      scope.operationProxy.currentOperation.move(event.position)
     })
     return dragControls
   }
@@ -273,6 +283,19 @@ export default class HatuViewer {
     renderer.setPixelRatio(window.devicePixelRatio)
     this.container.appendChild(renderer.domElement)
     return renderer
+  }
+
+  /**
+   *
+   * @return {Annotation}
+   */
+  setupAnnotation () {
+    let annotation = new Annotation()
+    annotation.position.set(-this.center[0], -this.center[1], -this.center[2])
+    this.operationProxy.addEventListener(CHOOSE_BOX_OPEN, event => annotation.openChooseBox())
+    this.operationProxy.addEventListener(CHOOSE_BOX_UPDATE, event => annotation.updateChooseBox(event.position1, event.position2))
+    this.operationProxy.addEventListener(CHOOSE_BOX_CLOSE, event => annotation.closeChooseBox())
+    return annotation
   }
 
   render () {
