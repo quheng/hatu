@@ -24,10 +24,7 @@ export default class EditParent extends NodeOperation {
    */
   from (src) {
     this.target = this.swc.getNodeByIndex(parseInt(src[1]))
-    let parent = src[2]
-    if (parent.length === 1) {
-      this.parent.push(this.swc.getNodeByIndex(parseInt(parent)))
-    }
+    this.parent = this.swc.getNodeByIndex(parseInt(src[2]))
 
     return this
   }
@@ -45,7 +42,7 @@ export default class EditParent extends NodeOperation {
   cancel () {
     let swc = this.target.swc
     swc.popOp()
-    swc.undoEditParent(this.target, this.oldParent[0])
+    swc.undoEditParent(this.target, this.oldParent)
   }
 
   /**

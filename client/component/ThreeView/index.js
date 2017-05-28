@@ -25,18 +25,18 @@ class ThreeView extends React.Component {
       // /////////////////////////////////////////////////////////////////////
       // This two lines are the actual interface to start a resolver
 
-      // let resolver = new Resolver(samples.ops1, samples.ops2, slices, samples.source)
-      // resolver.onCommit((ancestor, result) => {
-      //   console.log(ancestor)
-      //   console.log(result)
-      // })
-      // hatuViewer.start(resolver)
-      let editor = new Editor(samples.source, samples.ops1, slices)
-      editor.onCommit((ancestor, result) => {
+      let resolver = new Resolver(samples.ops1, samples.ops2, slices, samples.source)
+      resolver.onCommit((ancestor, result) => {
         console.log(ancestor)
         console.log(result)
       })
-      hatuViewer.start(editor)
+      hatuViewer.start(resolver)
+      // let editor = new Editor(samples.source, samples.ops1, slices)
+      // editor.onCommit((ancestor, result) => {
+      //   console.log(ancestor)
+      //   console.log(result)
+      // })
+      // hatuViewer.start(editor)
       // /////////////////////////////////////////////////////////////////////
     } catch (err) {
       console.log(err)

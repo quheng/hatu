@@ -191,13 +191,19 @@ export default class Swc extends THREE.Object3D {
    */
   editParent (node, parent) {
     let oldParent = node.parentNode
-    let oldEdge = oldParent.removeChild(node)
+    let oldEdge
+    if (oldParent) {
+      oldEdge = oldParent.removeChild(node)
+    }
     if (oldEdge) {
       this.removeEdge(oldEdge)
     }
 
     if (parent) {
-      this.pushEdge(node.setParent(parent))
+      node.parentNode = parent
+      let parentEdge = node.setParent(parent)
+      node.parentEdge = parentEdge
+      this.pushEdge(parentEdge)
     } else {
       node.parentNode = null
       node.parentEdge = null
@@ -232,7 +238,7 @@ export default class Swc extends THREE.Object3D {
     let node = new HatuNode({
       index: index,
       parent: parent ? parent.index : -1,
-      type: parent ?parent.type: 1,
+      type: parent ? parent.type : 1,
       x: position.x,
       y: position.y,
       z: position.z,

@@ -143,12 +143,9 @@ export default class HatuGUI {
    */
   startTrace (trace) {
 
-    this.traceLeft = this.traceFolder.add(trace, 'left').min(0).step(0.0001)
-    this.traceRight = this.traceFolder.add(trace, 'right').min(0).step(0.0001)
-    this.traceTop = this.traceFolder.add(trace, 'top').min(0).step(0.0001)
-    this.traceBottom = this.traceFolder.add(trace, 'bottom').min(0).step(0.0001)
-    this.traceNear = this.traceFolder.add(trace, 'near').min(0).max(this.maxElevation).step(0.0001)
-    this.traceFar = this.traceFolder.add(trace, 'far').min(0).max(this.maxElevation).step(0.0001)
+    this.traceX = this.traceFolder.add(trace, 'x').min(0).step(0.0001)
+    this.traceY = this.traceFolder.add(trace, 'y').min(0).step(0.0001)
+    this.traceZ = this.traceFolder.add(trace, 'z').min(0).step(0.0001)
 
     this.traceYes = this.traceFolder.add(trace, 'yes')
     this.traceNo = this.traceFolder.add(trace, 'no')
@@ -161,12 +158,9 @@ export default class HatuGUI {
    */
   closeTrace (trace) {
     this.traceFolder.close()
-    this.traceFolder.remove(this.traceLeft)
-    this.traceFolder.remove(this.traceRight)
-    this.traceFolder.remove(this.traceTop)
-    this.traceFolder.remove(this.traceBottom)
-    this.traceFolder.remove(this.traceNear)
-    this.traceFolder.remove(this.traceFar)
+    this.traceFolder.remove(this.traceX)
+    this.traceFolder.remove(this.traceY)
+    this.traceFolder.remove(this.traceZ)
     this.traceFolder.remove(this.traceYes)
     this.traceFolder.remove(this.traceNo)
   }

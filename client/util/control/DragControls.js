@@ -105,6 +105,7 @@ export default class DragControls extends THREE.EventDispatcher {
         let emptyPosition = _raycaster.ray.intersectPlane(_plane)
         emptyPosition.setX(emptyPosition.x + _viewer.center[0])
         emptyPosition.setY(emptyPosition.y + _viewer.center[1])
+        emptyPosition.setZ(_viewer.gui.elevation)
         scope.dispatchEvent({ type: 'clicknothing', position: emptyPosition })
       }
     }
