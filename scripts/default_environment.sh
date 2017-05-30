@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # postgres database config
 export PG_HOST='localhost'
 export PG_PORT='1024'
