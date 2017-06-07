@@ -21,6 +21,7 @@ export const CHOOSE_BOX_OPEN = 'CHOOSE_BOX_OPEN'
 export const CHOOSE_BOX_UPDATE = 'CHOOSE_BOX_UPDATE'
 export const CHOOSE_BOX_CLOSE = 'CHOOSE_BOX_CLOSE'
 export const TRACE_BOX_OPEN = 'TRACE_BOX_OPEN'
+export const TRACE_BOX_UPDATE = 'TRACE_BOX_UPDATE'
 export const TRACE_BOX_CLOSE = 'TRACE_BOX_CLOSE'
 
 export class OperationProxy extends THREE.EventDispatcher {
@@ -105,7 +106,7 @@ export class OperationProxy extends THREE.EventDispatcher {
 
   resetNode () {
     if (this.selectedNode) {
-      this.selectedNode.material.emissive.setHex(this.selectedNode.currentHex)
+      this.selectedNode.material.emissive.setHex(this.selectedNode.themeColor)
     }
     this.selectedNode = null
     this.dispatchEvent({ type: GUI_UPDATE_EVENT })
@@ -249,8 +250,8 @@ export class OperationProxy extends THREE.EventDispatcher {
       }
       if (!op) {
         console.log(parts[0])
-      }
-      op.conduct()
+      } else
+        op.conduct()
     })
   }
 }

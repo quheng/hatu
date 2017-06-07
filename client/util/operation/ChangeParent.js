@@ -16,9 +16,10 @@ export default class ChangeParent extends EditParent {
    */
   dragStart (node) {
     this.swc=node.swc
-    if (node.isRoot) {
-      window.alert('The root node has no parent!')
-    } else if (this.count === 0) {
+    // if (node.isRoot) {
+    //   window.alert('The root node has no parent!')
+    // } else
+      if (this.count === 0) {
       this.proxy.setNode(node)
       this.count++
       this.target = node

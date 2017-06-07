@@ -3,7 +3,7 @@ import {
   GUI_UPDATE_EVENT,
   CURSOR_POINTER_EVENT,
   CURSOR_AUTO_EVENT,
-  CURSOR_MOVE_EVENT, TRACE_BOX_OPEN, TRACE_BOX_CLOSE
+  CURSOR_MOVE_EVENT, TRACE_BOX_OPEN, TRACE_BOX_CLOSE, TRACE_BOX_UPDATE
 } from '../operation/OperationProxy'
 
 export default class HatuGUI {
@@ -40,6 +40,7 @@ export default class HatuGUI {
       self.dom.style.cursor = 'move'
     })
     this.operationProxy.addEventListener(TRACE_BOX_OPEN, event => this.startTrace(event.trace))
+    this.operationProxy.addEventListener(TRACE_BOX_UPDATE, event => this.updateTrace(event.trace))
     this.operationProxy.addEventListener(TRACE_BOX_CLOSE, event => this.closeTrace(event.trace))
     this.operationProxy.setupOperation()
 
@@ -150,6 +151,13 @@ export default class HatuGUI {
     this.traceYes = this.traceFolder.add(trace, 'yes')
     this.traceNo = this.traceFolder.add(trace, 'no')
     this.traceFolder.open()
+    this.updateTrace(trace)
+  }
+
+  updateTrace (trace) {
+    this.traceX.updateDisplay()
+    this.traceY.updateDisplay()
+    this.traceZ.updateDisplay()
   }
 
   /**

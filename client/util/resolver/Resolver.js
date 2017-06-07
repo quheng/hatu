@@ -39,6 +39,7 @@ export default class Resolver extends Supervisor {
       }
     })
     this.operationEvents.set(CONDUCT_EVENT, () => this.recover())
+    this.swcs = [this.master, this.slave]
   }
 
   /**
@@ -46,7 +47,15 @@ export default class Resolver extends Supervisor {
    * @return {[Swc]}
    */
   getSwcs () {
-    return [this.master, this.slave]
+    return this.swcs
+  }
+
+  addSwc (swc) {
+    this.swcs.push(swc)
+  }
+
+  removeSwc (swc) {
+    this.swcs = this.swcs.filter(e => e != swc)
   }
 
   /**

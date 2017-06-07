@@ -71,7 +71,7 @@ export default class HatuViewer {
         this.scene.add(swc)
         swc.setPosition(-this.center[0], -this.center[1], -this.center[2])
       })
-
+      slice.viewer=this
       this.supervisor.getAnnotation().position.set(-this.center[0], -this.center[1], -this.center[2])
       this.scene.add(this.supervisor.getAnnotation())
       this.camera.update()
@@ -194,6 +194,7 @@ export default class HatuViewer {
     proxy.addEventListener(DRAG_EDGE_MODE_EVENT, () => {
       self.dragControls.mode = 'edge'
     })
+    proxy.viewer = this
     return proxy
   }
 
@@ -213,9 +214,9 @@ export default class HatuViewer {
     function onElevationChange (slice, elevation) {
       slice.setElevation(elevation)
       slice.notify(self)
-      self.gui.visualMode = 'slices'
+
       self.gui.update()
-      if (self.camera instanceof HatuOrthographicCamera) {
+      if (self.gui.visualMode === 'slices' && self.camera instanceof HatuOrthographicCamera) {
         self.camera.set(elevation)
       }
     }
@@ -228,7 +229,7 @@ export default class HatuViewer {
     function onVisualModeChange (slice, mode) {
       switch (mode) {
         case 'whole':
-          slice.setElevation(0)
+          // slice.setElevation(0)
           slice.notify(self)
           self.camera.reset()
           break

@@ -60,7 +60,10 @@ export default class Slices {
 
   updatePosition (center) {
     this.mesh.geometry = new THREE.PlaneGeometry(this.right - this.left, this.top - this.bottom)
-    this.mesh.position.set((this.right + this.left) / 2 - center[0], (this.top + this.bottom) / 2 - center[1], this.elevation - this.maxElevation / 2)
+    if (this.viewer.gui.visualMode === 'slices')
+      this.mesh.position.set((this.right + this.left) / 2 - center[0], (this.top + this.bottom) / 2 - center[1], this.elevation - this.maxElevation / 2)
+    else
+      this.mesh.position.set((this.right + this.left) / 2 - center[0], (this.top + this.bottom) / 2 - center[1], 0 - this.maxElevation / 2)
     this.mesh.material = emptyMaterial
   }
 

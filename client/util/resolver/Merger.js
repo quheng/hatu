@@ -53,6 +53,8 @@ export default class Merger {
     this.mergeOldOps()
     this.mergeNewOps()
     this.mergeEPOps()
+    console.log('------------------------')
+    console.log(this.getResult().map(op => op.toString()).join('\n'))
     let m = this.check(this.master, this.slave)
     let s = this.check(this.slave, this.master)
     this.mergable = m && s
@@ -128,6 +130,8 @@ export default class Merger {
     let oldOps = new Map()
     let newOps = new Map()
     let newEPOps = new Map()
+    console.log('------------------------')
+    console.log(ops.map(op => op.toString()).join('\n'))
     ops.forEach(op => {
       if (op instanceof Interpolate) {
         newOps.set(op.getTarget().index, op)
