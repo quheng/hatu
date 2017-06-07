@@ -1,13 +1,9 @@
-import React from "react"
-import styles from "./index.css"
-import HatuViewer from "../../util/HatuViewer"
-import Slices from "../../util/slice/Slices"
-import { connect } from "react-redux"
-import Swc from "../../util/swc/Swc"
-import { modify } from "../../../test/client/sample/SwcSamples"
-import Resolver from "../../util/resolver/Resolver"
-import { samples } from "../../../test/client/sample/SwcSamples"
-import Editor from "../../util/Editor"
+import React from 'react'
+import styles from './index.css'
+import HatuViewer from '../../util/HatuViewer'
+import Slices from '../../util/slice/Slices'
+import { connect } from 'react-redux'
+import Editor from '../../util/Editor'
 
 class ThreeView extends React.Component {
   render () {
@@ -16,11 +12,8 @@ class ThreeView extends React.Component {
 
   componentWillReceiveProps ({ swcInfo }) {
     try {
-      const swc = new Swc(swcInfo.swcContent, 0x0)
       const slices = new Slices(1024, 1024, 97, swcInfo.imageName)
       const hatuViewer = new HatuViewer(this.refs.container)
-
-      let adjusted = modify(swc)
 
       // /////////////////////////////////////////////////////////////////////
       // This two lines are the actual interface to start a resolver

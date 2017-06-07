@@ -1,4 +1,4 @@
-import NodeOperation from "./NodeOperation"
+import NodeOperation from './NodeOperation'
 
 export default class EditParent extends NodeOperation {
 
@@ -51,9 +51,10 @@ export default class EditParent extends NodeOperation {
    * @return {boolean}
    */
   match (op) {
-    if (op instanceof EditParent)
+    if (op instanceof EditParent) {
       return (this.target.index === op.target.index) && ((!this.parent && !op.parent) || (this.parent.index === op.parent.index))
-    else
+    } else {
       return false
+    }
   }
 }

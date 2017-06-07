@@ -140,10 +140,11 @@ export default class NodeProxy {
    * @param {boolean} v
    */
   setMergeable (swc, v) {
-    if (this.isMergeable.has(swc))
+    if (this.isMergeable.has(swc)) {
       this.isMergeable.set(swc, v && this.isMergeable.get(swc))
-    else
+    } else {
       this.isMergeable.set(swc, v)
+    }
   }
 
   /**

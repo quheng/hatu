@@ -1,7 +1,7 @@
-import NodeOperation from "./NodeOperation"
-import { TRACE_BOX_OPEN, TRACE_BOX_CLOSE, TRACE_BOX_UPDATE } from "./OperationProxy"
-import fetch from "isomorphic-fetch"
-import Swc from "../swc/Swc"
+import NodeOperation from './NodeOperation'
+import { TRACE_BOX_OPEN, TRACE_BOX_CLOSE, TRACE_BOX_UPDATE } from './OperationProxy'
+import fetch from 'isomorphic-fetch'
+import Swc from '../swc/Swc'
 
 export default class Trace extends NodeOperation {
 
@@ -15,7 +15,7 @@ export default class Trace extends NodeOperation {
     this.x = 0
     this.y = 0
     this.z = 0
-    this.state = 0;
+    this.state = 0
   }
 
   /**
@@ -33,7 +33,6 @@ export default class Trace extends NodeOperation {
       this.getProxy().dispatchEvent({ type: TRACE_BOX_UPDATE, trace: this })
     }
   }
-
 
   yes () {
     this.getProxy().dispatchEvent({ type: TRACE_BOX_CLOSE, trace: this })

@@ -1,10 +1,7 @@
-import * as THREE from "three"
-import ChooseBox from "./ChooseBox"
+import * as THREE from 'three'
+import ChooseBox from './ChooseBox'
 
 export default class Annotation extends THREE.Object3D {
-  constructor () {
-    super()
-  }
 
   openChooseBox () {
     this.chooseBox = new ChooseBox()

@@ -143,7 +143,6 @@ export default class HatuGUI {
    * @param {Trace} trace
    */
   startTrace (trace) {
-
     this.traceX = this.traceFolder.add(trace, 'x').min(0).step(0.0001)
     this.traceY = this.traceFolder.add(trace, 'y').min(0).step(0.0001)
     this.traceZ = this.traceFolder.add(trace, 'z').min(0).step(0.0001)

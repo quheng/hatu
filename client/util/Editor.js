@@ -1,6 +1,6 @@
 import Supervisor from './Supervisor'
 import Swc from './swc/Swc'
-import { OperationProxy } from "./operation/OperationProxy"
+import { OperationProxy } from './operation/OperationProxy'
 
 export default class Editor extends Supervisor {
 
@@ -41,7 +41,7 @@ export default class Editor extends Supervisor {
   }
 
   removeSwc (swc) {
-    this.swcs = this.swcs.filter(e => e != swc)
+    this.swcs = this.swcs.filter(e => e !== swc)
   }
 
   /**
@@ -65,9 +65,8 @@ export default class Editor extends Supervisor {
    * @return {HatuNode[]}
    */
   getNodes () {
-
     // return this.swc.getNodes()
-    return this.swcs.map(swc=>swc.getNodes()).reduce((a,b)=>a.concat(b))
+    return this.swcs.map(swc => swc.getNodes()).reduce((a, b) => a.concat(b))
   }
 
   /**
@@ -76,8 +75,7 @@ export default class Editor extends Supervisor {
    */
   getEdges () {
     // return this.swc.getEdges()
-    return this.swcs.map(swc=>swc.getEdges()).reduce((a,b)=>a.concat(b))
+    return this.swcs.map(swc => swc.getEdges()).reduce((a, b) => a.concat(b))
   }
-
 
 }

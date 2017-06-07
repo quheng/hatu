@@ -4,8 +4,8 @@ import * as THREE from 'three'
 
 export default class Edit extends NodeOperation {
 
-  constructor (proxy,swc) {
-    super(proxy,swc)
+  constructor (proxy, swc) {
+    super(proxy, swc)
     this.mode = 'drag'
     this.target = null
   }
@@ -30,7 +30,7 @@ export default class Edit extends NodeOperation {
    * @param {HatuNode} node
    */
   dragStart (node) {
-    this.swc=node.swc
+    this.swc = node.swc
     this.target = node
     this.getProxy().setNode(this.target)
     this.oldPosition = this.target.position.clone()

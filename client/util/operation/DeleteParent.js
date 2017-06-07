@@ -1,16 +1,7 @@
-import EditParent from "./EditParent"
+import EditParent from './EditParent'
 export default class DeleteParent extends EditParent {
 
-  /**
-   *
-   * @param {OperationProxy} proxy
-   */
-  constructor (proxy) {
-    super(proxy)
-  }
-
-
-  getTarget(){
+  getTarget () {
     return super.getTarget()
   }
   /**
@@ -18,7 +9,7 @@ export default class DeleteParent extends EditParent {
    * @param {HatuNode} node
    */
   dragStart (node) {
-    this.swc=node.swc
+    this.swc = node.swc
     if (node.isRoot) {
       window.alert('The root node has no parent!')
     } else {

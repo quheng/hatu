@@ -1,7 +1,7 @@
-import Supervisor from "../Supervisor"
-import Swc from "../swc/Swc"
-import { OperationProxy, CONDUCT_EVENT } from "../operation/OperationProxy"
-import Merger from "./Merger"
+import Supervisor from '../Supervisor'
+import Swc from '../swc/Swc'
+import { OperationProxy, CONDUCT_EVENT } from '../operation/OperationProxy'
+import Merger from './Merger'
 
 export default class Resolver extends Supervisor {
   /**
@@ -34,8 +34,9 @@ export default class Resolver extends Supervisor {
 
     this.operationMap.set('commit', () => {
       if (this.merger.merge()) {
-        if (this.commitCallback)
+        if (this.commitCallback) {
           this.commitCallback(ancestor, this.merger.getResult().map(op => op.toString()).join('\n'))
+        }
       }
     })
     this.operationEvents.set(CONDUCT_EVENT, () => this.recover())
@@ -55,7 +56,7 @@ export default class Resolver extends Supervisor {
   }
 
   removeSwc (swc) {
-    this.swcs = this.swcs.filter(e => e != swc)
+    this.swcs = this.swcs.filter(e => e !== swc)
   }
 
   /**

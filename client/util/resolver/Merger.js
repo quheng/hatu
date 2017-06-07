@@ -1,9 +1,9 @@
-import Interpolate from "../operation/Interpolate"
-import { OperationProxy } from "../operation/OperationProxy"
-import NodeProxy from "./NodeProxy"
-import Edit from "../operation/Edit"
-import EditParent from "../operation/EditParent"
-import Swc from "../swc/Swc"
+import Interpolate from '../operation/Interpolate'
+import { OperationProxy } from '../operation/OperationProxy'
+import NodeProxy from './NodeProxy'
+import Edit from '../operation/Edit'
+import EditParent from '../operation/EditParent'
+import Swc from '../swc/Swc'
 export default class Merger {
 
   /**
@@ -15,7 +15,6 @@ export default class Merger {
     this.proxy = new OperationProxy()
     this.masterSrc = masterSrc
     this.slaveSrc = slaveSrc
-
 
     this.mergable = false
     this.result = []
@@ -106,8 +105,9 @@ export default class Merger {
       if (masterOps[i].equal(slaveOps[i])) {
         this.proxy.from(masterOps[i].toString(), ancestor)
         this.ancestorResult.push(masterOps[i])
-      } else
+      } else {
         break
+      }
     }
     this.master = new Swc(ancestor.serialize(), 0x0)
     this.slave = new Swc(ancestor.serialize(), 0x0)
@@ -197,7 +197,6 @@ export default class Merger {
         }
       }
     })
-
   }
 
   mergeNewOps () {
@@ -243,8 +242,9 @@ export default class Merger {
         if (!op.parent || ((op.parent.getProxy().getMergeable(this.master) || op.parent.getProxy().getMatched(this.master)) && !op.parent.getProxy().isDelete())) {
           op.getTarget().getProxy().setMergeable(this.master, true)
           let masterNode
-          if (op.parent)
+          if (op.parent) {
             masterNode = op.parent.getProxy().getMatched(this.master)
+          }
           if (masterNode) {
             op.parent = masterNode.node
           }
@@ -252,7 +252,6 @@ export default class Merger {
         }
       }
     }
-
 
     this.newResult.sort((a, b) => {
       if (a.getTarget() === b.parent) return -1
@@ -264,7 +263,6 @@ export default class Merger {
       op.getTarget().index = this.minimalIndex
       this.minimalIndex += 1
     })
-
   }
 
   mergeEPOps () {
@@ -300,6 +298,5 @@ export default class Merger {
         }
       }
     })
-
   }
 }

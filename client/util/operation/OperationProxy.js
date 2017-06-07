@@ -1,14 +1,14 @@
-import * as THREE from "three"
-import Edit from "./Edit"
-import AddBranch from "./AddBranch"
-import AddNode from "./AddNode"
-import Delete from "./Delete"
-import Interpolate from "./Interpolate"
-import Swc from "../swc/Swc"
-import ChangeParent from "./ChangeParent"
-import DeleteParent from "./DeleteParent"
-import EditParent from "./EditParent"
-import Trace from "./Trace"
+import * as THREE from 'three'
+import Edit from './Edit'
+import AddBranch from './AddBranch'
+import AddNode from './AddNode'
+import Delete from './Delete'
+import Interpolate from './Interpolate'
+import Swc from '../swc/Swc'
+import ChangeParent from './ChangeParent'
+import DeleteParent from './DeleteParent'
+import EditParent from './EditParent'
+import Trace from './Trace'
 
 export const GUI_UPDATE_EVENT = 'GUI_UPDATE'
 export const DRAG_NODE_MODE_EVENT = 'NODE_MODE'
@@ -168,7 +168,6 @@ export class OperationProxy extends THREE.EventDispatcher {
       } else if (op instanceof Interpolate) {
         operationMap.set(op.target.index, [op])
       }
-
     })
 
     let res = []
@@ -184,8 +183,9 @@ export class OperationProxy extends THREE.EventDispatcher {
 
     let newNodes = new Set()
     res.forEach(op => {
-      if (op instanceof Interpolate)
+      if (op instanceof Interpolate) {
         newNodes.add(op.getTarget())
+      }
     })
 
     res.forEach(op => {
@@ -208,7 +208,6 @@ export class OperationProxy extends THREE.EventDispatcher {
       }
       return a.getTarget().index - b.getTarget().index
     })
-
 
     return res
   }
@@ -250,8 +249,9 @@ export class OperationProxy extends THREE.EventDispatcher {
       }
       if (!op) {
         console.log(parts[0])
-      } else
+      } else {
         op.conduct()
+      }
     })
   }
 }

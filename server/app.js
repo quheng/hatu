@@ -43,7 +43,7 @@ async function setupRoute () {
   const userRoute = await userRouterGenerator()
   const imageRoute = await imageRouterGenerator()
   const swcRoute = await swcRouterGenerator()
-  const traceRoute= await traceRouterGenerator()
+  const traceRoute = await traceRouterGenerator()
 
   app.use('/users', userRoute)
   app.use('/api', imageRoute)

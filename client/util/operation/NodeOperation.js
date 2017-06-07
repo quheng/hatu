@@ -34,7 +34,7 @@ export default class NodeOperation {
    *
    * @return {OperationProxy}
    */
-  getProxy(){
+  getProxy () {
     return this.proxy
   }
 
@@ -94,7 +94,7 @@ export default class NodeOperation {
    *
    * @param {Vector3} position
    */
-  move (position){
+  move (position) {
 
   }
 

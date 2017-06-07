@@ -53,14 +53,14 @@ export default class Swc extends THREE.Object3D {
     let floatReg = '-?\\d*(?:\\.\\d+)?'
     let positiveIntReg = '\\d+'
     let pattern = new RegExp('^[ \\t]*(' + [
-        positiveIntReg,                // index
-        positiveIntReg,                // type
-        floatReg,                      // x
-        floatReg,                      // y
-        floatReg,                      // z
-        floatReg,                      // radius
-        '-1|' + positiveIntReg         // parent
-      ].join(')[ \\t]+(') + ')[ \\t]*$')
+      positiveIntReg,                // index
+      positiveIntReg,                // type
+      floatReg,                      // x
+      floatReg,                      // y
+      floatReg,                      // z
+      floatReg,                      // radius
+      '-1|' + positiveIntReg         // parent
+    ].join(')[ \\t]+(') + ')[ \\t]*$')
 
     let nodes = []
 
@@ -260,10 +260,11 @@ export default class Swc extends THREE.Object3D {
    * @return {HatuNode}
    */
   getNodeByIndex (index) {
-    if (this.nodeMap.has(index))
+    if (this.nodeMap.has(index)) {
       return this.nodeMap.get(index)
-    else
+    } else {
       return null
+    }
   }
 
   /**

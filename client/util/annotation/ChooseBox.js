@@ -1,4 +1,4 @@
-import * as THREE from "three"
+import * as THREE from 'three'
 export default class ChooseBox extends THREE.Line {
 
   constructor () {
@@ -17,7 +17,7 @@ export default class ChooseBox extends THREE.Line {
    * @param {Vector3} position1
    * @param {Vector3} position2
    */
-  notify(position1, position2){
+  notify (position1, position2) {
     let v1 = new THREE.Vector3(position1.x, position1.y, 10)
     let v2 = new THREE.Vector3(position1.x, position2.y, 10)
     let v3 = new THREE.Vector3(position2.x, position2.y, 10)
@@ -32,6 +32,5 @@ export default class ChooseBox extends THREE.Line {
     this.geometry.vertices.push(v5)
     this.geometry.computeLineDistances()
   }
-
 
 }

@@ -2,7 +2,7 @@
 const THREE = require('three')
 
 import TrackballControls from './control/TrackballControls'
-import Annotation from "./annotation/Annotation"
+import Annotation from './annotation/Annotation'
 import {
   DRAG_NODE_MODE_EVENT, OperationProxy, DRAG_EDGE_MODE_EVENT, CHOOSE_BOX_OPEN, CHOOSE_BOX_UPDATE,
   CHOOSE_BOX_CLOSE
@@ -71,7 +71,7 @@ export default class HatuViewer {
         this.scene.add(swc)
         swc.setPosition(-this.center[0], -this.center[1], -this.center[2])
       })
-      slice.viewer=this
+      slice.viewer = this
       this.supervisor.getAnnotation().position.set(-this.center[0], -this.center[1], -this.center[2])
       this.scene.add(this.supervisor.getAnnotation())
       this.camera.update()

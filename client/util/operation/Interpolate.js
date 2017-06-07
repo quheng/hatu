@@ -25,7 +25,7 @@ export default class Interpolate extends NodeOperation {
   from (src) {
     this.index = parseInt(src[1])
     this.parent = this.swc.getNodeByIndex(parseInt(src[2]))
-    this.children = src[3].length != 2 ? src[3].slice(1, src[3].length - 1).split(',').map(str => this.swc.getNodeByIndex(parseInt(str))) : []
+    this.children = src[3].length !== 2 ? src[3].slice(1, src[3].length - 1).split(',').map(str => this.swc.getNodeByIndex(parseInt(str))) : []
 
     let position = src[4].slice(1, src[4].length - 1).split(',')
     this.newPosition = new THREE.Vector3(parseFloat(position[0]), parseFloat(position[1]), parseFloat(position[2]))

@@ -1,5 +1,3 @@
-import NodeProxy from './NodeProxy'
-
 export default class Matcher {
 
   /**

@@ -1,4 +1,4 @@
-import EditParent from "./EditParent"
+import EditParent from './EditParent'
 export default class ChangeParent extends EditParent {
 
   /**
@@ -15,11 +15,11 @@ export default class ChangeParent extends EditParent {
    * @param {HatuNode} node
    */
   dragStart (node) {
-    this.swc=node.swc
+    this.swc = node.swc
     // if (node.isRoot) {
     //   window.alert('The root node has no parent!')
     // } else
-      if (this.count === 0) {
+    if (this.count === 0) {
       this.proxy.setNode(node)
       this.count++
       this.target = node

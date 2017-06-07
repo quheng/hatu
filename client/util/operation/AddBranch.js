@@ -7,7 +7,7 @@ export default class AddBranch extends Interpolate {
    * @param {HatuNode} node
    */
   dragStart (node) {
-    this.swc=node.swc
+    this.swc = node.swc
     this.proxy.setNode(node)
   }
 
