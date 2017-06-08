@@ -1,9 +1,11 @@
 import React from 'react'
+import _ from 'lodash'
 import styles from './index.css'
 import HatuViewer from '../../util/HatuViewer'
 import Slices from '../../util/slice/Slices'
-import { connect } from 'react-redux'
 import Editor from '../../util/Editor'
+
+import { connect } from 'react-redux'
 
 class ThreeView extends React.Component {
   render () {
