@@ -3,7 +3,7 @@ import {
   GUI_UPDATE_EVENT,
   CURSOR_POINTER_EVENT,
   CURSOR_AUTO_EVENT,
-  CURSOR_MOVE_EVENT
+  CURSOR_MOVE_EVENT, TRACE_BOX_OPEN, TRACE_BOX_CLOSE, TRACE_BOX_UPDATE
 } from '../operation/OperationProxy'
 
 export default class HatuGUI {
@@ -39,6 +39,9 @@ export default class HatuGUI {
     this.operationProxy.addEventListener(CURSOR_MOVE_EVENT, () => {
       self.dom.style.cursor = 'move'
     })
+    this.operationProxy.addEventListener(TRACE_BOX_OPEN, event => this.startTrace(event.trace))
+    this.operationProxy.addEventListener(TRACE_BOX_UPDATE, event => this.updateTrace(event.trace))
+    this.operationProxy.addEventListener(TRACE_BOX_CLOSE, event => this.closeTrace(event.trace))
     this.operationProxy.setupOperation()
 
     let overviewFolder = this.gui.addFolder('Overview')
@@ -71,8 +74,10 @@ export default class HatuGUI {
 
     nodeFolder.open()
 
-    this.gui.add(this, 'operation', ['AddNode', 'AddBranch', 'DeleteNode', 'Arrow'])
+    this.gui.add(this, 'operation', ['AddNode', 'AddBranch', 'Delete', 'Edit', 'DeleteParent', 'ChangeParent', 'Trace'])
       .onChange(() => this.operationProxy.change(this.operation))
+
+    this.traceFolder = this.gui.addFolder('Trace')
 
     this.folders = [overviewFolder, nodeFolder]
   }
@@ -89,7 +94,12 @@ export default class HatuGUI {
     this.neuronModeController.onChange(f)
   }
 
+  /**
+   *
+   * @param {Number} maxElevation
+   */
   setMaxElevation (maxElevation) {
+    this.maxElevation = maxElevation
     this.elevationController.max(maxElevation)
   }
 
@@ -128,4 +138,37 @@ export default class HatuGUI {
     this.gui.__controllers.forEach(e => e.updateDisplay())
   }
 
+  /**
+   *
+   * @param {Trace} trace
+   */
+  startTrace (trace) {
+    this.traceX = this.traceFolder.add(trace, 'x').min(0).step(0.0001)
+    this.traceY = this.traceFolder.add(trace, 'y').min(0).step(0.0001)
+    this.traceZ = this.traceFolder.add(trace, 'z').min(0).step(0.0001)
+
+    this.traceYes = this.traceFolder.add(trace, 'yes')
+    this.traceNo = this.traceFolder.add(trace, 'no')
+    this.traceFolder.open()
+    this.updateTrace(trace)
+  }
+
+  updateTrace (trace) {
+    this.traceX.updateDisplay()
+    this.traceY.updateDisplay()
+    this.traceZ.updateDisplay()
+  }
+
+  /**
+   *
+   * @param {Trace} trace
+   */
+  closeTrace (trace) {
+    this.traceFolder.close()
+    this.traceFolder.remove(this.traceX)
+    this.traceFolder.remove(this.traceY)
+    this.traceFolder.remove(this.traceZ)
+    this.traceFolder.remove(this.traceYes)
+    this.traceFolder.remove(this.traceNo)
+  }
 }

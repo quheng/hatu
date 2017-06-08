@@ -2,7 +2,11 @@
 const THREE = require('three')
 
 import TrackballControls from './control/TrackballControls'
-import { DRAG_NODE_MODE_EVENT, OperationProxy, DRAG_EDGE_MODE_EVENT } from './operation/OperationProxy'
+import Annotation from './annotation/Annotation'
+import {
+  DRAG_NODE_MODE_EVENT, OperationProxy, DRAG_EDGE_MODE_EVENT, CHOOSE_BOX_OPEN, CHOOSE_BOX_UPDATE,
+  CHOOSE_BOX_CLOSE
+} from './operation/OperationProxy'
 import KeyControls from './control/KeyControls'
 import HatuOrthographicCamera from './control/HatuOrthographicCamera'
 import HatuGUI from './control/HatuGUI'
@@ -67,12 +71,14 @@ export default class HatuViewer {
         this.scene.add(swc)
         swc.setPosition(-this.center[0], -this.center[1], -this.center[2])
       })
-
+      slice.viewer = this
       this.supervisor.getAnnotation().position.set(-this.center[0], -this.center[1], -this.center[2])
       this.scene.add(this.supervisor.getAnnotation())
       this.camera.update()
       this.gui.setMaxElevation(slice.maxElevation)
       this.gui.setGuiMode(this.supervisor.getGuiMode())
+      this.annotation = this.setupAnnotation()
+      this.scene.add(this.annotation)
       this.supervisor.getOperationEvents().forEach((listener, event) => this.operationProxy.addEventListener(event, listener))
     }
   }
@@ -84,6 +90,7 @@ export default class HatuViewer {
       })
       this.scene.remove(this.supervisor.getSlice().object)
       this.scene.remove(this.supervisor.getAnnotation())
+      this.scene.remove(this.annotation)
       this.supervisor = null
       this.gui.reset()
       this.supervisor.getOperationEvents().forEach((listener, event) => this.operationProxy.removeEventListener(event, listener))
@@ -168,6 +175,9 @@ export default class HatuViewer {
     dragControls.addEventListener('clicknothing', event => {
       scope.operationProxy.currentOperation.clickNothing(event.position)
     })
+    dragControls.addEventListener('move', event => {
+      scope.operationProxy.currentOperation.move(event.position)
+    })
     return dragControls
   }
 
@@ -184,6 +194,7 @@ export default class HatuViewer {
     proxy.addEventListener(DRAG_EDGE_MODE_EVENT, () => {
       self.dragControls.mode = 'edge'
     })
+    proxy.viewer = this
     return proxy
   }
 
@@ -203,9 +214,9 @@ export default class HatuViewer {
     function onElevationChange (slice, elevation) {
       slice.setElevation(elevation)
       slice.notify(self)
-      self.gui.visualMode = 'slices'
+
       self.gui.update()
-      if (self.camera instanceof HatuOrthographicCamera) {
+      if (self.gui.visualMode === 'slices' && self.camera instanceof HatuOrthographicCamera) {
         self.camera.set(elevation)
       }
     }
@@ -218,7 +229,7 @@ export default class HatuViewer {
     function onVisualModeChange (slice, mode) {
       switch (mode) {
         case 'whole':
-          slice.setElevation(0)
+          // slice.setElevation(0)
           slice.notify(self)
           self.camera.reset()
           break
@@ -273,6 +284,19 @@ export default class HatuViewer {
     renderer.setPixelRatio(window.devicePixelRatio)
     this.container.appendChild(renderer.domElement)
     return renderer
+  }
+
+  /**
+   *
+   * @return {Annotation}
+   */
+  setupAnnotation () {
+    let annotation = new Annotation()
+    annotation.position.set(-this.center[0], -this.center[1], -this.center[2])
+    this.operationProxy.addEventListener(CHOOSE_BOX_OPEN, event => annotation.openChooseBox())
+    this.operationProxy.addEventListener(CHOOSE_BOX_UPDATE, event => annotation.updateChooseBox(event.position1, event.position2))
+    this.operationProxy.addEventListener(CHOOSE_BOX_CLOSE, event => annotation.closeChooseBox())
+    return annotation
   }
 
   render () {

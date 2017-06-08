@@ -9,6 +9,7 @@ import webpackConfigure from './webpackConfigure'
 import userRouterGenerator from './database/userInfo'
 import imageRouterGenerator from './database/imageInfo'
 import swcRouterGenerator from './database/swcInfo'
+import traceRouterGenerator from './trace'
 
 import { dvidAddress, setupDvid } from './dvid'
 
@@ -42,10 +43,13 @@ async function setupRoute () {
   const userRoute = await userRouterGenerator()
   const imageRoute = await imageRouterGenerator()
   const swcRoute = await swcRouterGenerator()
+  const traceRoute = await traceRouterGenerator()
 
   app.use('/users', userRoute)
   app.use('/api', imageRoute)
   app.use('/api', swcRoute)
+  app.use('/api', traceRoute)
+
   app.use('/dvid', getProxyOption(uuid))
   app.use('/uuid', (req, res) => res.send(uuid))
   app.use('/assets/static', express.static(path.join(__dirname, '..', 'public')))

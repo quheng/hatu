@@ -5,14 +5,41 @@ export default class NodeOperation {
   /**
    *
    * @param {OperationProxy} proxy
+   * @param {Swc} swc
    */
-
-  constructor (proxy) {
+  constructor (proxy, swc) {
     this.proxy = proxy
+    this.swc = swc
+    this.target = null
+  }
+
+  /**
+   *
+   * @param {Array.<String>} src
+   * @return {NodeOperation}
+   */
+  from (src) {
+
+  }
+
+  /**
+   *
+   * @return {HatuNode}
+   */
+  getTarget () {
+    return this.target
+  }
+
+  /**
+   *
+   * @return {OperationProxy}
+   */
+  getProxy () {
+    return this.proxy
   }
 
   activate () {
-    this.proxy.dispatchEvent({ type: DRAG_NODE_MODE_EVENT })
+    this.getProxy().dispatchEvent({ type: DRAG_NODE_MODE_EVENT })
   }
 
   /**
@@ -57,9 +84,17 @@ export default class NodeOperation {
 
   /**
    *
-   * @param position
+   * @param {Vector3} position
    */
   clickNothing (position) {
+
+  }
+
+  /**
+   *
+   * @param {Vector3} position
+   */
+  move (position) {
 
   }
 
@@ -78,4 +113,28 @@ export default class NodeOperation {
   cancel () {
   }
 
+  /**
+   *
+   * @return {string}
+   */
+  toString () {
+    return ''
+  }
+
+  /**
+   *
+   * @param {NodeOperation} op
+   */
+  match (op) {
+    return false
+  }
+
+  /**
+   *
+   * @param {NodeOperation} l
+   * @return {boolean}
+   */
+  equal (l) {
+    return this.toString() === l.toString()
+  }
 }

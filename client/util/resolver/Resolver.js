@@ -1,24 +1,46 @@
 import Supervisor from '../Supervisor'
-import Matcher from './Matcher'
-import { CONDUCT_EVENT } from '../operation/OperationProxy'
 import Swc from '../swc/Swc'
+import { OperationProxy, CONDUCT_EVENT } from '../operation/OperationProxy'
+import Merger from './Merger'
 
 export default class Resolver extends Supervisor {
-
   /**
    *
    * @param {string} master
    * @param {string} slave
    * @param {Slices} slices
+   * @param {string} ancestor
    */
-  constructor (master, slave, slices) {
+  constructor (master, slave, slices, ancestor) {
     super()
-    this.master = new Swc(master, 0x444400)
-    this.slave = new Swc(slave, 0x000022)
     this.slices = slices
-    this.matcher = new Matcher(this.master, this.slave)
-    this.operationMap.set('match', () => this.matcher.match())
-    this.operationEvents.set(CONDUCT_EVENT, () => this.matcher.recover())
+
+    console.log(master)
+
+    this.proxy = new OperationProxy()
+    this.master = new Swc(ancestor, 0x444400)
+    this.divider = this.master.lastIndex
+    console.log(this.divider)
+    this.proxy.from(master, this.master)
+    this.slave = new Swc(ancestor, 0x000022)
+    this.proxy.from(slave, this.slave)
+    this.merger = new Merger(this.master, this.slave)
+
+    this.operationMap.set('match', () => {
+      this.merger.merge()
+      this.dye(this.master, this.slave)
+      this.dye(this.slave, this.master)
+    })
+
+    this.operationMap.set('commit', () => {
+      if (this.merger.merge()) {
+        if (this.commitCallback) {
+          this.commitCallback(ancestor, this.merger.getResult().map(op => op.toString()).join('\n'))
+        }
+      }
+    })
+    this.operationEvents.set(CONDUCT_EVENT, () => this.recover())
+    this.swcs = [this.master, this.slave]
   }
 
   /**
@@ -26,7 +48,15 @@ export default class Resolver extends Supervisor {
    * @return {[Swc]}
    */
   getSwcs () {
-    return [this.master, this.slave]
+    return this.swcs
+  }
+
+  addSwc (swc) {
+    this.swcs.push(swc)
+  }
+
+  removeSwc (swc) {
+    this.swcs = this.swcs.filter(e => e !== swc)
   }
 
   /**
@@ -59,6 +89,39 @@ export default class Resolver extends Supervisor {
    */
   getEdges () {
     return this.master.getEdges().concat(this.slave.getEdges())
+  }
+
+  /**
+   *
+   * @param {Swc} master
+   * @param {Swc} slave
+   */
+  dye (master, slave) {
+    this.isDyed = true
+    master.getNodes().forEach(node => {
+      if (node.getProxy().getMergeResult()) {
+        node.emissive = 0x0000aa
+        if (node.getProxy().getMatchResult()) {
+          node.emissive = 0x00aa00
+        }
+      } else {
+        node.emissive = 0xaa0000
+      }
+    })
+  }
+
+  recover () {
+    if (this.isDyed) {
+      this.isDyed = false
+      Resolver.recoverColor(this.master)
+      Resolver.recoverColor(this.slave)
+    }
+  }
+
+  static recoverColor (swc) {
+    swc.getNodes().forEach(node => {
+      node.emissive = node.themeColor
+    })
   }
 
 }
